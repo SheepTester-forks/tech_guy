@@ -1,0 +1,100 @@
+body {
+  margin: 0;
+  font-size: 0;
+  font-family: 'Roboto Mono', monospace;
+  background-color: #FAF9F7;
+}
+
+.content-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+}
+a {
+  color: #4479b3;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+.header {
+  background-color: #0677BA;
+  border-bottom: 1px solid #22303e;
+  color: white;
+}
+.header span {
+  display: inline-block;
+  font-size: 20px;
+  padding: 15px;
+}
+.username {
+  float: right;
+}
+
+.main .content-wrapper {
+  background-color: white;
+  padding: 0 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  margin-top: 20px;
+}
+
+.post {
+  padding: 20px 0;
+  border-bottom: 1px solid #eaeaea;
+}
+.posted-by, .post-content {
+  display: block;
+  font-size: 15px;
+}
+.post-content {
+  margin: 5px 0;
+}
+.post-date {
+  display: block;
+  font-size: 10px;
+  color: #677583;
+}
+.posts-end {
+  display: block;
+  padding: 10px 0;
+  text-align: center;
+  font-size: 10px;
+  color: #677583;
+}
+
+.actions {
+  position: relative;
+  color: #888888;
+  float: right;
+  cursor: pointer;
+}
+.actions:hover {
+  color: white;
+  background-color: #555;
+}
+.actions-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  cursor: auto;
+  border: 1px solid #555;
+  background-color: white;
+  padding: 10px 0;
+  z-index: 1;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+.actions:hover .actions-dropdown {
+  display: block;
+}
+.action {
+  display: block;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 0 10px;
+  color: #333;
+}
+.action:hover {
+  color: #89d4fa;
+  background-color: #333;
+}
