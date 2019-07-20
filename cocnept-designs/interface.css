@@ -12,6 +12,19 @@ body {
   box-sizing: border-box;
 }
 
+button {
+  -webkit-appearance: none;
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+.icon-btn {
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 .status-bar {
   background-color: black;
   color: white;
@@ -48,6 +61,10 @@ body {
 
 .pane {
   width: 250px;
+  overflow: auto;
+
+  /* make scrolling on iOS in divs have momentum */
+  -webkit-overflow-scrolling: touch;
 }
 .desktop-flexible {
   flex: auto;
@@ -56,6 +73,9 @@ body {
 .surveillance {
   border: 5px solid #543e27;
   background-color: #6b5033;
+  display: flex;
+  flex-direction: column;
+  font-family: monospace;
 }
 .camera-wrapper {
   position: relative;
@@ -69,6 +89,48 @@ body {
   top: 0;
   left: 0;
   right: 0;
+  display: flex;
+  align-items: center;
+}
+.camera-menu-btn {
+  background-image: url('./camera-grid.svg');
+  background-size: 24px;
+  width: 36px;
+  height: 36px;
+  margin: 5px;
+}
+.upgrade-btn {
+  border-radius: 2px;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  margin: 5px;
+  padding: 5px 10px;
+}
+.upgrade-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+.mic-log {
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: auto;
+  color: rgba(255, 255, 255, 0.8);
+}
+.log-entry {
+  font-size: 14px;
+  padding: 5px;
+}
+.log-entry:nth-child(2n+1) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+.incoherent {
+  background-color: black;
+  border-radius: 2px;
+  font-size: 10px;
+  padding: 2px 4px;
 }
 
 .directory {
