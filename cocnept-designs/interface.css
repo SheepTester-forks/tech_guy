@@ -135,6 +135,60 @@ button {
 
 .directory {
   background-color: #515558;
+  font-family: sans-serif;
+}
+.directory-heading {
+  background-color: #323639;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+  padding: 16px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  color: white;
+}
+.student-entry {
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  margin: 20px;
+}
+.name {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+.desc {
+  font-size: 10px;
+  margin: 5px 0;
+}
+.space {
+  display: inline-block;
+  width: 10px;
+}
+.info-table {
+  border: 1px solid black;
+}
+.info-heading {
+  background-color: #E1E1E1;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
+  padding: 2px;
+}
+.info-row {
+  display: flex;
+  border-top: 1px solid black;
+}
+.info-label {
+  width: 50px;
+  flex: none;
+  background-color: #E1E1E1;
+  border-right: 1px solid black;
+  font-weight: bold;
+}
+.info-label, .info-value {
+  font-size: 10px;
+  padding: 2px;
 }
 
 .confessions {
