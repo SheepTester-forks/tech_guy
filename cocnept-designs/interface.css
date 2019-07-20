@@ -1,0 +1,80 @@
+html, body {
+  width: 100%;
+  height: 100%;
+}
+body {
+  margin: 0;
+  overflow: hidden;
+  font-size: 0;
+  display: flex;
+  padding-top: 20px;
+  align-items: stretch;
+  box-sizing: border-box;
+}
+
+.status-bar {
+  background-color: black;
+  color: white;
+  font-family: sans-serif;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5px;
+  white-space: nowrap;
+}
+.money, .period {
+  display: inline-block;
+  font-size: 10px;
+}
+.progress {
+  background-color: rgba(255, 255, 255, 0.15);
+  height: 8px;
+  width: 30vw;
+  display: inline-block;
+  margin-left: 5px;
+}
+.progress::after {
+  content: '';
+  display: block;
+  width: var(--progress);
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.pane {
+  width: 250px;
+}
+.desktop-flexible {
+  flex: auto;
+}
+
+.surveillance {
+  border: 5px solid #543e27;
+  background-color: #6b5033;
+}
+.camera-wrapper {
+  position: relative;
+}
+.camera {
+  width: 100%;
+  background-color: black;
+}
+.camera-buttons {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.directory {
+  background-color: #515558;
+}
+
+.confessions {
+  background-color: #FBE6E6;
+}
