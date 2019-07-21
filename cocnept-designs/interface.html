@@ -129,5 +129,25 @@
         <p class="confession">name one thing that i can do right now that would prove im white, like name one thing i can do that a black person could not do right now.</p>
       </div>
     </div>
+    <script type="text/javascript">
+      const classes = [
+        'mobile-showing-surveillance',
+        'mobile-showing-directory',
+        'mobile-showing-confessions'
+      ];
+      let i = 0;
+      document.body.addEventListener('click', e => {
+        if (e.target === document.body) {
+          const rightHalf = e.clientX > window.innerWidth / 2;
+          document.body.classList.remove(classes[i]);
+          if (rightHalf) {
+            if (i < classes.length - 1) i++;
+          } else {
+            if (i > 0) i--;
+          }
+          document.body.classList.add(classes[i]);
+        }
+      });
+    </script>
   </body>
 </html>
