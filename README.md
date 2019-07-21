@@ -65,3 +65,42 @@ Great repository names are short and memorable. Need inspiration? How about tech
     - Remove irrelevant posts: Significantly lower student appeal.
   - Directory
     - Get student info that the player inputs, regardless of its accuracy.
+
+# Edits
+
+- goal
+  - survive **X** days
+  - suspend students based on clues for:
+    - drugs (smoke detectors, student rumours through conversations and confessions, going to the bathroom, cutting class)
+    - criticizng the school (conversations and confessions)
+    - lacking school spirit, eg by not doing the morning YES breathing on time (camera)
+    - reasons for suspension get stricter and more complicated as the game progresses, going from plausible to extreme
+- tools
+  - camera
+    - quality affects resolution, helps narrow down a student's identity
+    - comes with microphone, which logs student conversations
+      - quality affects how many words become incoherent
+      - log only stores last **Y** messages
+        - **does it clear when switching cameras?**
+    - cameras can be upgraded or purchased using money
+    - only one camera can be viewed at a time
+    - possible add-on: make camera alert user while they're viewing a different camera when motion is detected
+  - smoke detector **for bathroom cameras?**
+    - quality affects accuracy (can give false positives)
+  - Gunn Confessions approval queue
+  - student directory
+    - option to suspend
+    - opens when student (name) clicked on
+      - when clicked on in the camera, it gives a list of students matching physical appearance
+  - emails
+    - teacher observations of disobedient students
+    - automatically notes complaints in directory when email is opened
+  - suspension
+    - small pay bonus
+    - skippable interrogation cutscene
+    - if wrong, parents get angry
+      - emails are intermixed with angry parent emails
+      - fired (game over) if occurs too often
+- money
+  - base pay spent on high PA rent
+  - suspension bonus used for upgrades
