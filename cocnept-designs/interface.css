@@ -69,6 +69,57 @@ button {
 .desktop-flexible {
   flex: auto;
 }
+@media (max-width: 800px) {
+  .pane {
+    position: fixed;
+    top: 20px;
+    bottom: 0;
+    width: auto;
+    transition: all .2s;
+    pointer-events: none;
+  }
+  .mobile-showing-surveillance .pane {
+    left: 0;
+    right: 80px;
+  }
+  .mobile-showing-directory .pane {
+    left: 40px;
+    right: 40px;
+  }
+  .mobile-showing-confessions .pane {
+    left: 80px;
+    right: 0;
+  }
+  .mobile-showing-surveillance .surveillance,
+  .mobile-showing-directory .directory,
+  .mobile-showing-confessions .confessions {
+    transform: translateX(0);
+    z-index: 1;
+    pointer-events: none;
+  }
+  .mobile-showing-surveillance .directory,
+  .mobile-showing-directory .confessions {
+    transform: translateX(100%);
+    z-index: 2;
+  }
+  .mobile-showing-surveillance .confessions {
+    transform: translateX(100%);
+    left: 40px;
+    right: 40px;
+    z-index: 3;
+  }
+  .mobile-showing-directory .surveillance,
+  .mobile-showing-confessions .directory {
+    transform: translateX(-100%);
+    z-index: 2;
+  }
+  .mobile-showing-confessions .surveillance {
+    transform: translateX(-100%);
+    left: 40px;
+    right: 40px;
+    z-index: 3;
+  }
+}
 
 .surveillance {
   border: 5px solid #543e27;
@@ -76,6 +127,7 @@ button {
   display: flex;
   flex-direction: column;
   font-family: monospace;
+  box-sizing: border-box;
 }
 .camera-wrapper {
   position: relative;
