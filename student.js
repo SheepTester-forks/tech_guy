@@ -102,7 +102,7 @@ class Student extends Human {
       suspensions: [],
       classes: [],
       friends: []
-    }, super.paramterize());
+    }, super.parameterize());
   }
 }
 
