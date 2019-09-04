@@ -4,44 +4,49 @@ let PERIODS = Array.from("ABCDEFI");
   //{name: "AP Physics C", type: "physics", teacher: "Bolaf", }
 //]
 
-var request = new XMLHttpRequest();
-request.open('GET', '/json/baby_names.json', false);  // `false` makes the request synchronous
-request.send(null);
+let rg = new XMLHttpRequest();
+//rg.open('GET', '../json/given-names.json', false);  // `false` makes the request synchronous
+rg.open('GET', 'https://raw.githubusercontent.com/Nichodon/tech_guy/master/json/given-names.json', false);  // `false` makes the request synchronous
+rg.send(null);
 
-let NAMES = JSON.parse(request.responseText);
+let rs = new XMLHttpRequest();
+//rs.open('GET', '../json/surnames.json', false);  // `false` makes the request synchronous
+rs.open('GET', 'https://raw.githubusercontent.com/Nichodon/tech_guy/master/json/surnames.json', false);  // `false` makes the request synchronous
+rs.send(null);
 
-function weightedChoose(listicle, pow=2) {
-  return listicle[Math.floor(Math.pow(Math.random(), 2) * listicle.length)]
+let NAMES = JSON.parse(rg.responseText);
+let SURNAMES = JSON.parse(rs.responseText);
+
+function weightedChoose(list, pow=1.1) {
+  return list[Math.floor(Math.pow(Math.random(), pow) * list.length)];
 }
 
 function randomStudent() {
   let grade = Math.floor(Math.random() * 4) + 9; // 9 through 12
 
-  if (Math.random() < 0.508) {
-    // female
+  if (Math.random() < 0.5) {
     return {
-      first: weightedChoose(NAMES.girls),
+      first: Math.random() > 0.95 ? weightedChoose(NAMES.girls) : weightedChoose(NAMES.boys),
       grade,
-      gender: 'F',
-      last: "Newdam",
-      drug_susceptibility: Math.random(), // 0 to 1
-      politiq_susceptibility: Math.random(),
-      violence_susceptibility: Math.pow(Math.random(), 1.4 /* makes girls less violent; is this sexist XD */),
+      sex: "F",
+      last: weightedChoose(SURNAMES.surnames),
+      drug_chance: Math.random(), // 0 to 1
+      cut_chance: Math.random(),
+      violent_chance: Math.random(),
       personality: {
         friendliness: Math.random() * (1 + (grade - 9) / 3) /* older people friendlier */,
         interests: ["bio"]
       }, friends: []
     };
   } else {
-    // male
     return {
-      first: weightedChoose(NAMES.boys),
+      first: Math.random() > 0.95 ? weightedChoose(NAMES.boys) : weightedChoose(NAMES.girls),
       grade,
-      gender: 'M',
-      last: "Newdam",
-      drug_susceptibility: Math.random(), // 0 to 1
-      politiq_susceptibility: Math.random(),
-      violence_susceptibility: Math.random(),
+      sex: 'M',
+      last: weightedChoose(SURNAMES.surnames),
+      drug_chance: Math.random(), // 0 to 1
+      cut_chance: Math.random(),
+      violent_chance: Math.random(),
       personality: {
         friendliness: Math.random() * (1 + (grade - 9) / 3) /* older people friendlier */,
         interests: ["bio"] // will be used later for assigning classes
@@ -53,10 +58,10 @@ function randomStudent() {
 function evaluateSimilarity(student1, student2) {
   let similarity = 0;
 
-  similarity += 0.5 * (student1.gender === student2.gender) + 0.4; // boys are more likely to have boys as friends, etc.
-  similarity += Math.hypot(student1.drug_susceptibility - student2.drug_susceptibility,
-    student1.politiq_susceptibility - student2.politiq_susceptibility,
-    student1.violence_susceptibility - student2.violence_susceptibility) - 1.3;
+  similarity += 0.5 * (student1.sex === student2.sex) + 0.4; // boys are more likely to have boys as friends, etc.
+  similarity += Math.hypot(student1.drug_chance - student2.drug_chance,
+    student1.cut_chance - student2.cut_chance,
+    student1.violent_chance - student2.violent_chance) - 1.3;
 
   similarity += (student1.personality.friendliness + student2.personality.friendliness) / 2;
   similarity += 4 * (student1.grade === student2.grade) - 2; // most important factor
@@ -93,7 +98,7 @@ function randomlyRound(r) {
 function generateSchool() {
   // School contains classes, teachers, students
 
-  let Students = [...Array(750).keys()].map(i => ({...randomStudent(), index: i}));
+  let Students = [...Array(768).keys()].map(i => ({...randomStudent(), index: i}));
   let Friendships = [];
 
   let MAX_ITER = 25;
