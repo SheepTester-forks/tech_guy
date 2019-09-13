@@ -6,7 +6,7 @@ function getData(link) {
     request.open('GET', link, false);  // `false` makes the request synchronous
     request.send(null);
 
-    let big_list = JSON.parse(request.responseText).boys || JSON.parse(request.responseText).surnames;
+    let big_list = JSON.parse(request.responseText).girls || JSON.parse(request.responseText).surnames;
 
     let data = [];
     let starts = [];
@@ -74,18 +74,20 @@ let given = getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/
 let sur = getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/json/surnames.json');
 
 let bigbrain = [];
-for (let i = 0; i < 1000; i++) {
-    bigbrain.push(generate(sur[0], sur[1], sur[2], 1.125) + ', ' + generate(given[0], given[1], given[2], 1.1875));
+for (let i = 0; i < 20000; i++) {
+    bigbrain.push(generate(given[0], given[1], given[2], 1.5, 3) + ' ' + generate(sur[0], sur[1], sur[2], 1.25, 2));
 }
 bigbrain.sort();
 let display = document.createElement('p');
+let displaytext = '';
 document.body.appendChild(display);
 for (let i = 0; i < bigbrain.length; i++) {
-    display.innerHTML += bigbrain[i] + '<br>';
+    displaytext += bigbrain[i] + '<br>';
 }
+display.innerHTML = displaytext;
 
 
-function generate(totals, stotals, ftotals, factor) {
+function generate(totals, stotals, ftotals, factor, min) {
     let curr1 = -1;
     let rands = Math.floor(Math.random() * ftotals[25]);
     for (let i = 0; i < 26; i++) {
@@ -106,8 +108,8 @@ function generate(totals, stotals, ftotals, factor) {
     debug += ('curr1: ' + curr1);
     debug += ('\ncurr2: ' + curr2);
     let out = alphabet[curr1];
-    for (let i = 0; i < 100; i++) {
-        let decay = (totals[curr1][curr2][26] - totals[curr1][curr2][25]) * (Math.pow(factor, (out.length) * 2) - 1);
+    for (let i = 0; i < 1000; i++) {
+        let decay = (totals[curr1][curr2][26] - totals[curr1][curr2][25]) * (Math.pow(factor, (out.length - (min - 2))) - 1);
         let random = Math.floor(Math.random() * (totals[curr1][curr2][25] + decay));
         debug += ('\ni: ' + i);
         debug += ('\n- end chance: ' + (totals[curr1][curr2][26] - totals[curr1][curr2][25]));
@@ -126,5 +128,5 @@ function generate(totals, stotals, ftotals, factor) {
             }
         }
     }
-    return totals[curr1][curr2].toString();
+    return '';
 }
