@@ -17,61 +17,55 @@ rs.send(null);
 let NAMES = JSON.parse(rg.responseText);
 let SURNAMES = JSON.parse(rs.responseText);
 
-function weightedChoose(list, pow=1.1) {
+function weightedChoose(list, pow=1.5) {
   return list[Math.floor(Math.pow(Math.random(), pow) * list.length)];
 }
 
 function randomStudent() {
   let grade = Math.floor(Math.random() * 4) + 9; // 9 through 12
-
-  if (Math.random() < 0.5) {
-    return {
-      first: Math.random() > 0.95 ? weightedChoose(NAMES.girls) : weightedChoose(NAMES.boys),
-      grade,
-      sex: "F",
-      last: weightedChoose(SURNAMES.surnames),
-      drug_chance: Math.random(), // 0 to 1
-      cut_chance: Math.random(),
-      violent_chance: Math.random(),
-      personality: {
-        friendliness: Math.random() * (1 + (grade - 9) / 3) /* older people friendlier */,
-        interests: ["bio"]
-      }, friends: []
-    };
-  } else {
-    return {
-      first: Math.random() > 0.95 ? weightedChoose(NAMES.boys) : weightedChoose(NAMES.girls),
-      grade,
-      sex: 'M',
-      last: weightedChoose(SURNAMES.surnames),
-      drug_chance: Math.random(), // 0 to 1
-      cut_chance: Math.random(),
-      violent_chance: Math.random(),
-      personality: {
-        friendliness: Math.random() * (1 + (grade - 9) / 3) /* older people friendlier */,
-        interests: ["bio"] // will be used later for assigning classes
-      }, friends: []
-    };
+  // Gender = pronouns and social groupings
+  // Name = traditionally boy or girl names
+  let name = Math.random() < 0.5 ? "F" : "M";
+  let grand = Math.random();
+  let gender = grand < 0.95 ? name : grand < 0.975 ? (name === "F" ? "M" : "F") : "O";
+  return {
+    name: {
+      first: weightedChoose(name === "F" ? NAMES.girls : NAMES.boys),
+      last: weightedChoose(SURNAMES.surnames)
+    },
+    gender: gender,
+    grade: grade,
+    personality: {
+      friendliness: Math.random() * (0.5 + (grade - 9) / 6) /* older people friendlier */,
+      interests: ["bio"]
+    },
+    chance: {
+      drug: Math.random(),
+      cut: Math.random(),
+      violent: Math.random()
+    },
+    friends: []
   }
 }
 
+// need to add interests to this if interests is gonna be a thing
 function evaluateSimilarity(student1, student2) {
   let similarity = 0;
 
-  similarity += 0.5 * (student1.sex === student2.sex) + 0.4; // boys are more likely to have boys as friends, etc.
-  similarity += Math.hypot(student1.drug_chance - student2.drug_chance,
-    student1.cut_chance - student2.cut_chance,
-    student1.violent_chance - student2.violent_chance) - 1.3;
+  similarity += 0.5 * (student1.gender === student2.gender) + 0.5; // people like to segregate for some reason
+  similarity += Math.hypot(student1.chance.drug - student2.chance.drug,
+    student1.chance.cut - student2.chance.cut,
+    student1.chance.violent - student2.chance.violent) / Math.sqrt(3);
 
   similarity += (student1.personality.friendliness + student2.personality.friendliness) / 2;
-  similarity += 4 * (student1.grade === student2.grade) - 2; // most important factor
+  similarity += 2 * (student1.grade === student2.grade); // most important factor
 
-  return similarity;
+  return similarity / 5; // hopefully now this is 0-1
 }
 
 function friendCurve(friendliness) {
   // return how many friends a person with this friendliness should try to have
-  return friendliness * 105 + 15;
+  return friendliness * 45 + 5; // bruh don't make this too big
 }
 
 function shouldBeFriends(s1, s2) {
@@ -80,10 +74,10 @@ function shouldBeFriends(s1, s2) {
   sim += (s1.friends.some(f => f.index === s2.index));
   sim += (s2.friends.some(f => f.index === s1.index));
 
-  if (sim > 2) {
-    return Math.max(sim * (Math.random() - 0.5), 0);
+  if (sim > 0.5 || Math.random() < 0.05) {
+    return sim / 3;
   } else {
-    return Math.abs(sim) * (Math.random() < 0.015); // random friends who are really different lol
+    return 0;
   }
 }
 
@@ -101,7 +95,7 @@ function generateSchool() {
   let Students = [...Array(768).keys()].map(i => ({...randomStudent(), index: i}));
   let Friendships = [];
 
-  let MAX_ITER = 25;
+  let MAX_ITER = 2;
 
   for (let iterations = 0; iterations < MAX_ITER; iterations++) {
     for (let i = 0; i < Students.length; ++i) {
@@ -109,7 +103,7 @@ function generateSchool() {
 
       for (let k = 0; k < randomlyRound(friendCurve(student.personality.friendliness) / MAX_ITER); ++k) {
         let random_student = weightedChoose(Students, 1);
-        if (student.friends.some(s => s.index === i)) continue;
+        if (student.friends.some(s => s.index === i)) { continue; }
 
         let degree = shouldBeFriends(student, random_student);
 
