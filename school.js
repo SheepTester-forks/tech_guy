@@ -1,4 +1,4 @@
-let PERIODS = Array.from("ABCDEFI");
+//let PERIODS = Array.from("ABCDEFI");
 
 //const CLASSES = [
   //{name: "AP Physics C", type: "physics", teacher: "Bolaf", }
@@ -92,7 +92,7 @@ function randomlyRound(r) {
 function generateSchool() {
   // School contains classes, teachers, students
 
-  let Students = [...Array(768).keys()].map(i => ({...randomStudent(), index: i}));
+  let Students = [...Array(1000).keys()].map(i => ({...randomStudent(), index: i}));
   let Friendships = [];
 
   let MAX_ITER = 2;
