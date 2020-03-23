@@ -1,10 +1,42 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  </head>
-  <body>
-      <script src="ntv2.js"></script>
-  </body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <script src="ntv2.js"></script>
+        <script>
+            let given_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/json/given-names.json');
+            let sur_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/json/surnames.json');
+            let boys = NAMES.parseData(given_d, 'boys');
+            let girls = NAMES.parseData(given_d, 'girls');
+            let sur = NAMES.parseData(sur_d, 'surnames');
+
+            let gened = [];
+
+            /*for (let i = 0; i < 500; i++) {
+                gened.push(generate(boys) + ' ' + generate(sur) + ' M');
+            }
+            for (let i = 0; i < 500; i++) {
+                gened.push(generate(girls) + ' ' + generate(sur) + ' F');
+            }*/
+            for (let i = 0; i < 500; i++) {
+                gened.push(NAMES.generate(boys) + ' M');
+            }
+            for (let i = 0; i < 500; i++) {
+                gened.push(NAMES.generate(girls) + ' F');
+            }
+
+            gened.sort();
+            gened.sort((x, y) => x.length - y.length);
+            let display = '';
+
+            for (let i = 0; i < 1000; i++) {
+                display += gened[i] + '<br>';
+            }
+
+            document.body.innerHTML = display;
+        </script>
+    </body>
 </html>
