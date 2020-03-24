@@ -46,7 +46,7 @@
         return obj ? obj + arg : arg;
     }
 
-    function generate(args) {
+    function generate(args, distrib, length) {
         let data = args[0];
         let starts = args[1];
 
@@ -77,6 +77,10 @@
 
             let d_keys = Object.keys(data[curr]);
             let d_vals = Object.values(data[curr]);
+            
+            if (d_keys.includes('')) {
+                d_vals[d_keys.indexOf('')] *= Math.pow(distrib, out.length - length);
+            }
 
             let d_sum = d_vals.reduce((x, y) => x + y);
             let d_rand = Math.random() * d_sum;

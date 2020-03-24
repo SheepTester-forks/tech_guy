@@ -15,21 +15,14 @@
 
             let gened = [];
 
-            /*for (let i = 0; i < 500; i++) {
-                gened.push(generate(boys) + ' ' + generate(sur) + ' M');
+            for (let i = 0; i < 500; i++) {
+                gened.push('<span style="color:#09c">' + NAMES.generate(boys, 8, 5) + ' ' + NAMES.generate(sur, 8, 7) + '</span>');
             }
             for (let i = 0; i < 500; i++) {
-                gened.push(generate(girls) + ' ' + generate(sur) + ' F');
-            }*/
-            for (let i = 0; i < 500; i++) {
-                gened.push(NAMES.generate(boys) + ' M');
-            }
-            for (let i = 0; i < 500; i++) {
-                gened.push(NAMES.generate(girls) + ' F');
+                gened.push('<span style="color:#c09">' + NAMES.generate(girls, 8, 5) + ' ' + NAMES.generate(sur, 8, 7) + '</span>');
             }
 
-            gened.sort();
-            gened.sort((x, y) => x.length - y.length);
+            gened.sort((x, y) => x.substr(24).localeCompare(y.substr(24)));
             let display = '';
 
             for (let i = 0; i < 1000; i++) {
