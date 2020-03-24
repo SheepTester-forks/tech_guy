@@ -7,8 +7,8 @@
     <body>
         <script src="ntv2.js"></script>
         <script>
-            let given_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/json/given-names.json');
-            let sur_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/json/surnames.json');
+            let given_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/given-names.json');
+            let sur_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/surnames.json');
             let boys = NAMES.parseData(given_d, 'boys');
             let girls = NAMES.parseData(given_d, 'girls');
             let sur = NAMES.parseData(sur_d, 'surnames');
