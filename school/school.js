@@ -6,12 +6,12 @@
 
 let rg = new XMLHttpRequest();
 //rg.open('GET', '../json/given-names.json', false);  // `false` makes the request synchronous
-rg.open('GET', 'https://raw.githubusercontent.com/Nichodon/tech_guy/master/json/given-names.json', false);  // `false` makes the request synchronous
+rg.open('GET', 'https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/given-names.json', false);  // `false` makes the request synchronous
 rg.send(null);
 
 let rs = new XMLHttpRequest();
 //rs.open('GET', '../json/surnames.json', false);  // `false` makes the request synchronous
-rs.open('GET', 'https://raw.githubusercontent.com/Nichodon/tech_guy/master/json/surnames.json', false);  // `false` makes the request synchronous
+rs.open('GET', 'https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/surnames.json', false);  // `false` makes the request synchronous
 rs.send(null);
 
 let NAMES = JSON.parse(rg.responseText);
