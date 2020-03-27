@@ -22,6 +22,11 @@ function randomStudent() {
     
     let rand = Math.random();
     let gender = rand < 0.95 ? name : rand < 0.975 ? (name === "F" ? "M" : "F") : "O";
+    
+    let skinColor = Math.random();
+    let hairType = Math.random();
+    let hairColor = Math.random();
+    
     return {
         name: {
             first: NAMES.generate(name === "F" ? NAME_DATA.girls : NAME_DATA.boys, 8, 5),
@@ -35,7 +40,18 @@ function randomStudent() {
             disobey: Math.random(),
             violent: Math.random()
         },
-        friends: []
+        friends: [],
+        appearance: {
+            skinColor: skinColor,
+            hairType: hairType,
+            hairColor: hairColor
+        },
+        picture: {
+            hairType: Math.random() < 0.9 ? hairType : Math.random(),
+            hairColor: Math.random() < 0.9 ? hairColor : Math.random(),
+            shirtType: Math.random(),
+            shirtColor: Math.random()
+        }
     }
 }
 
