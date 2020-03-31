@@ -5,7 +5,7 @@
         <title>Sprite Test</title>
         <style>
             canvas {
-                border:1px solid black;
+                border: 1px solid black;
             }
         </style>
     </head>
@@ -13,5 +13,43 @@
     <body>
         <canvas></canvas>
         <script src="sprite.js"></script>
+        <script>
+            let canvas = document.getElementsByTagName('canvas')[0];
+            canvas.style.width = '500px';
+            canvas.style.height = '500px';
+            canvas.width = 500 * window.devicePixelRatio;
+            canvas.height = 500 * window.devicePixelRatio;
+            let ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            
+            let sprite = {
+                skin: {
+                    tint: ['#fdc', '#ca9']
+                },
+                pants: {
+                    type: 1,
+                    tint: ['#36f', '#03c']
+                },
+                shoes: {
+                    type: 0,
+                    tint: ['#333', '#333']
+                },
+                shirt: {
+                    type: 0,
+                    tint: ['#c36', '#903']
+                },
+                hair: {
+                    type: 1,
+                    tint: ['#fec', '#cb9']
+                }
+            };
+            
+            SPRITES.loadImages(function () {
+                ctx.drawImage(SPRITES.getSprite(sprite), 0, 0, 100, 200);
+                sprite.hair.type = 0;
+                ctx.drawImage(SPRITES.getSprite(sprite), 200, 0, 100, 200);
+            });
+        </script>
     </body>
 </html>
