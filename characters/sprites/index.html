@@ -23,33 +23,63 @@
             ctx.imageSmoothingEnabled = false;
             ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
             
-            let sprite = {
-                skin: {
-                    tint: ['#fdc', '#ca9']
-                },
-                pants: {
-                    type: 1,
-                    tint: ['#36f', '#03c']
-                },
-                shoes: {
-                    type: 0,
-                    tint: ['#333', '#333']
-                },
-                shirt: {
-                    type: 0,
-                    tint: ['#c36', '#903']
-                },
-                hair: {
-                    type: 1,
-                    tint: ['#fec', '#cb9']
-                }
-            };
-            
             SPRITES.loadImages(function () {
-                ctx.drawImage(SPRITES.getSprite(sprite), 0, 0, 100, 200);
-                sprite.hair.type = 0;
-                ctx.drawImage(SPRITES.getSprite(sprite), 200, 0, 100, 200);
+                for (let i = 0; i < canvas.width; i += 50) {
+                    for (let j = 0; j < canvas.height; j += 100) {
+                        let color = Math.floor(Math.random() * 4);
+                        
+                        let sprite = {
+                            skin: { tint: [randomSkin(color)] },
+                            pants: { type: Math.floor(Math.random() * 2), tint: [randomPants()] },
+                            shoes: { type: Math.floor(Math.random() * 2), tint: [randomShoes()] },
+                            shirt: { type: Math.floor(Math.random() * 6), tint: [randomShirt(), randomJacket()] },
+                            hair: { type: Math.floor(Math.random() * 6), tint: [randomHair(color)] },
+                            hat: { type: Math.floor(Math.random() * 100) === 0, tint: [randomJacket()] }
+                        };
+                        ctx.drawImage(SPRITES.getSprite(sprite), i, j, 49, 98);
+                    }
+                }
             });
+            
+            console.log(randomSkin())
+            
+            function randomSkin(color) {
+                return ['#643', '#a87', '#f7ddc4', '#fdc'][color];
+            }
+            
+            function randomHair(color) {
+                return ['#320', '#963', '#c60', '#fec'][Math.floor(Math.random() * (color === 3 ? 4 : color))];
+            }
+            
+            function randomJacket() {
+                return ['#333', '#602', '#026', '#eee'][Math.floor(Math.random() * 4)];
+            }
+            
+            function randomShirt() {
+                return HSVtoRGB(Math.random(), Math.random() * 0.75, Math.random() * 0.8 + 0.2);
+            }
+            
+            function randomPants() {
+                return ['#333', '#ca6', '#049', '#999'][Math.floor(Math.random() * 4)];
+            }
+            
+            function randomShoes() {
+                return ['#333', '#640', '#666', '#eee'][Math.floor(Math.random() * 4)];
+            }
+            
+            function HSVtoRGB(h, s, v) {
+                var r, g, b, i, f, p, q, t;
+                i = Math.floor(h * 6); f = h * 6 - i; p = v * (1 - s); q = v * (1 - f * s); t = v * (1 - (1 - f) * s);
+                switch (i % 6) {
+                    case 0: r = v, g = t, b = p; break;
+                    case 1: r = q, g = v, b = p; break;
+                    case 2: r = p, g = v, b = t; break;
+                    case 3: r = p, g = q, b = v; break;
+                    case 4: r = t, g = p, b = v; break;
+                    case 5: r = v, g = p, b = q; break;
+                }
+                return Math.floor(r * 255).toString(16).padStart(2, '0') + Math.floor(g * 255).toString(16).padStart(2, '0') + Math.floor(b * 255).toString(16).padStart(2, '0');
+            }
         </script>
     </body>
 </html>
