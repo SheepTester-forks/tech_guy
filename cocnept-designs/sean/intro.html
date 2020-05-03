@@ -54,6 +54,9 @@
         object-position: bottom;
         height: 300px;
       }
+      .speak-dialogue {
+        margin: 10px 0;
+      }
       .speak-to-speak {
         visibility: hidden;
       }
@@ -72,6 +75,17 @@
         background-color: rgba(255, 255, 255, 0.3);
         padding: 5px 15px;
       }
+      .speak-canvas {
+        border: 3px solid #a1a1a1;
+        background-color: white;
+        image-rendering: pixelated;
+        cursor: crosshair;
+        touch-action: none;
+        margin: 10px 0;
+      }
+      .speak-remove {
+        display: none;
+      }
 
       :disabled {
         opacity: 0.5;
@@ -89,6 +103,13 @@ const introDialogue = [
     }
   },
   'It’s your first day working as a tech guy for Cannon H.S., so you’ll probably want to write your name on this sticker.',
+  {
+    special: {
+      type: 'canvas',
+      saveTo: 'name'
+    }
+  },
+  'Oh, erm... You know, do you mind if I call you tech guy?',
   'Great! Let’s go suspend some students!'
 ]
 
@@ -100,10 +121,11 @@ function * processDialogue (dialogue, defaultOption) {
     if (typeof item === 'string') {
       item = { say: item }
     }
-    const { say, options } = item
+    const { say = '', options, special = null } = item
     const chosen = yield {
       say,
-      options: options ? Object.keys(options) : [defaultOption]
+      options: options ? Object.keys(options) : [defaultOption],
+      special
     }
     if (options && options[chosen]) {
       yield* processDialogue(options[chosen], defaultOption)
@@ -114,6 +136,10 @@ function * processDialogue (dialogue, defaultOption) {
 function pause (ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
+
+const PEN_COLOUR = '#212121'
+const PEN_SIZE = 5
+const PEN_DEGRADATION_RATE = 0.005
 
 class SpeakIntroduction {
   constructor () {
@@ -132,9 +158,26 @@ class SpeakIntroduction {
     toSpeak.className = 'speak-to-speak'
 
     const dialogue = document.createElement('p')
-    dialogue.classname = 'speak-dialogue'
+    dialogue.className = 'speak-dialogue'
     dialogue.appendChild(spoken)
     dialogue.appendChild(toSpeak)
+
+    const canvas = document.createElement('canvas')
+    canvas.className = 'speak-canvas speak-remove'
+    canvas.width = 200
+    canvas.height = 100
+    canvas.addEventListener('pointerdown', this._pointerStart.bind(this))
+    canvas.addEventListener('pointermove', this._pointerMove.bind(this))
+    canvas.addEventListener('pointerup', this._pointerEnd.bind(this))
+    canvas.addEventListener('pointercancel', this._pointerEnd.bind(this))
+    const context = canvas.getContext('2d')
+    context.fillStyle = PEN_COLOUR
+    context.strokeStyle = PEN_COLOUR
+    context.lineWidth = PEN_SIZE
+    context.lineJoin = 'round'
+    context.lineCap = 'round'
+    this.ink = 0
+    this.markings = []
 
     const options = document.createElement('div')
     options.className = 'speak-options'
@@ -143,9 +186,18 @@ class SpeakIntroduction {
     wrapper.className = 'speak-wrapper'
     wrapper.appendChild(thumbnail)
     wrapper.appendChild(dialogue)
+    wrapper.appendChild(canvas)
     wrapper.appendChild(options)
 
-    this.elems = { wrapper, spoken, toSpeak, options }
+    this.elems = {
+      spoken,
+      toSpeak,
+      dialogue,
+      canvas,
+      context,
+      options,
+      wrapper
+    }
   }
 
   addTo (parent) {
@@ -156,6 +208,69 @@ class SpeakIntroduction {
   removeFromParent () {
     this.elems.wrapper.remove()
     return this
+  }
+
+  _toCanvasCoords (x, y) {
+    if (!this._canvasPointer) return
+
+    const { canvas } = this.elems
+    const { left, top, width, height } = this._canvasPointer.rect
+    return [
+      (x - left) / width * canvas.width,
+      (y - top) / height * canvas.height
+    ]
+  }
+
+  _pointerStart (e) {
+    if (!this._canvasPointer) {
+      const { canvas, context: c } = this.elems
+
+      this._canvasPointer = {
+        pointerId: e.pointerId,
+        rect: canvas.getBoundingClientRect(),
+        prevX: e.clientX,
+        prevY: e.clientY
+      }
+      canvas.setPointerCapture(e.pointerId)
+
+      if (this.ink > 0) {
+        const [x, y] = this._toCanvasCoords(e.clientX, e.clientY)
+        c.globalAlpha = this.ink
+        c.beginPath()
+        c.arc(x, y, PEN_SIZE / 2, 0, 2 * Math.PI)
+        c.fill()
+        this.ink -= 0.02
+        this.markings.push([x, y])
+      }
+    }
+  }
+
+  _pointerMove (e) {
+    if (this._canvasPointer && this._canvasPointer.pointerId === e.pointerId) {
+      const { canvas, context: c } = this.elems
+
+      if (this.ink > 0) {
+        const { prevX, prevY } = this._canvasPointer
+        const [x1, y1] = this._toCanvasCoords(prevX, prevY)
+        const [x2, y2] = this._toCanvasCoords(e.clientX, e.clientY)
+        c.globalAlpha = this.ink
+        c.beginPath()
+        c.moveTo(x1, y1)
+        c.lineTo(x2, y2)
+        c.stroke()
+        this.ink -= Math.hypot(x1 - x2, y1 - y2) * PEN_DEGRADATION_RATE
+        this.markings.push([x1, y1, x2, y2])
+      }
+
+      this._canvasPointer.prevX = e.clientX
+      this._canvasPointer.prevY = e.clientY
+    }
+  }
+
+  _pointerEnd (e) {
+    if (this._canvasPointer && this._canvasPointer.pointerId === e.pointerId) {
+      this._canvasPointer = null
+    }
   }
 
   _clearOptions () {
@@ -184,34 +299,61 @@ class SpeakIntroduction {
   }
 
   async start (dialogueData) {
-    const optionsWrapper = this.elems.options
+    const {
+      dialogue: dialogueText,
+      canvas,
+      context,
+      options: optionsWrapper
+    } = this.elems
 
     const dialogue = processDialogue(dialogueData, 'OK')
+    const data = {}
     let done = false
     let value
     let lastChoice
 
     while (({ done, value } = dialogue.next(lastChoice)) && !done) {
-      const { say, options } = value
+      const { say, options, special } = value
 
-      optionsWrapper.classList.add('speak-hide-options')
       this._clearOptions()
       const selectedOption = Promise.race(options.map(this._addOption.bind(this)))
 
-      await this._animateSpeak(say, options)
+      switch (special && special.type) {
+        case 'canvas': {
+          const { saveTo } = special
 
-      optionsWrapper.classList.remove('speak-hide-options')
-      lastChoice = await selectedOption
+          this.ink = 1
+          this.markings = []
+          context.clearRect(0, 0, canvas.width, canvas.height)
+
+          dialogueText.classList.add('speak-remove')
+          canvas.classList.remove('speak-remove')
+
+          lastChoice = await selectedOption
+
+          data[saveTo] = this.markings
+          dialogueText.classList.remove('speak-remove')
+          canvas.classList.add('speak-remove')
+          break
+        }
+        default: {
+          optionsWrapper.classList.add('speak-hide-options')
+          await this._animateSpeak(say, options)
+          optionsWrapper.classList.remove('speak-hide-options')
+          lastChoice = await selectedOption
+        }
+      }
+
     }
 
-    return this
+    return data
   }
 }
 
-const introDone = new SpeakIntroduction()
-  .addTo(document.body)
+const intro = new SpeakIntroduction()
+intro.addTo(document.body)
   .start(introDialogue)
-  .then(intro => {
+  .then(data => {
     intro.removeFromParent()
   })
 
