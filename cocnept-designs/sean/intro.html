@@ -45,15 +45,8 @@
     </style>
   </head>
   <body>
-    <div class="speak-wrapper">
-      <!-- Maybe we can display her name here? -->
-      <img src="./munkler.png" alt="Lady Munkler" class="speak-thumbnail">
-      <p class="speak-dialogue">
-        <span class="speak-spoken">When I was young I hung out with some jerks that I called friends. They bullied me a lot and were just assholes. I made this server out of rage when I got banned from their server, and in the long run this server was more successful than theirs. The "No Nickname" rule was put in place because the jerks over on that server would bully me and c</span><span class="speak-to-speak">hange my name to racist and offensive names. But I had no other friends back then... So out of a fit of rage I created this server and swore to treat everyone on it the same, fair way. And in the end I succeeded more in every possible way than those bullies.</span>
-      </p>
-    </div>
     <script>
-const dialogue = [
+const introDialogue = [
   {
     say: 'It’s a beautiful day in Thick Stick City. Are you ready for your new job at Harry Cannon High School?',
     options: {
@@ -84,6 +77,10 @@ function * processDialogue (dialogue, defaultOption) {
   }
 }
 
+function pause (ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 class SpeakIntroduction {
   constructor () {
     this._initElems()
@@ -106,23 +103,50 @@ class SpeakIntroduction {
     dialogue.appendChild(toSpeak)
 
     const wrapper = document.createElement('div')
+    wrapper.className = 'speak-wrapper'
     wrapper.appendChild(thumbnail)
     wrapper.appendChild(dialogue)
 
-    this.elem = { wrapper, spoken, toSpeak }
+    this.elems = { wrapper, spoken, toSpeak }
   }
 
   addTo (parent) {
-    parent.appendChild(this.elem.wrapper)
+    parent.appendChild(this.elems.wrapper)
+
+    return this
   }
 
-  start () {
-    let onDone
-    const done = new Promise(resolve => (onDone = resolve))
-    //
-    return done
+  async _animateSpeak (text, delay = 20) {
+    const { spoken, toSpeak } = this.elems
+    for (let i = 0; i < text.length; i++) {
+      spoken.textContent = text.slice(0, i)
+      toSpeak.textContent = text.slice(i)
+      await pause(delay)
+    }
+    spoken.textContent = text
+    toSpeak.textContent = ''
+  }
+
+  async start () {
+    const dialogue = processDialogue(introDialogue)
+    let done = false
+    let value
+    let lastChoice
+
+    while (({ done, value } = dialogue.next(lastChoice)) && !done) {
+      const { say, options } = value
+      await this._animateSpeak(say)
+      await pause(1000)
+    }
+
+    return this
   }
 }
+
+const intro = new SpeakIntroduction()
+  .addTo(document.body)
+  .start()
+  .then(console.log)
 
 /*
 const audio = new Audio('./speak.wav')
