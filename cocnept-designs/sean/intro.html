@@ -24,6 +24,21 @@
         color: white;
       }
 
+      button,
+      input,
+      select,
+      textarea {
+        -webkit-appearance: none;
+        border: none;
+        padding: 0;
+        background: none;
+        color: inherit;
+        font: inherit;
+      }
+      button:not(:disabled):hover {
+        cursor: pointer;
+      }
+
       .speak-wrapper {
         padding: 20px;
 
@@ -32,7 +47,7 @@
         width: 400px;
       }
       .speak-thumbnail {
-        border: 1px solid #a1a1a1;
+        border: 3px solid #a1a1a1;
         background-color: #ebdeae;
         image-rendering: pixelated;
         object-fit: contain;
@@ -41,6 +56,25 @@
       }
       .speak-to-speak {
         visibility: hidden;
+      }
+      .speak-options {
+        display: flex;
+        justify-content: space-around;
+        justify-content: space-evenly;
+        opacity: 1;
+        transition: opacity .2s;
+      }
+      .speak-hide-options {
+        visibility: hidden;
+        opacity: 0;
+      }
+      .speak-option {
+        background-color: rgba(255, 255, 255, 0.3);
+        padding: 5px 15px;
+      }
+
+      :disabled {
+        opacity: 0.5;
       }
     </style>
   </head>
@@ -102,18 +136,40 @@ class SpeakIntroduction {
     dialogue.appendChild(spoken)
     dialogue.appendChild(toSpeak)
 
+    const options = document.createElement('div')
+    options.className = 'speak-options'
+
     const wrapper = document.createElement('div')
     wrapper.className = 'speak-wrapper'
     wrapper.appendChild(thumbnail)
     wrapper.appendChild(dialogue)
+    wrapper.appendChild(options)
 
-    this.elems = { wrapper, spoken, toSpeak }
+    this.elems = { wrapper, spoken, toSpeak, options }
   }
 
   addTo (parent) {
     parent.appendChild(this.elems.wrapper)
-
     return this
+  }
+
+  removeFromParent () {
+    this.elems.wrapper.remove()
+    return this
+  }
+
+  _clearOptions () {
+    const options = this.elems.options
+    while (options.firstChild) options.removeChild(options.firstChild)
+  }
+
+  _addOption (label) {
+    const button = document.createElement('button')
+    button.className = 'speak-option'
+    button.textContent = label
+    this.elems.options.appendChild(button)
+
+    return new Promise(resolve => button.addEventListener('click', e => resolve(label)))
   }
 
   async _animateSpeak (text, delay = 20) {
@@ -127,26 +183,37 @@ class SpeakIntroduction {
     toSpeak.textContent = ''
   }
 
-  async start () {
-    const dialogue = processDialogue(introDialogue)
+  async start (dialogueData) {
+    const optionsWrapper = this.elems.options
+
+    const dialogue = processDialogue(dialogueData, 'OK')
     let done = false
     let value
     let lastChoice
 
     while (({ done, value } = dialogue.next(lastChoice)) && !done) {
       const { say, options } = value
-      await this._animateSpeak(say)
-      await pause(1000)
+
+      optionsWrapper.classList.add('speak-hide-options')
+      this._clearOptions()
+      const selectedOption = Promise.race(options.map(this._addOption.bind(this)))
+
+      await this._animateSpeak(say, options)
+
+      optionsWrapper.classList.remove('speak-hide-options')
+      lastChoice = await selectedOption
     }
 
     return this
   }
 }
 
-const intro = new SpeakIntroduction()
+const introDone = new SpeakIntroduction()
   .addTo(document.body)
-  .start()
-  .then(console.log)
+  .start(introDialogue)
+  .then(intro => {
+    intro.removeFromParent()
+  })
 
 /*
 const audio = new Audio('./speak.wav')
