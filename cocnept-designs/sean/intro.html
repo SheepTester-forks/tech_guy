@@ -75,6 +75,9 @@
         background-color: rgba(255, 255, 255, 0.3);
         padding: 5px 15px;
       }
+      .speak-canvas-wrapper {
+        display: flex;
+      }
       .speak-canvas {
         border: 3px solid #a1a1a1;
         background-color: white;
@@ -82,6 +85,7 @@
         cursor: crosshair;
         touch-action: none;
         margin: 10px 0;
+        width: 100%;
       }
       .speak-remove {
         display: none;
@@ -94,6 +98,16 @@
   </head>
   <body>
     <script>
+const params = new URL(window.location).searchParams
+
+/**
+ * Search parameters:
+ *   pen-size (default 2)
+ *   pen-degradation-rate (default 0.003)
+ *   width (default 100)
+ *   height (default 50)
+ */
+
 function * processDialogue (dialogue, defaultOption) {
   if (!Array.isArray(dialogue)) {
     dialogue = [dialogue]
@@ -119,8 +133,11 @@ function pause (ms) {
 }
 
 const PEN_COLOUR = '#212121'
-const PEN_SIZE = 5
-const PEN_DEGRADATION_RATE = 0.005
+const PEN_SIZE = +params.get('pen-size') || 2
+const PEN_DEGRADATION_RATE = +params.get('pen-degradation-rate') || 0.003
+
+const WIDTH = +params.get('width') || 100
+const HEIGHT = +params.get('height') || 50
 
 function bindMethods (instance, methods) {
   for (const methodName of methods) {
@@ -158,8 +175,8 @@ class SpeakIntroduction {
 
     const canvas = document.createElement('canvas')
     canvas.className = 'speak-canvas speak-remove'
-    canvas.width = 200
-    canvas.height = 100
+    canvas.width = WIDTH
+    canvas.height = HEIGHT
     canvas.addEventListener('pointerdown', this._pointerStart)
     canvas.addEventListener('pointermove', this._pointerMove)
     canvas.addEventListener('pointerup', this._pointerEnd)
@@ -173,6 +190,10 @@ class SpeakIntroduction {
     this.ink = 0
     this.markings = []
 
+    const canvasWrapper = document.createElement('div')
+    canvasWrapper.className = 'speak-canvas-wrapper'
+    canvasWrapper.appendChild(canvas)
+
     const options = document.createElement('div')
     options.className = 'speak-options'
 
@@ -180,7 +201,7 @@ class SpeakIntroduction {
     wrapper.className = 'speak-wrapper'
     wrapper.appendChild(thumbnail)
     wrapper.appendChild(dialogue)
-    wrapper.appendChild(canvas)
+    wrapper.appendChild(canvasWrapper)
     wrapper.appendChild(options)
 
     this.elems = {
