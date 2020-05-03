@@ -7,7 +7,7 @@
     
     let out = document.createElement('canvas');
     out.width = 12;
-    out.height = 24;
+    out.height = 27;
     let ctx = out.getContext('2d');
 
     let loaded = 0;
@@ -48,44 +48,37 @@
     function addLoad(onLoad) {
         loaded++;
         if (loaded === paths.length) {
-            console.log(images);
             onLoad();
         }
     }
 
-    function hexToRgb(hex) {
-        hex = hex[0] === '#' ? hex.substr(1) : hex;
-        hex = hex.length === 3 ? hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2] : hex;
-
-        var bigint = parseInt(hex, 16);
-        var r = (bigint >> 16) & 255;
-        var g = (bigint >> 8) & 255;
-        var b = bigint & 255;
-
-        return [r, g, b];
-    }
-
-    function drawTinted(image, shadow) {
-        ctx.drawImage(image, 0, 0);
-
-        if (shadow) {
-            ctx.drawImage(shadow, 0, 0);
+    function drawTinted(image, y, facing, cuts) {
+        cuts.push(23);
+        for (let i = 0; i < cuts.length; i++) {
+            ctx.drawImage(image, 0, cuts[i - 1] || 0, 12, cuts[i] - (cuts[i - 1] || 0) + 1, 0, (cuts[i - 1] || 0) + y + i, facing * 12, cuts[i] - (cuts[i - 1] || 0) + 1);
         }
     }
     
     function getSprite(sprite) {
-        ctx.clearRect(0, 0, 12, 24);
+        ctx.save();
+        ctx.clearRect(0, 0, 12, 27);
+        ctx.scale(sprite.facing, 1);
         
-        drawTinted(images.skin);
-        drawTinted(images['pants' + sprite.pants.type]);
-        drawTinted(images['shoes' + sprite.shoes.type]);
-        drawTinted(images['shirt' + sprite.shirt.type], images.shadow);
-        drawTinted(images['hair' + sprite.hair.type], images['hair' + sprite.hair.type + 's']);
+        let cuts = [[], [15], [15, 22], [15, 15, 22]][sprite.height];
+        
+        drawTinted(images.skin, 3 - sprite.height, sprite.facing, cuts);
+        drawTinted(images['pants' + sprite.pants.type], 3 - sprite.height, sprite.facing, cuts);
+        drawTinted(images['shoes' + sprite.shoes.type], 3, sprite.facing, []);
+        drawTinted(images['shirt' + sprite.shirt.type], 3 - sprite.height, sprite.facing, cuts);
+        drawTinted(images.shadow, 3 - sprite.height, sprite.facing, cuts);
+        drawTinted(images['hair' + sprite.hair.type], 3 - sprite.height, sprite.facing, cuts);
+        drawTinted(images['hair' + sprite.hair.type + 's'], 3 - sprite.height, sprite.facing, cuts);
+        
         if (sprite.hat.type) {
-            drawTinted(images['hat']);
+            drawTinted(images['hat'], 3 - sprite.height, sprite.facing, []);
         }
         
-        let gid = ctx.getImageData(0, 0, 12, 24);
+        let gid = ctx.getImageData(0, 0, 12, 27);
         
         for (let i = 0; i < gid.data.length; i += 4) {
             let id = [];
@@ -120,14 +113,16 @@
                 }
             }
             
-            let rgb = hexToRgb(sprite[id[0]].tint[id[2] ? id[2] : 0]);
+            let rgb = sprite[id[0]].tint[id[2] ? id[2] : 0];
             let base = gid.data[i + id[1]];
             gid.data[i] = Math.max(0, rgb[0] - (255 - base));
             gid.data[i + 1] = Math.max(0, rgb[1] - (255 - base));
             gid.data[i + 2] = Math.max(0, rgb[2] - (255 - base));
             
-            ctx.putImageData(gid, 0, 0);
         }
+        
+        ctx.putImageData(gid, 0, 0);
+        ctx.restore();
         
         return out;
     }
