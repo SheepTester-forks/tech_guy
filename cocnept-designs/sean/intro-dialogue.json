@@ -1,0 +1,18 @@
+[
+  {
+    "say": "It’s a beautiful day in Thick Stick City. Are you ready for your new job at Harry Cannon High School?",
+    "options": {
+      "Yes": "Well that’s great! You’d better get moving along then. What an amazing opportunity this is.",
+      "No": "Well that’s too bad. But the bills don’t pay themselves, especially with the rent so high here! Why did you get this job anyway?"
+    }
+  },
+  "It’s your first day working as a tech guy for Cannon H.S., so you’ll probably want to write your name on this sticker.",
+  {
+    "special": {
+      "type": "canvas",
+      "saveTo": "name"
+    }
+  },
+  "Oh, erm... You know, do you mind if I call you tech guy?",
+  "Great! Let’s go suspend some students!"
+]
