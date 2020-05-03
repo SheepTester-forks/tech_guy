@@ -122,8 +122,21 @@ const PEN_COLOUR = '#212121'
 const PEN_SIZE = 5
 const PEN_DEGRADATION_RATE = 0.005
 
+function bindMethods (instance, methods) {
+  for (const methodName of methods) {
+    instance[methodName] = instance[methodName].bind(instance)
+  }
+}
+
 class SpeakIntroduction {
   constructor () {
+    bindMethods(this, [
+      '_pointerStart',
+      '_pointerMove',
+      '_pointerEnd',
+      '_onKeyDown'
+    ])
+
     this._initElems()
   }
 
@@ -147,10 +160,10 @@ class SpeakIntroduction {
     canvas.className = 'speak-canvas speak-remove'
     canvas.width = 200
     canvas.height = 100
-    canvas.addEventListener('pointerdown', this._pointerStart.bind(this))
-    canvas.addEventListener('pointermove', this._pointerMove.bind(this))
-    canvas.addEventListener('pointerup', this._pointerEnd.bind(this))
-    canvas.addEventListener('pointercancel', this._pointerEnd.bind(this))
+    canvas.addEventListener('pointerdown', this._pointerStart)
+    canvas.addEventListener('pointermove', this._pointerMove)
+    canvas.addEventListener('pointerup', this._pointerEnd)
+    canvas.addEventListener('pointercancel', this._pointerEnd)
     const context = canvas.getContext('2d')
     context.fillStyle = PEN_COLOUR
     context.strokeStyle = PEN_COLOUR
@@ -271,12 +284,20 @@ class SpeakIntroduction {
   async _animateSpeak (text, delay = 20) {
     const { spoken, toSpeak } = this.elems
     for (let i = 0; i < text.length; i++) {
+      if (this.skipDialog) break
+
       spoken.textContent = text.slice(0, i)
       toSpeak.textContent = text.slice(i)
       await pause(delay)
     }
     spoken.textContent = text
     toSpeak.textContent = ''
+  }
+
+  _onKeyDown (e) {
+    if (e.key === 'Enter') {
+      this.skipDialog = true
+    }
   }
 
   async start (dialogueData) {
@@ -292,6 +313,8 @@ class SpeakIntroduction {
     let done = false
     let value
     let lastChoice
+
+    document.addEventListener('keydown', this._onKeyDown)
 
     while (({ done, value } = dialogue.next(lastChoice)) && !done) {
       const { say, options, special } = value
@@ -310,6 +333,7 @@ class SpeakIntroduction {
           dialogueText.classList.add('speak-remove')
           canvas.classList.remove('speak-remove')
 
+          optionsWrapper.children[0].focus()
           lastChoice = await selectedOption
 
           data[saveTo] = this.markings
@@ -319,13 +343,21 @@ class SpeakIntroduction {
         }
         default: {
           optionsWrapper.classList.add('speak-hide-options')
+
+          this.skipDialog = false
           await this._animateSpeak(say, options)
+
           optionsWrapper.classList.remove('speak-hide-options')
+
+          optionsWrapper.children[0].focus()
           lastChoice = await selectedOption
+
         }
       }
 
     }
+
+    document.removeEventListener('keydown', this._onKeyDown)
 
     return data
   }
