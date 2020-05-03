@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Intro speak thing</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        font-family: 'Inconsolata', monospace;
+        background-color: black;
+        color: white;
+      }
+
+      .speak-wrapper {
+        padding: 20px;
+
+        display: flex;
+        flex-direction: column;
+        width: 400px;
+      }
+      .speak-thumbnail {
+        border: 1px solid #a1a1a1;
+        background-color: #ebdeae;
+        image-rendering: pixelated;
+        object-fit: contain;
+        object-position: bottom;
+        height: 300px;
+      }
+      .speak-to-speak {
+        visibility: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="speak-wrapper">
+      <!-- Maybe we can display her name here? -->
+      <img src="./munkler.png" alt="Lady Munkler" class="speak-thumbnail">
+      <p class="speak-dialogue">
+        <span class="speak-spoken">When I was young I hung out with some jerks that I called friends. They bullied me a lot and were just assholes. I made this server out of rage when I got banned from their server, and in the long run this server was more successful than theirs. The "No Nickname" rule was put in place because the jerks over on that server would bully me and c</span><span class="speak-to-speak">hange my name to racist and offensive names. But I had no other friends back then... So out of a fit of rage I created this server and swore to treat everyone on it the same, fair way. And in the end I succeeded more in every possible way than those bullies.</span>
+      </p>
+    </div>
+    <script>
+const dialogue = [
+  {
+    say: 'It’s a beautiful day in Thick Stick City. Are you ready for your new job at Harry Cannon High School?',
+    options: {
+      'Yes': 'Well that’s great! You’d better get moving along then. What an amazing opportunity this is.',
+      'No': 'Well that’s too bad. But the bills don’t pay themselves, especially with the rent so high here! Why did you get this job anyway?'
+    }
+  },
+  'It’s your first day working as a tech guy for Cannon H.S., so you’ll probably want to write your name on this sticker.',
+  'Great! Let’s go suspend some students!'
+]
+
+function * processDialogue (dialogue, defaultOption) {
+  if (!Array.isArray(dialogue)) {
+    dialogue = [dialogue]
+  }
+  for (let item of dialogue) {
+    if (typeof item === 'string') {
+      item = { say: item }
+    }
+    const { say, options } = item
+    const chosen = yield {
+      say,
+      options: options ? Object.keys(options) : [defaultOption]
+    }
+    if (options && options[chosen]) {
+      yield* processDialogue(options[chosen], defaultOption)
+    }
+  }
+}
+
+class SpeakIntroduction {
+  constructor () {
+    this._initElems()
+  }
+
+  _initElems () {
+    const thumbnail = document.createElement('img')
+    thumbnail.src = './munkler.png'
+    thumbnail.className = 'speak-thumbnail'
+
+    const spoken = document.createElement('span')
+    spoken.className = 'speak-spoken'
+
+    const toSpeak = document.createElement('span')
+    toSpeak.className = 'speak-to-speak'
+
+    const dialogue = document.createElement('p')
+    dialogue.classname = 'speak-dialogue'
+    dialogue.appendChild(spoken)
+    dialogue.appendChild(toSpeak)
+
+    const wrapper = document.createElement('div')
+    wrapper.appendChild(thumbnail)
+    wrapper.appendChild(dialogue)
+
+    this.elem = { wrapper, spoken, toSpeak }
+  }
+
+  addTo (parent) {
+    parent.appendChild(this.elem.wrapper)
+  }
+
+  start () {
+    let onDone
+    const done = new Promise(resolve => (onDone = resolve))
+    //
+    return done
+  }
+}
+
+/*
+const audio = new Audio('./speak.wav')
+const audioReady = new Promise(resolve => audio.addEventListener('canplaythrough', resolve))
+function speakNoise () {
+  // const audio = new Audio('./speak.wav')
+  audio.currentTime = 0
+  audio.play()
+}
+audioReady.then(() => {
+  setTimeout(speakNoise, 100)
+})
+*/
+    </script>
+  </body>
+</html>
