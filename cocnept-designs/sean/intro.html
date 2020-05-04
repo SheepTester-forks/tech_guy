@@ -215,8 +215,11 @@ class SpeakIntroduction {
     }
   }
 
-  setThumbnail (url) {
+  setThumbnail (url, colour) {
     this.elems.thumbnail.src = url
+    if (colour !== undefined) {
+      this.elems.thumbnail.style.backgroundColor = colour
+    }
     return this
   }
 
@@ -398,16 +401,19 @@ Promise.all([
   .then(async ([introData, principalData]) => {
     const intro = new SpeakIntroduction()
       .addTo(document.body)
-      .setThumbnail('./munkler.png')
+      .setThumbnail('./munkler.png', '#ebdeae')
 
     const data = await intro.start(introData)
     console.log(data)
 
-    intro.setThumbnail('./munkler.png')
+    intro.setThumbnail('./former-principal.png', '#a8afae')
 
     await intro.start(principalData)
 
     intro.removeFromParent()
+
+    // Simulate showing the Computer screen
+    window.location.href = '../v2/index.html?principal-demo=true'
   })
 
 /*
