@@ -30,6 +30,11 @@ class PrincipalDemo {
     const ok = document.createElement('button')
     ok.className = 'demo-ok'
     ok.textContent = 'OK'
+    ok.addEventListener('click', e => {
+      if (this._nextClickResolve) {
+        this._nextClickResolve()
+      }
+    })
 
     const dialogue = document.createElement('p')
     dialogue.className = 'demo-dialogue'
@@ -84,9 +89,23 @@ class PrincipalDemo {
   }
 
   _onKeyDown (e) {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !this.skipDialog) {
       this.skipDialog = true
+      e.preventDefault()
     }
+  }
+
+  _nextClick () {
+    if (!this._nextClickPromise) {
+      this._nextClickPromise = new Promise(resolve => {
+        this._nextClickResolve = resolve
+      })
+        .then(() => {
+          this._nextClickPromise = null
+          this._nextClickResolve = null
+        })
+    }
+    return this._nextClickPromise
   }
 
   async start (dialogueData) {
@@ -105,8 +124,7 @@ class PrincipalDemo {
 
       ok.classList.remove('demo-hide')
       ok.focus()
-      // TODO: await ok click
-      await pause(1000)
+      await this._nextClick()
     }
 
     document.removeEventListener('keydown', this._onKeyDown)
