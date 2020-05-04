@@ -14,6 +14,7 @@ class PrincipalDemo {
       '_onKeyDown'
     ])
 
+    this.skipDialog = true
     this._initElems()
   }
 
@@ -117,14 +118,24 @@ class PrincipalDemo {
     document.addEventListener('keydown', this._onKeyDown)
 
     for (const { say, select } of dialogueData) {
+      const highlightTarget = select && document.querySelector(select)
+      if (highlightTarget) {
+        highlightTarget.classList.add('principal-highlight')
+      }
+
       ok.classList.add('demo-hide')
 
       this.skipDialog = false
       await this._animateSpeak(say + '\n')
+      this.skipDialog = true
 
       ok.classList.remove('demo-hide')
       ok.focus()
       await this._nextClick()
+
+      if (highlightTarget) {
+        highlightTarget.classList.remove('principal-highlight')
+      }
     }
 
     document.removeEventListener('keydown', this._onKeyDown)
