@@ -134,7 +134,7 @@ for (let i = 0; i < iter; i++) {
     }
 }
 
-for (let i = 0; i < 15; i++) {
+for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 15; j++) {
         let value = thing[i][j] * iter / 800;
         let color = 'rgb(' + ((value - 127) * 2) + ',' + 0 + ',' + ((127 - Math.abs(127 - value)) * 2) + ')';

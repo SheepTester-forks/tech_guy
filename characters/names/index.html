@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <script src="ntv2.js"></script>
+        <script>
+            let given_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/given-names.json');
+            let sur_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/surnames.json');
+            let boys = NAMES.parseData(given_d, 'boys');
+            let girls = NAMES.parseData(given_d, 'girls');
+            let sur = NAMES.parseData(sur_d, 'surnames');
+
+            let gened = [];
+
+            for (let i = 0; i < 500; i++) {
+                gened.push('<span style="color:#09c">' + NAMES.generate(boys, 8, 5) + ' ' + NAMES.generate(sur, 8, 7) + '</span>');
+            }
+            for (let i = 0; i < 500; i++) {
+                gened.push('<span style="color:#c09">' + NAMES.generate(girls, 8, 5) + ' ' + NAMES.generate(sur, 8, 7) + '</span>');
+            }
+
+            gened.sort((x, y) => x.substr(24).localeCompare(y.substr(24)));
+            let display = '';
+
+            for (let i = 0; i < 1000; i++) {
+                display += gened[i] + '<br>';
+            }
+
+            document.body.innerHTML = display;
+        </script>
+    </body>
+</html>
