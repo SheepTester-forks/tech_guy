@@ -11,9 +11,10 @@
       fetch('../sean/principal-demo.json')
         .then(r => r.json())
         .then(async json => {
-          const demo = new PrincipalDemo()
+          const demo = await new PrincipalDemo()
             .addTo(document.body)
-          await demo.start(json)
+            .setThumbnail('../sean/former-principal.png', '#a8afae')
+            .start(json)
           demo.removeFromParent()
         })
     })

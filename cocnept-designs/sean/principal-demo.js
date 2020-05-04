@@ -27,24 +27,20 @@ class PrincipalDemo {
     const toSpeak = document.createElement('span')
     toSpeak.className = 'demo-to-speak'
 
-    const dialogue = document.createElement('p')
-    dialogue.className = 'demo-dialogue'
-    dialogue.appendChild(spoken)
-    dialogue.appendChild(toSpeak)
-
     const ok = document.createElement('button')
     ok.className = 'demo-ok'
     ok.textContent = 'OK'
 
-    const options = document.createElement('div')
-    options.className = 'demo-ok-wrapper'
-    options.appendChild(ok)
+    const dialogue = document.createElement('p')
+    dialogue.className = 'demo-dialogue'
+    dialogue.appendChild(spoken)
+    dialogue.appendChild(toSpeak)
+    dialogue.appendChild(ok)
 
     const wrapper = document.createElement('div')
     wrapper.className = 'demo-wrapper'
     wrapper.appendChild(thumbnail)
     wrapper.appendChild(dialogue)
-    wrapper.appendChild(options)
 
     this.elems = {
       thumbnail,
@@ -102,12 +98,12 @@ class PrincipalDemo {
     document.addEventListener('keydown', this._onKeyDown)
 
     for (const { say, select } of dialogueData) {
-      ok.classList.add('demo-hide-ok')
+      ok.classList.add('demo-hide')
 
       this.skipDialog = false
-      await this._animateSpeak(say)
+      await this._animateSpeak(say + '\n')
 
-      ok.classList.remove('demo-hide-ok')
+      ok.classList.remove('demo-hide')
       ok.focus()
       // TODO: await ok click
       await pause(1000)
@@ -115,6 +111,6 @@ class PrincipalDemo {
 
     document.removeEventListener('keydown', this._onKeyDown)
 
-    return data
+    return this
   }
 }
