@@ -1,0 +1,39 @@
+:root {
+  --principal-highlight: #fdd402;
+}
+.principal-highlight {
+  outline: 5px solid var(--principal-highlight);
+}
+
+.demo-wrapper {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  max-width: 500px;
+  padding: 20px;
+}
+.demo-thumbnail {
+  border: 5px solid var(--principal-highlight);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  image-rendering: pixelated;
+  object-fit: cover;
+  margin-right: 10px;
+}
+.demo-dialogue {
+  flex: auto;
+}
+.demo-to-speak {
+  visibility: hidden;
+}
+.demo-ok {
+  -webkit-appearance: none;
+  border: none;
+  background: none;
+  background-color: #222;
+  cursor: pointer;
+}
+.demo-hide {
+  visibility: hidden;
+}
