@@ -1,3 +1,6 @@
+import * as NAMES from '../characters/names/ntv2.js';
+import { generateSchool } from './school.js';
+
 const CLASSES = [
     {
         'name': 'Advanced World History', 'short': ['history'],
@@ -133,36 +136,36 @@ let studentList = students['Students'];
 studentList = studentList.sort((x, y) => x.grade - y.grade);
 
 for (let j = 0; j < studentList.length; j++) {
-    
+
     let student = studentList[j];
     let classes = [];
-    
+
     for (let i = 0; i < reqs.length; i++) {
         let req = reqs[i];
         let classList = getClass(student.grade, req);
         let chosen = classList[Math.floor(Math.random() * classList.length)];
-        
+
         classes.push({'name': chosen.name, 'grades': chosen.grades, 'rooms': chosen.rooms});
     }
-    
+
     // at this point, the classes the student "wants" to take has been generated
     // no actual classes have been generated
-    
+
     classes.sort(() => Math.random() - 0.5); // epic randomizer
-    
+
     let takenPeriods = [];
-    
+
     for (let i = 0; i < classes.length; i++) {
         let _class = classes[i];
         let existing = schedule.filter(
             x => x.name === _class.name && !takenPeriods.includes(x.period)
         );
-        
+
         if (existing.length === 0) {
             console.log('big owie');
             continue;
         }
-        
+
         existing.sort(() => Math.random() - 0.5);
         existing.sort((x, y) => x.students.length - y.students.length);
         existing[0].students.push(student.index);

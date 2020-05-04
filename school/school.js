@@ -1,9 +1,11 @@
+import * as NAMES from '../characters/names/ntv2.js';
+
 const NAME_DATA = {};
 
 function getNames() {
     let given_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/given-names.json');
     let sur_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/surnames.json');
-    
+
     NAME_DATA.boys = NAMES.parseData(given_d, 'boys');
     NAME_DATA.girls = NAMES.parseData(given_d, 'girls');
     NAME_DATA.surnames = NAMES.parseData(sur_d, 'surnames');
@@ -19,14 +21,14 @@ function randomStudent() {
     // Gender = social / pronouns
     // Name = traditionally boy or girl names
     let name = Math.random() < 0.5 ? "F" : "M";
-    
+
     let rand = Math.random();
     let gender = rand < 0.95 ? name : rand < 0.975 ? (name === "F" ? "M" : "F") : "O";
-    
+
     let skinColor = Math.random();
     let hairType = Math.random();
     let hairColor = Math.random();
-    
+
     return {
         name: {
             first: NAMES.generate(name === "F" ? NAME_DATA.girls : NAME_DATA.boys, 8, 5),
@@ -59,7 +61,7 @@ function getSimilarity(student1, student2) {
     let similarity = 0;
 
     similarity += student1.gender === student2.gender; // segregation rules the nation \("/)/
-    
+
     similarity += 1 - Math.abs(student1.chance.drug - student2.chance.drug);
     similarity += 1 - Math.abs(student1.chance.disobey - student2.chance.disobey);
     similarity += 1 - Math.abs(student1.chance.violent - student2.chance.violent);
@@ -99,7 +101,7 @@ function randomlyRound(r) {
 function generateSchool() {
     // School contains classes, teachers, students
     getNames();
-    
+
     let Students = [...Array(1000).keys()].map(i => ({...randomStudent(), index: i}));
     let MAX_ITER = 20;
 
@@ -109,7 +111,7 @@ function generateSchool() {
 
             for (let k = 0; k < randomlyRound(friendCurve(student.friendliness) / MAX_ITER); k++) {
                 let random_student = weightedChoose(Students, 1);
-               
+
                 if (student.friends.some(s => s.index === i)) { continue; }
 
                 let degree = shouldBeFriends(student, random_student);
@@ -124,3 +126,7 @@ function generateSchool() {
 
     return {Students};
 }
+
+export {
+    generateSchool
+};
