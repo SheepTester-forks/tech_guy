@@ -1,3 +1,6 @@
-body::after {
-  content: 'hi'
+:root {
+  --principal-highlight: #fdd402;
+}
+.principal-highlight {
+  outline: 5px solid var(--principal-highlight);
 }
