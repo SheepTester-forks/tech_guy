@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Suspension</title>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="../sean/injection.js" charset="utf-8"></script>
         <style>
             @import url('https://fonts.googleapis.com/css?family=Inconsolata');
             * {
@@ -28,7 +29,7 @@
                 background-color: #000;
                 height: 100%;
             }
-            
+
             #container {
                 display: flex;
                 flex-direction: column;
@@ -36,7 +37,7 @@
                 position: fixed;
                 top: 50%; left: 50%;
             }
-            
+
             #controls {
                 align-items: center;
                 box-shadow: inset 0 0 0 2px #333;
@@ -56,25 +57,25 @@
             #controls *:last-child {
                 margin-right: 10px;
             }
-            
+
             #game {
                 display: flex;
                 flex-basis: calc(100% - 55px);
                 margin-top: 5px;
             }
-            
+
             #leftpanel {
                 flex-basis: calc(100% - 305px);
                 margin-right: 5px;
                 position: relative;
             }
-            
+
             #rightpanel {
                 display: flex;
                 flex-basis: 300px;
                 flex-direction: column;
             }
-            
+
             #camchoose {
                 flex-basis: 25%;
                 height: 200px;
@@ -98,7 +99,7 @@
                 box-shadow: inset 0 0 0 2px #333;
                 height: 100%;
             }
-            
+
             #directory {
                 box-shadow: inset 0 0 0 2px #333;
                 display: flex;
@@ -106,7 +107,7 @@
                 flex-direction: column;
                 margin-bottom: 5px;
             }
-            
+
             #listwrap {
                 flex-basis: calc(100% - 60px);
                 position: relative;
@@ -148,12 +149,12 @@
             .ssusp {
                 color: #f00;
             }
-            
+
             #schedule {
                 box-shadow: inset 0 0 0 2px #333;
                 flex-basis: 200px;
             }
-            
+
             #map {
                 display: flex;
                 flex-direction: column;
@@ -188,7 +189,7 @@
                 background-color: #0009;
                 border: 2px solid #111;
             }
-            
+
             #table {
                 display: flex;
                 flex-direction: column;
@@ -217,7 +218,7 @@
                 text-overflow: ellipsis;
                 white-space: nowrap;
             }
-            
+
             #search {
                 border: none;
                 background-color: #111;
@@ -225,7 +226,7 @@
                 padding: 5px;
                 width: calc(100% - 30px);
             }
-    
+
             .screen {
                 align-content: center;
                 background-color: #000;
@@ -243,7 +244,7 @@
                 opacity: 0;
                 visibility: hidden;
             }
-            
+
             .stretch {
                 flex-grow: 1;
             }
