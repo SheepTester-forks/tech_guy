@@ -34,7 +34,9 @@
         flex-direction: column;
         padding: 5px;
         position: fixed;
-        top: 50%; left: 50%;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
       }
 
       #controls {
@@ -42,6 +44,7 @@
         box-shadow: inset 0 0 0 2px #333;
         display: flex;
         flex-basis: 50px;
+        flex-wrap: wrap;
       }
       #controls p,
       #controls button {
@@ -50,11 +53,14 @@
         margin: 5px;
         padding: 5px 10px;
       }
-      #controls *:first-child {
+      #controls :first-child {
         margin-left: 10px;
       }
-      #controls *:last-child {
-        margin-right: 10px;
+      #controls > :last-child {
+        margin-right: 5px;
+      }
+      .control-btns {
+        display: flex;
       }
 
       #game {
@@ -64,15 +70,16 @@
       }
 
       #leftpanel {
-        flex-basis: calc(100% - 305px);
-        margin-right: 5px;
+        flex: auto;
         position: relative;
       }
 
       #rightpanel {
         display: flex;
-        flex-basis: 300px;
+        flex: none;
+        width: 300px;
         flex-direction: column;
+        margin-left: 5px;
       }
 
       #camchoose {
@@ -226,46 +233,53 @@
         width: calc(100% - 30px);
       }
 
-      .screen {
-        align-content: center;
-        background-color: #000;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 10px;
-        position: fixed;
-        text-align: center;
-        top: 0; bottom: 0; left: 0; right: 0;
-        z-index: 100;
-      }
-      #s-smallscreen {
-        transition: 0.1s;
-        opacity: 0;
-        visibility: hidden;
-      }
-
       .stretch {
         flex-grow: 1;
+      }
+
+      #toggle-panels {
+        display: none;
+      }
+      @media (max-width: 700px) {
+        #game {
+          transition: transform .2s;
+        }
+        #game .game-panel {
+          flex: none;
+          width: calc(90vw - 10px);
+        }
+        #toggle-panels {
+          display: block;
+          flex: none;
+          width: calc(10vw - 5px);
+          margin-left: 5px;
+
+          -webkit-appearance: none;
+          border: none;
+          background-color: #222;
+        }
+        .show-right-panel {
+          transform: translateX(calc(5px - 90vw))
+        }
       }
     </style>
   </head>
 
   <body>
-    <div class="screen" id="s-smallscreen">
-      <p>Bruh. Your screen is too small.<br>Responsive Design coming sometime</p>
-    </div>
     <div id="container">
       <div id="controls">
         <p>Mon 05/12/20</p>
         <p>10:00 AM</p>
         <p>$500</p>
         <div class="stretch"></div>
-        <button>Computer</button>
-        <button>Office</button>
-        <button>Menu</button>
+        <div class="control-btns">
+          <button>Computer</button>
+          <button>Office</button>
+          <button>Menu</button>
+        </div>
       </div>
       <div id="game">
-        <div id="leftpanel">
+        <div class="game-panel" id="leftpanel">
           <div id="camchoose">
             <div id="map">
               <div class="maprow">
@@ -352,7 +366,8 @@
           </div>
           <div id="camvis">just imagine this nice gray is security footage :)</div>
         </div>
-        <div id="rightpanel">
+        <button id="toggle-panels">&gt;</button>
+        <div class="game-panel" id="rightpanel">
           <div id="directory">
             <input id="search" type="text" placeholder="Search">
             <div id="listwrap">
@@ -453,22 +468,16 @@
       </div>
     </div>
     <script>
-      function rescale() {
-        if (window.innerWidth < 550 || window.innerHeight < 300) {
-          document.getElementById('s-smallscreen').style.opacity = 1;
-          document.getElementById('s-smallscreen').style.visibility = "visible";
+      const gameWrapper = document.getElementById('game')
+      const panelToggleBtn = document.getElementById('toggle-panels')
+      panelToggleBtn.addEventListener('click', e => {
+        gameWrapper.classList.toggle('show-right-panel')
+        if (gameWrapper.classList.contains('show-right-panel')) {
+          panelToggleBtn.textContent = '<'
         } else {
-          document.getElementById('s-smallscreen').style.opacity = 0;
-          document.getElementById('s-smallscreen').style.visibility = "hidden";
+          panelToggleBtn.textContent = '>'
         }
-        let container = document.getElementById('container');
-        let maxWidth = Math.min(window.innerWidth - 10, 1270);
-        let maxHeight = Math.min(window.innerHeight - 10, 710);
-        container.style.width = ((1270 + maxWidth * 710 / maxHeight) / 2) + 'px';
-        container.style.height = ((710 + maxHeight * 1270 / maxWidth) / 2) + 'px';
-        container.style.transform = 'translate(-50%, -50%) scale(' + (2 / (710 / maxHeight + 1270 / maxWidth)) + ')';
-      } rescale();
-      window.onresize = function () {rescale();}
+      })
     </script>
   </body>
 </html>
