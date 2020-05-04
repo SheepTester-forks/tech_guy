@@ -159,7 +159,6 @@ class SpeakIntroduction {
 
   _initElems () {
     const thumbnail = document.createElement('img')
-    thumbnail.src = './munkler.png'
     thumbnail.className = 'speak-thumbnail'
 
     const spoken = document.createElement('span')
@@ -205,6 +204,7 @@ class SpeakIntroduction {
     wrapper.appendChild(options)
 
     this.elems = {
+      thumbnail,
       spoken,
       toSpeak,
       dialogue,
@@ -213,6 +213,11 @@ class SpeakIntroduction {
       options,
       wrapper
     }
+  }
+
+  setThumbnail (url) {
+    this.elems.thumbnail.src = url
+    return this
   }
 
   addTo (parent) {
@@ -384,15 +389,25 @@ class SpeakIntroduction {
   }
 }
 
-const intro = new SpeakIntroduction()
-  .addTo(document.body)
+Promise.all([
+  fetch('./intro-dialogue.json')
+    .then(r => r.json()),
+  fetch('./principal-dialogue.json')
+    .then(r => r.json())
+])
+  .then(async ([introData, principalData]) => {
+    const intro = new SpeakIntroduction()
+      .addTo(document.body)
+      .setThumbnail('./munkler.png')
 
-fetch('./intro-dialogue.json')
-  .then(r => r.json())
-  .then(json => intro.start(json))
-  .then(data => {
-    intro.removeFromParent()
+    const data = await intro.start(introData)
     console.log(data)
+
+    intro.setThumbnail('./munkler.png')
+
+    await intro.start(principalData)
+
+    intro.removeFromParent()
   })
 
 /*
