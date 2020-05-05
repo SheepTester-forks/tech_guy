@@ -5,8 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>
-        <script src="ntv2.js"></script>
-        <script>
+        <script type="module">
+            import * as NAMES from './ntv2.js';
+
             let given_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/given-names.json');
             let sur_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/surnames.json');
             let boys = NAMES.parseData(given_d, 'boys');
