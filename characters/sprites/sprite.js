@@ -22,7 +22,7 @@ function loadImages(onLoad) {
     for (let i = 0; i < paths.length; i++) {
         let img = new Image();
         img.crossOrigin = "Anonymous";
-        img.src = `https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/sprites/images/student/${paths[i]}.png`;
+        img.src = `./images/student/${paths[i]}.png`;
         img.onload = function() {
             addLoad(onLoad);
         };
