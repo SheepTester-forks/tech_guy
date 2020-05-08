@@ -8,8 +8,8 @@
         <script type="module">
             import * as NAMES from './ntv2.js';
 
-            let given_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/given-names.json');
-            let sur_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/surnames.json');
+            let given_d = NAMES.getData('./json/given-names.json');
+            let sur_d = NAMES.getData('./json/surnames.json');
             let boys = NAMES.parseData(given_d, 'boys');
             let girls = NAMES.parseData(given_d, 'girls');
             let sur = NAMES.parseData(sur_d, 'surnames');

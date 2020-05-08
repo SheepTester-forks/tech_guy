@@ -3,8 +3,8 @@ import * as NAMES from '../characters/names/ntv2.js';
 const NAME_DATA = {};
 
 function getNames() {
-    let given_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/given-names.json');
-    let sur_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/surnames.json');
+    let given_d = NAMES.getData('../characters/names/json/given-names.json');
+    let sur_d = NAMES.getData('../characters/names/json/surnames.json');
 
     NAME_DATA.boys = NAMES.parseData(given_d, 'boys');
     NAME_DATA.girls = NAMES.parseData(given_d, 'girls');
