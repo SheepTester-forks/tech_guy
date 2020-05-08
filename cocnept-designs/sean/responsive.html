@@ -1,0 +1,483 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Suspension</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+      @import url('https://fonts.googleapis.com/css?family=Inconsolata');
+      * {
+        color: #fff;
+        font-family: "Inconsolata", monospace;
+        margin: 0;
+      }
+      p,
+      span,
+      button,
+      input {
+        font-size: 15px;
+        line-height: 20px;
+      }
+      h3 {
+        font-size: 20px;
+        line-height: 25px;
+      }
+      body,
+      html {
+        background-color: #000;
+        height: 100%;
+      }
+
+      #container {
+        display: flex;
+        flex-direction: column;
+        padding: 5px;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+      }
+
+      #controls {
+        align-items: center;
+        box-shadow: inset 0 0 0 2px #333;
+        display: flex;
+        flex-basis: 50px;
+        flex-wrap: wrap;
+      }
+      #controls p,
+      #controls button {
+        background-color: #222;
+        border: none;
+        margin: 5px;
+        padding: 5px 10px;
+      }
+      #controls :first-child {
+        margin-left: 10px;
+      }
+      #controls > :last-child {
+        margin-right: 5px;
+      }
+      .control-btns {
+        display: flex;
+      }
+
+      #game {
+        display: flex;
+        flex-basis: calc(100% - 55px);
+        margin-top: 5px;
+      }
+
+      #leftpanel {
+        flex: auto;
+        position: relative;
+      }
+
+      #rightpanel {
+        display: flex;
+        flex: none;
+        width: 300px;
+        flex-direction: column;
+        margin-left: 5px;
+      }
+
+      #camchoose {
+        flex-basis: 25%;
+        height: 200px;
+        position: absolute;
+        top: 5px; right: 5px;
+        width: 300px;
+      }
+      #camdetect {
+        display: flex;
+        overflow-x: auto;
+        position: absolute;
+        bottom: 10px; left: 10px; right: 10px;
+      }
+      #camdetect .student {
+        border: none;
+        margin: 0 20px 0 0;
+        padding: 0;
+      }
+      #camvis {
+        background-color: #999;
+        box-shadow: inset 0 0 0 2px #333;
+        height: 100%;
+      }
+
+      #directory {
+        box-shadow: inset 0 0 0 2px #333;
+        display: flex;
+        flex-basis: calc(100% - 205px);
+        flex-direction: column;
+        margin-bottom: 5px;
+      }
+
+      #listwrap {
+        flex-basis: calc(100% - 60px);
+        position: relative;
+      }
+      #list {
+        height: 100%;
+        overflow-y: auto;
+        position: absolute;
+        width: 100%;
+      }
+      .student {
+        align-items: center;
+        border-top: 2px solid #222;
+        display: flex;
+        margin: 10px;
+        padding-top: 10px;
+      }
+      .student:first-child {
+        margin-top: 0;
+      }
+      .student:last-child {
+        margin-bottom: 0;
+      }
+      .spic {
+        background-color: aliceblue;
+        height: 50px;
+        margin-right: 10px;
+        width: 50px;
+      }
+      .sinfo {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .sname {
+        font-size: 17.5px;
+        font-weight: bold;
+      }
+      .ssusp {
+        color: #f00;
+      }
+
+      #schedule {
+        box-shadow: inset 0 0 0 2px #333;
+        flex-basis: 200px;
+      }
+
+      #map {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      #map button {
+        background-color: #000;
+        border: 2px solid #111;
+        left: 50%;
+        padding: 5px;
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -25%);
+        z-index: 1;
+      }
+      .mbot button {
+        transform: translate(-50%, -75%) !important;
+      }
+      .maprow {
+        display: flex;
+        flex-basis: 12.5%;
+      }
+      .mbuild {
+        flex-basis: 25%;
+      }
+      .mapbox {
+        flex-basis: calc(100% / 3);
+        margin: 0 10px;
+        position: relative;
+      }
+      .mbuild .mapbox {
+        background-color: #0009;
+        border: 2px solid #111;
+      }
+
+      #table {
+        display: flex;
+        flex-direction: column;
+        height: calc(100% - 20px);
+        margin: 10px;
+      }
+      #table button {
+        background-color: #f00;
+        border: 2px solid #c00;
+        flex-grow: 1;
+        margin-top: 5px;
+      }
+      .tablerow {
+        display: flex;
+      }
+      .tablerow:first-child {
+        border-bottom: 2px solid #222;
+      }
+      .tablerow p:first-child,
+      .tablerow p:last-child {
+        flex-basis: 15px;
+      }
+      .tablerow p:nth-child(2) {
+        flex-grow: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      #search {
+        border: none;
+        background-color: #111;
+        margin: 10px;
+        padding: 5px;
+        width: calc(100% - 30px);
+      }
+
+      .stretch {
+        flex-grow: 1;
+      }
+
+      #toggle-panels {
+        display: none;
+      }
+      @media (max-width: 700px) {
+        #game {
+          transition: transform .2s;
+        }
+        #game .game-panel {
+          flex: none;
+          width: calc(90vw - 10px);
+        }
+        #toggle-panels {
+          display: block;
+          flex: none;
+          width: calc(10vw - 5px);
+          margin-left: 5px;
+
+          -webkit-appearance: none;
+          border: none;
+          background-color: #222;
+        }
+        .show-right-panel {
+          transform: translateX(calc(5px - 90vw))
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="container">
+      <div id="controls">
+        <p>Mon 05/12/20</p>
+        <p>10:00 AM</p>
+        <p>$500</p>
+        <div class="stretch"></div>
+        <div class="control-btns">
+          <button>Computer</button>
+          <button>Office</button>
+          <button>Menu</button>
+        </div>
+      </div>
+      <div id="game">
+        <div class="game-panel" id="leftpanel">
+          <div id="camchoose">
+            <div id="map">
+              <div class="maprow">
+                <div class="mapbox">
+                  <button>CamA2</button>
+                </div>
+                <div class="mapbox">
+                  <button>CamB2</button>
+                </div>
+                <div class="mapbox">
+                  <button>CamC2</button>
+                </div>
+              </div>
+              <div class="maprow mbuild">
+                <div class="mapbox"></div>
+                <div class="mapbox"></div>
+                <div class="mapbox"></div>
+              </div>
+              <div class="maprow mbot">
+                <div class="mapbox">
+                  <button>CamA1</button>
+                </div>
+                <div class="mapbox">
+                  <button>CamB1</button>
+                </div>
+                <div class="mapbox">
+                  <button>CamC1</button>
+                </div>
+              </div>
+              <div class="maprow">
+                <div class="mapbox">
+                  <button>CamF1</button>
+                </div>
+                <div class="mapbox">
+                  <button>CamE1</button>
+                </div>
+                <div class="mapbox">
+                  <button>CamD1</button>
+                </div>
+              </div>
+              <div class="maprow mbuild">
+                <div class="mapbox"></div>
+                <div class="mapbox"></div>
+                <div class="mapbox"></div>
+              </div>
+              <div class="maprow mbot">
+                <div class="mapbox">
+                  <button>CamF2</button>
+                </div>
+                <div class="mapbox">
+                  <button>CamE2</button>
+                </div>
+                <div class="mapbox">
+                  <button>CamD2</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="camdetect">
+            <div class="student">
+              <div class="spic"></div>
+              <p class="sname">Munkler,<br>Leuf</p>
+            </div>
+            <div class="student">
+              <div class="spic"></div>
+              <p class="sname">Munkler,<br>Leuf</p>
+            </div>
+            <div class="student">
+              <div class="spic"></div>
+              <p class="sname">Munkler,<br>Leuf</p>
+            </div>
+            <div class="student">
+              <div class="spic"></div>
+              <p class="sname">Munkler,<br>Leuf</p>
+            </div>
+            <div class="student">
+              <div class="spic"></div>
+              <p class="sname">Munkler,<br>Leuf</p>
+            </div>
+            <div class="student">
+              <div class="spic"></div>
+              <p class="sname">Munkler,<br>Leuf</p>
+            </div>
+          </div>
+          <div id="camvis">just imagine this nice gray is security footage :)</div>
+        </div>
+        <button id="toggle-panels">&gt;</button>
+        <div class="game-panel" id="rightpanel">
+          <div id="directory">
+            <input id="search" type="text" placeholder="Search">
+            <div id="listwrap">
+              <div id="list">
+                <div class="student">
+                  <div class="spic"></div>
+                  <div class="sinfo">
+                    <p class="sname">Munkler, Leuf</p>
+                    <p>Grade 12 | M | <span class="sstatus ssusp">Suspended</span></p>
+                  </div>
+                </div>
+                <div class="student">
+                  <div class="spic"></div>
+                  <div class="sinfo">
+                    <p class="sname">Munkler, Leuf</p>
+                    <p>Grade 12 | M | <span class="sstatus ssusp">Suspended</span></p>
+                  </div>
+                </div>
+                <div class="student">
+                  <div class="spic"></div>
+                  <div class="sinfo">
+                    <p class="sname">Munkler, Leuf</p>
+                    <p>Grade 12 | M | <span class="sstatus ssusp">Suspended</span></p>
+                  </div>
+                </div>
+                <div class="student">
+                  <div class="spic"></div>
+                  <div class="sinfo">
+                    <p class="sname">Munkler, Leuf</p>
+                    <p>Grade 12 | M | <span class="sstatus ssusp">Suspended</span></p>
+                  </div>
+                </div>
+                <div class="student">
+                  <div class="spic"></div>
+                  <div class="sinfo">
+                    <p class="sname">Munkler, Leuf</p>
+                    <p>Grade 12 | M | <span class="sstatus ssusp">Suspended</span></p>
+                  </div>
+                </div>
+                <div class="student">
+                  <div class="spic"></div>
+                  <div class="sinfo">
+                    <p class="sname">Munkler, Leuf</p>
+                    <p>Grade 12 | M | <span class="sstatus ssusp">Suspended</span></p>
+                  </div>
+                </div>
+                <div class="student">
+                  <div class="spic"></div>
+                  <div class="sinfo">
+                    <p class="sname">Munkler, Leuf</p>
+                    <p>Grade 12 | M | <span class="sstatus ssusp">Suspended</span></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="schedule">
+            <div id="table">
+              <div class="tablerow">
+                <p>&mdash;</p>
+                <p>Class Name</p>
+                <p>Rm</p>
+              </div>
+              <div class="tablerow">
+                <p>A</p>
+                <p>Adv World History</p>
+                <p>C1</p>
+              </div>
+              <div class="tablerow">
+                <p>B</p>
+                <p>Adv Chemistry</p>
+                <p>C1</p>
+              </div>
+              <div class="tablerow">
+                <p>C</p>
+                <p></p>
+                <p></p>
+              </div>
+              <div class="tablerow">
+                <p>D</p>
+                <p>Adv Chemistry</p>
+                <p>C1</p>
+              </div>
+              <div class="tablerow">
+                <p>E</p>
+                <p>Adv Chemistry</p>
+                <p>C1</p>
+              </div>
+              <div class="tablerow">
+                <p>F</p>
+                <p>Adv Chemistry</p>
+                <p>C1</p>
+              </div>
+              <button>Summon</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module">
+      const gameWrapper = document.getElementById('game')
+      const panelToggleBtn = document.getElementById('toggle-panels')
+      panelToggleBtn.addEventListener('click', e => {
+        gameWrapper.classList.toggle('show-right-panel')
+        if (gameWrapper.classList.contains('show-right-panel')) {
+          panelToggleBtn.textContent = '<'
+        } else {
+          panelToggleBtn.textContent = '>'
+        }
+      })
+    </script>
+  </body>
+</html>

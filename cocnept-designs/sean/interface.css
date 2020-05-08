@@ -146,7 +146,7 @@ button {
   align-items: center;
 }
 .camera-menu-btn {
-  background-image: url('./camera-grid.svg');
+  background-image: url('camera-grid.svg');
   background-size: 24px;
   width: 36px;
   height: 36px;
