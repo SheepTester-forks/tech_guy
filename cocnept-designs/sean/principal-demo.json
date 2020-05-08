@@ -1,5 +1,5 @@
 [
-  { "say": "You’ll be working here:" },
+  { "say": "You’ll be working here." },
   { "say": "This is the camera. You can click on students and our advanced facial recognition software will identify potential matches.", "select": "#camvis" },
   { "say": "Here you can switch camera views.", "select": "#camchoose" },
   { "say": "Here you can see our smoke detectors. These are designed to catch smoke from some newfangled “smile smokers” that kids have been using in the bathrooms.", "select": "#list > div:nth-child(7) > div.sinfo > p.sname" },
