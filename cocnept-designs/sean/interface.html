@@ -15,7 +15,7 @@
         <div class="progress" style="--progress: 10%;"></div>
       </div>
     </div>
-    <div class="desktop-flexible surveillance pane">
+    <div class="desktop-flexible surveillance pane" data-switch-pane="mobile-showing-surveillance">
       <div class="camera-wrapper">
         <canvas class="camera"></canvas>
         <div class="camera-buttons">
@@ -30,7 +30,7 @@
         <div class="log-entry">Quiet! <span class="incoherent">INCOHERENT</span> recorded.</div>
       </div>
     </div>
-    <div class="directory pane">
+    <div class="directory pane" data-switch-pane="mobile-showing-directory">
       <div class="directory-heading">Student_Directory.pdf</div>
       <div class="student-entry">
         <p class="name">Zenophane Stelio</p>
@@ -114,7 +114,7 @@
         </div>
       </div>
     </div>
-    <div class="confessions pane">
+    <div class="confessions pane" data-switch-pane="mobile-showing-confessions">
       <div class="heading">Gunn Confessions approval queue</div>
       <div class="submission">
         <p class="submitter">Submitted by: Angeonte Esotouf</p>
@@ -130,22 +130,15 @@
       </div>
     </div>
     <script type="text/javascript">
-      const classes = [
-        'mobile-showing-surveillance',
-        'mobile-showing-directory',
-        'mobile-showing-confessions'
-      ];
-      let i = 0;
-      document.body.addEventListener('click', e => {
-        if (e.target === document.body) {
-          const rightHalf = e.clientX > window.innerWidth / 2;
-          document.body.classList.remove(classes[i]);
-          if (rightHalf) {
-            if (i < classes.length - 1) i++;
-          } else {
-            if (i > 0) i--;
-          }
-          document.body.classList.add(classes[i]);
+      document.addEventListener('click', e => {
+        const pane = e.target.closest('.pane');
+        if (pane && !document.body.classList.contains(pane.dataset.switchPane)) {
+          document.body.classList.remove(
+            'mobile-showing-surveillance',
+            'mobile-showing-directory',
+            'mobile-showing-confessions'
+          );
+          document.body.classList.add(pane.dataset.switchPane);
         }
       });
     </script>

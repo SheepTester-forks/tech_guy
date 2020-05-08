@@ -76,8 +76,8 @@ button {
     bottom: 0;
     width: auto;
     transition: all .2s;
-    pointer-events: none;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
   }
   .mobile-showing-surveillance .pane {
     left: 0;
@@ -96,7 +96,7 @@ button {
   .mobile-showing-confessions .confessions {
     transform: translateX(0);
     z-index: 1;
-    pointer-events: none;
+    overflow: auto;
   }
   .mobile-showing-surveillance .directory,
   .mobile-showing-directory .confessions {
