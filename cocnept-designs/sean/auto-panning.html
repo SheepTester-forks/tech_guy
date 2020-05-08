@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Autopanning</title>
+        <meta name="description" content="Auto auto auto auto bill nye the science gyre"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="stylesheet" href="./canvas-stuff.css">
+        <style media="screen">
+            #wrapper {
+                border: 1px solid black;
+                resize: both;
+                width: 100px;
+                height: 300px;
+                max-width: 100%;
+                overflow: hidden;
+            }
+            #wrapper::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                display: block;
+                width: 0;
+                height: 0;
+                border: 15px solid transparent;
+                border-right-color: grey;
+                border-bottom: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="wrapper"></div>
+        <script type="module">
+            import {WrappedCanvas, loadImage, frame} from './canvas-stuff.js';
+
+            let wrapper = document.getElementById('wrapper');
+
+            let wrappedCanvas = new WrappedCanvas(wrapper);
+            wrappedCanvas.resize();
+
+            // In the actual game we'll be using the window resize event
+            let observer = new ResizeObserver(() => {
+                wrappedCanvas.resize();
+            });
+            observer.observe(wrapper);
+
+            let params = new URL(window.location).searchParams;
+
+            /** Time in milliseconds that the pan pauses at either end of the panning */
+            const EDGE_PAUSE = +params.get('edge-pause') || 2000;
+
+            /** Time in milliseconds per pixel that the pan moves */
+            const SPEED = +params.get('speed') || 10;
+
+            loadImage('./munkler.png').then(async image => {
+                let c = wrappedCanvas.context;
+                let time = 0;
+
+                function getVisualOffset(offset) {
+                    let state = time % (EDGE_PAUSE * 2 + offset * SPEED * 2);
+                    let visualOffset = 0;
+                    if (state < offset * SPEED) {
+                        visualOffset = state / SPEED;
+                    } else if (state >= offset * SPEED && state < offset * SPEED + EDGE_PAUSE) {
+                        visualOffset = offset;
+                    } else if (state >= offset * SPEED + EDGE_PAUSE && state < (offset * SPEED) * 2 + EDGE_PAUSE) {
+                        visualOffset = ((offset * SPEED) * 2 + EDGE_PAUSE - state) / SPEED;
+                    }
+                    return visualOffset;
+                }
+
+                while (true) {
+                    c.clearRect(0, 0, wrappedCanvas.width, wrappedCanvas.height);
+                    c.imageSmoothingEnabled = false;
+
+                    let offset;
+                    if (image.width / image.height > wrappedCanvas.width / wrappedCanvas.height) {
+                        // Image is wider than canvas
+                        let scaledWidth = image.width / image.height * wrappedCanvas.height;
+                        let visualOffset = getVisualOffset(scaledWidth - wrappedCanvas.width);
+                        c.drawImage(image, -visualOffset, 0, scaledWidth, wrappedCanvas.height);
+                    } else {
+                        // Image is taller than canvas
+                        let scaledHeight = image.height / image.width * wrappedCanvas.width;
+                        let visualOffset = getVisualOffset(scaledHeight - wrappedCanvas.height);
+                        c.drawImage(image, 0, -visualOffset, wrappedCanvas.width, scaledHeight);
+                    }
+
+                    time = await frame();
+                }
+            })
+        </script>
+    </body>
+</html>
