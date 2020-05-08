@@ -45,7 +45,8 @@
 
         display: flex;
         flex-direction: column;
-        width: 440px;
+        max-width: 440px;
+        width: 100%;
       }
       .speak-thumbnail {
         border: 3px solid #a1a1a1;
@@ -360,8 +361,16 @@ class SpeakIntroduction {
       dialogue: dialogueText,
       spoken,
       toSpeak,
-      canvas
+      canvas,
+      options: optionsWrapper
     } = this.elems
+
+    const old = {
+      spoken: spoken.textContent,
+      toSpeak: toSpeak.textContent,
+      buttons: [...optionsWrapper.children],
+      showingCanvas: !canvas.classList.contains('speak-remove')
+    }
 
     wrapper.style.height = null
     toSpeak.textContent = ''
@@ -393,6 +402,21 @@ class SpeakIntroduction {
     }
 
     wrapper.style.height = maxHeight + 'px'
+
+    // Recover old state if was in the middle of a conversation
+    ;({
+      spoken: spoken.textContent,
+      toSpeak: toSpeak.textContent
+    } = old)
+
+    this._clearOptions()
+    for (const button of old.buttons) {
+      optionsWrapper.appendChild(button)
+    }
+
+    if (old.showingCanvas) {
+      canvas.classList.remove('speak-remove')
+    }
   }
 
   async start (dialogueData) {
@@ -404,6 +428,10 @@ class SpeakIntroduction {
     } = this.elems
 
     this._setMaxHeight(dialogueData)
+    const remeasure = () => {
+      this._setMaxHeight(dialogueData)
+    }
+    window.addEventListener('resize', remeasure)
 
     const dialogue = processDialogue(dialogueData, 'OK')
     const data = {}
@@ -454,6 +482,7 @@ class SpeakIntroduction {
 
     }
 
+    window.removeEventListener('resize', remeasure)
     document.removeEventListener('keydown', this._onKeyDown)
 
     return data
