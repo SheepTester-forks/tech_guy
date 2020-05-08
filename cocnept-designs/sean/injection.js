@@ -13,7 +13,7 @@
 
     const demo = await new PrincipalDemo()
       .addTo(document.body)
-      .setThumbnail('../sean/former-principal.png', '#a8afae')
+      .setThumbnail('../../characters/sprites/images/munkler/sprite.png', '#a8afae')
       .start(json)
 
     demo.removeFromParent()
