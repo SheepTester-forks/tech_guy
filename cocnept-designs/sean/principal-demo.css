@@ -10,7 +10,11 @@
   display: flex;
   align-items: center;
   max-width: 500px;
-  padding: 20px;
+  padding: 10px;
+  margin: 10px;
+  padding-right: 40px;
+  border-radius: 500px;
+  background-color: rgba(31, 31, 31, 0.8);
 }
 .demo-thumbnail {
   border: 5px solid var(--principal-highlight);
@@ -19,7 +23,9 @@
   border-radius: 50%;
   image-rendering: pixelated;
   object-fit: cover;
+  object-position: top;
   margin-right: 10px;
+  flex: none;
 }
 .demo-dialogue {
   flex: auto;
