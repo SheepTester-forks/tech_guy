@@ -116,7 +116,7 @@ async function generateSchool() {
     for (let iterations = 0; iterations < MAX_ITER; iterations++) {
         for (let i = 0; i < Students.length; i++) {
             let student = Students[i];
-\
+
             for (let k = 0; k < randomlyRound(friendCurve(student.friendliness) / MAX_ITER); k++) {
                 let random_student = weightedChoose(Students, 1);
 
