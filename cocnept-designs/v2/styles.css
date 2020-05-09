@@ -1,0 +1,327 @@
+@import url('https://fonts.googleapis.com/css?family=Inconsolata');
+* {
+    color: #fff;
+    font-family: "Inconsolata", monospace;
+    margin: 0;
+}
+p,
+span,
+button,
+input {
+    font-size: 15px;
+    line-height: 20px;
+}
+h3 {
+    font-size: 20px;
+    line-height: 25px;
+}
+body,
+html {
+    background-color: #000;
+    height: 100%;
+}
+
+#container {
+    padding: 5px;
+    position: fixed;
+    top: 50%; left: 50%;
+}
+
+#controls {
+    align-items: center;
+    box-shadow: inset 0 0 0 2px #333;
+    display: flex;
+    height: 50px;
+}
+#controls p,
+#controls button {
+    background-color: #222;
+    border: none;
+    margin: 5px;
+    padding: 5px 10px;
+}
+#controls *:first-child {
+    margin-left: 10px;
+}
+#controls *:last-child {
+    margin-right: 10px;
+}
+
+#game {
+    display: none !important;
+}
+
+#game,
+#office {
+    display: flex;
+    position: absolute;
+    top: 60px; bottom: 0; left: 5px; right: 5px;
+}
+
+#campanel {
+    flex-basis: calc(100% - 305px);
+    margin-right: 5px;
+    position: relative;
+}
+#camchoose {
+    flex-basis: 25%;
+    height: 200px;
+    position: absolute;
+    top: 5px; right: 5px;
+    width: 300px;
+}
+#map {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+#map button {
+    background-color: #000;
+    border: 2px solid #111;
+    padding: 5px;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -25%);
+    z-index: 1;
+}
+.mbot button {
+    transform: translate(-50%, -75%) !important;
+}
+.maprow {
+    display: flex;
+    flex-basis: 12.5%;
+}
+.mbuild {
+    flex-basis: 25%;
+}
+.mapbox {
+    flex-basis: calc(100% / 3);
+    margin: 0 10px;
+    position: relative;
+}
+.mbuild .mapbox {
+    background-color: #0009;
+    border: 2px solid #111;
+}
+#camdetect {
+    display: flex;
+    overflow-x: auto;
+    position: absolute;
+    bottom: 10px; left: 10px; right: 10px;
+}
+#camdetect .student {
+    border: none;
+    margin: 0 20px 0 0;
+    padding: 0;
+}
+.student {
+    align-items: center;
+    border-top: 2px solid #222;
+    display: flex;
+    margin: 10px;
+    padding-top: 10px;
+}
+.student:first-child {
+    margin-top: 0;
+}
+.student:last-child {
+    margin-bottom: 0;
+}
+.spic {
+    background-color: aliceblue;
+    height: 50px;
+    margin-right: 10px;
+    width: 50px;
+}
+.sinfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.sname {
+    font-size: 17.5px;
+    font-weight: bold;
+}
+.ssusp {
+    color: #f00;
+}
+#camvis {
+    background-color: #999;
+    box-shadow: inset 0 0 0 2px #333;
+    height: 100%;
+}
+
+#infopanel {
+    display: flex;
+    flex-basis: 300px;
+    flex-direction: column;
+}
+#directory {
+    box-shadow: inset 0 0 0 2px #333;
+    display: flex;
+    flex-basis: calc(100% - 205px);
+    flex-direction: column;
+    margin-bottom: 5px;
+}
+#search {
+    border: none;
+    background-color: #111;
+    margin: 10px;
+    padding: 5px;
+    width: calc(100% - 30px);
+}
+#listwrap {
+    flex-basis: calc(100% - 60px);
+    position: relative;
+}
+#list {
+    height: 100%;
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+}
+#schedule {
+    box-shadow: inset 0 0 0 2px #333;
+    flex-basis: 200px;
+}
+#table {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 20px);
+    margin: 10px;
+}
+#table button {
+    background-color: #f00;
+    border: 2px solid #c00;
+    flex-grow: 1;
+    margin-top: 5px;
+}
+.tablerow {
+    display: flex;
+}
+.tablerow:first-child {
+    border-bottom: 2px solid #222;
+}
+.tablerow p:first-child,
+.tablerow p:last-child {
+    flex-basis: 15px;
+}
+.tablerow p:nth-child(2) {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#studentpanel {
+    display: flex;
+    flex-basis: 300px;
+    flex-direction: column;
+}
+#studentview {
+    background-color: #ccc;
+    box-shadow: inset 0 0 0 2px #333;
+    flex-basis: 200px;
+}
+#dialogue {
+    box-shadow: inset 0 0 0 2px #333;
+    display: flex;
+    flex-basis: calc(100% - 205px);
+    flex-direction: column;
+    margin-top: 5px;
+}
+#dialogue .sname {
+    flex-basis: 20px;
+    margin: 10px;
+}
+#transwrap {
+    flex-basis: calc(100% - 60px);
+    position: relative;
+}
+#transcript {
+    height: 100%;
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+}
+#transcript p {
+    margin: 1px 20px;
+}
+.tjoin {
+    color: #ff0;
+}
+.tname {
+    color: #666;
+}
+.trel {
+    color: #0c0;
+}
+#studentoptions {
+    display: flex;
+    flex-basis: 125px;
+    flex-direction: column;
+    margin: 10px;
+}
+#talk,
+#suspend {
+    display: flex;
+    justify-content: center;
+}
+#studentoptions button {
+    margin: 0 5px;
+}
+#talk button {
+    background-color: #fc0;
+    border: 2px solid #c90;
+}
+#release {
+    background-color: #0c0 !important;
+    border: 2px solid #090 !important;
+}
+#suspend button {
+    background-color: #f00;
+    border: 2px solid #c00;
+}
+#sustitle {
+    align-items: center;
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    margin-top: 10px;
+}
+#sustitle p {
+    font-size: 20px;
+}
+
+#envpanel {
+    flex-basis: calc(100% - 305px);
+    margin-left: 5px;
+    position: relative;
+}
+#envvis {
+    background-color: #999;
+    box-shadow: inset 0 0 0 2px #333;
+    height: 100%;
+}
+
+.screen {
+    align-content: center;
+    background-color: #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px;
+    position: fixed;
+    text-align: center;
+    top: 0; bottom: 0; left: 0; right: 0;
+    z-index: 100;
+}
+#s-smallscreen {
+    transition: 0.1s;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.stretch {
+    flex-grow: 1;
+}
