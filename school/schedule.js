@@ -81,7 +81,7 @@ const CLASSES = [
     }
 ];
 
-let students = generateSchool();
+let students = SCHOOL.generateSchool();
 console.log(students);
 
 const reqs = ['soc', 'lang', 'sci', 'eng', 'math'];
