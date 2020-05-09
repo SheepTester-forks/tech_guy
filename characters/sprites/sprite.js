@@ -48,7 +48,10 @@ function getSprite(sprite) {
     ctx.clearRect(0, 0, 12, 27);
     ctx.scale(sprite.facing, 1);
 
-    let cuts = [[], [15], [15, 22], [15, 15, 22]][sprite.height];
+    let cuts = [];
+    for (let i = 0; i < sprite.height; i++) {
+        cuts.push(i === sprite.height - 1 && i !== 0 ? 22 : 15);
+    }
 
     drawTinted(images.skin, 3 - sprite.height, sprite.facing, cuts);
     drawTinted(images['pants' + sprite.pants.type], 3 - sprite.height, sprite.facing, cuts);
