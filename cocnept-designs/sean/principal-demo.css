@@ -28,7 +28,16 @@
   flex: none;
 }
 .principal-demo .speak-dialogue {
-  flex: auto;
+    display: inline;
+}
+.principal-demo .speak-to-speak {
+    margin-right: 5px;
+}
+.principal-demo .speak-canvas-wrapper {
+    display: none;
+}
+.principal-demo .speak-options {
+    display: inline;
 }
 .principal-demo .speak-option {
   -webkit-appearance: none;

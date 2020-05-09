@@ -117,12 +117,16 @@ export class Dialogue {
         let options = document.createElement('div');
         options.className = 'speak-options';
 
+        let interactionWrapper = document.createElement('div');
+        interactionWrapper.className = 'speak-interaction';
+        interactionWrapper.appendChild(dialogue);
+        interactionWrapper.appendChild(canvasWrapper);
+        interactionWrapper.appendChild(options);
+
         let wrapper = document.createElement('div');
         wrapper.className = `speak-wrapper ${wrapperClass}`;
         wrapper.appendChild(thumbnail);
-        wrapper.appendChild(dialogue);
-        wrapper.appendChild(canvasWrapper);
-        wrapper.appendChild(options);
+        wrapper.appendChild(interactionWrapper);
 
         this.elems = {
             thumbnail,
