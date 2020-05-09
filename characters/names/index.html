@@ -8,29 +8,25 @@
         <script type="module">
             import * as NAMES from './ntv2.js';
 
-            let given_d = NAMES.getData('./json/given-names.json');
-            let sur_d = NAMES.getData('./json/surnames.json');
-            let boys = NAMES.parseData(given_d, 'boys');
-            let girls = NAMES.parseData(given_d, 'girls');
-            let sur = NAMES.parseData(sur_d, 'surnames');
+            NAMES.getAllData().then(({boys, girls, surnames: sur}) => {
+                let gened = [];
 
-            let gened = [];
+                for (let i = 0; i < 500; i++) {
+                    gened.push('<span style="color:#09c">' + NAMES.generate(boys, 8, 5) + ' ' + NAMES.generate(sur, 8, 7) + '</span>');
+                }
+                for (let i = 0; i < 500; i++) {
+                    gened.push('<span style="color:#c09">' + NAMES.generate(girls, 8, 5) + ' ' + NAMES.generate(sur, 8, 7) + '</span>');
+                }
 
-            for (let i = 0; i < 500; i++) {
-                gened.push('<span style="color:#09c">' + NAMES.generate(boys, 8, 5) + ' ' + NAMES.generate(sur, 8, 7) + '</span>');
-            }
-            for (let i = 0; i < 500; i++) {
-                gened.push('<span style="color:#c09">' + NAMES.generate(girls, 8, 5) + ' ' + NAMES.generate(sur, 8, 7) + '</span>');
-            }
+                gened.sort((x, y) => x.substr(24).localeCompare(y.substr(24)));
+                let display = '';
 
-            gened.sort((x, y) => x.substr(24).localeCompare(y.substr(24)));
-            let display = '';
+                for (let i = 0; i < 1000; i++) {
+                    display += gened[i] + '<br>';
+                }
 
-            for (let i = 0; i < 1000; i++) {
-                display += gened[i] + '<br>';
-            }
-
-            document.body.innerHTML = display;
+                document.body.innerHTML = display;
+            });
         </script>
     </body>
 </html>

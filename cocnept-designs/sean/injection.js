@@ -2,18 +2,18 @@
   const params = new URL(location).searchParams
   if (params.get('principal-demo')) {
     const link = document.head.appendChild(document.createElement('link'))
-    link.href = '../sean/principal-demo.css'
+    link.href = new URL('./principal-demo.css', import.meta.url)
     link.rel = 'stylesheet'
 
     const [{ PrincipalDemo }, json] = await Promise.all([
       import('./principal-demo.js'),
-      fetch('../sean/principal-demo.json')
+      fetch(new URL('./principal-demo.json', import.meta.url))
         .then(r => r.json())
     ])
 
     const demo = await new PrincipalDemo()
       .addTo(document.body)
-      .setThumbnail('../../characters/sprites/images/munkler/sprite.png', '#a8afae')
+      .setThumbnail(new URL('../../characters/sprites/images/munkler/sprite.png', import.meta.url), '#d1efea')
       .start(json)
 
     demo.removeFromParent()

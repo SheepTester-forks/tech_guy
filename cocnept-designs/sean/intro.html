@@ -489,6 +489,10 @@ class SpeakIntroduction {
   }
 }
 
+// Preload Munkler sprite
+// https://stackoverflow.com/questions/3646036/preloading-images-with-javascript
+new Image().src = '../../characters/sprites/images/munkler/sprite.png'
+
 Promise.all([
   fetch('./intro-dialogue.json')
     .then(r => r.json()),
@@ -503,7 +507,7 @@ Promise.all([
     const data = await intro.start(introData)
     console.log(data)
 
-    intro.setThumbnail('./former-principal.png', '#a8afae')
+    intro.setThumbnail('../../characters/sprites/images/munkler/sprite.png', '#d1efea')
 
     await intro.start(principalData)
 

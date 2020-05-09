@@ -31,6 +31,22 @@ function parseData(response, category) {
     return [data, starts];
 }
 
+function getAllData() {
+    // I'm going to disregard `getData` here because it is SYNCHRONOUS
+    return Promise.all([
+        fetch(new URL('./json/given-names.json', import.meta.url))
+            .then(res => res.ok ? res.text() : Promise.reject(new Error(res.status))),
+        fetch(new URL('./json/surnames.json', import.meta.url))
+            .then(res => res.ok ? res.text() : Promise.reject(new Error(res.status)))
+    ]).then(([given_d, sur_d]) => {
+        return {
+            boys: parseData(given_d, 'boys'),
+            girls: parseData(given_d, 'girls'),
+            surnames: parseData(sur_d, 'surnames')
+        }
+    })
+}
+
 function safeSet(obj, arg) {
     return obj ? obj : arg;
 }
@@ -96,5 +112,6 @@ function generate(args, distrib, length) {
 export {
     getData,
     parseData,
+    getAllData,
     generate
 };
