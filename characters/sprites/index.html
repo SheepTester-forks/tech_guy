@@ -14,6 +14,9 @@
         <canvas></canvas>
         <script type="module">
             import * as SPRITES from './sprite.js';
+            import * as WARDROBE from './wardrobe.js';
+            
+            console.log(WARDROBE.getWardrobe({}));
 
             let canvas = document.getElementsByTagName('canvas')[0];
             canvas.style.width = '500px';
