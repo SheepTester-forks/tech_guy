@@ -50,7 +50,10 @@ export class Dialogue {
         height=50,
         penColor='#212121',
         penSize=2,
-        penDegradationRate=0.003
+        penDegradationRate=0.003,
+        measureHeight=true,
+        wrapperClass='',
+        charDelay=20
     }={}) {
         bindMethods(this, [
             '_pointerStart',
@@ -60,12 +63,21 @@ export class Dialogue {
             '_addOption'
         ]);
 
-        this.options = {width, height, penColor, penSize, penDegradationRate};
+        this.options = {
+            width,
+            height,
+            penColor,
+            penSize,
+            penDegradationRate,
+            measureHeight,
+            wrapperClass,
+            charDelay
+        };
         this._initElems();
     }
 
     _initElems() {
-        let {width, height, penColor, penSize} = this.options;
+        let {width, height, penColor, penSize, wrapperClass} = this.options;
 
         let thumbnail = document.createElement('img');
         thumbnail.className = 'speak-thumbnail';
@@ -106,7 +118,7 @@ export class Dialogue {
         options.className = 'speak-options';
 
         let wrapper = document.createElement('div');
-        wrapper.className = 'speak-wrapper';
+        wrapper.className = `speak-wrapper ${wrapperClass}`;
         wrapper.appendChild(thumbnail);
         wrapper.appendChild(dialogue);
         wrapper.appendChild(canvasWrapper);
@@ -310,11 +322,13 @@ export class Dialogue {
             options: optionsWrapper
         } = this.elems;
 
-        this._setMaxHeight(dialogueData);
         let remeasure = () => {
             this._setMaxHeight(dialogueData)
         };
-        window.addEventListener('resize', remeasure);
+        if (this.options.measureHeight) {
+            window.addEventListener('resize', remeasure);
+            remeasure();
+        }
 
         let dialogue = processDialogue(dialogueData, 'OK');
         let data = {};
@@ -353,7 +367,7 @@ export class Dialogue {
                     optionsWrapper.classList.add('speak-hide-options');
 
                     this.skipDialog = false;
-                    await this._animateSpeak(say, options);
+                    await this._animateSpeak(say, this.options.charDelay);
 
                     optionsWrapper.classList.remove('speak-hide-options');
 
@@ -364,7 +378,9 @@ export class Dialogue {
 
         }
 
-        window.removeEventListener('resize', remeasure);
+        if (this.options.measureHeight) {
+            window.removeEventListener('resize', remeasure);
+        }
         document.removeEventListener('keydown', this._onKeyDown);
 
         return data;

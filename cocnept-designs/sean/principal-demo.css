@@ -5,7 +5,7 @@
   outline: 5px solid var(--principal-highlight);
 }
 
-.demo-wrapper {
+.principal-demo {
   position: fixed;
   display: flex;
   align-items: center;
@@ -16,7 +16,7 @@
   border-radius: 500px;
   background-color: rgba(31, 31, 31, 0.8);
 }
-.demo-thumbnail {
+.principal-demo .speak-thumbnail {
   border: 5px solid var(--principal-highlight);
   width: 60px;
   height: 60px;
@@ -27,19 +27,13 @@
   margin-right: 10px;
   flex: none;
 }
-.demo-dialogue {
+.principal-demo .speak-dialogue {
   flex: auto;
 }
-.demo-to-speak {
-  visibility: hidden;
-}
-.demo-ok {
+.principal-demo .speak-option {
   -webkit-appearance: none;
   border: none;
   background: none;
   background-color: #666;
   cursor: pointer;
-}
-.demo-hide {
-  visibility: hidden;
 }
