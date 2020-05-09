@@ -84,97 +84,101 @@ const CLASSES = [
     }
 ];
 
-let students = generateSchool();
-console.log(students);
+async function main() {
+    let students = await generateSchool();
+    console.log(students);
 
-const reqs = ['soc', 'lang', 'sci', 'eng', 'math'];
-const PERIODS = 6;
+    const reqs = ['soc', 'lang', 'sci', 'eng', 'math'];
+    const PERIODS = 6;
 
-function getClass(grade, req) {
-    return CLASSES.filter(
-        x => x.req === req &&
-        x.grades.filter(y => y === grade).length > 0
-    );
-}
-
-// generate class table
-let schedule = [];
-let n = 0;
-let currClass = 0;
-for (let j = 0; j < 180 / PERIODS; j++) {
-    if (currClass === CLASSES.length) {
-        //break;
+    function getClass(grade, req) {
+        return CLASSES.filter(
+            x => x.req === req &&
+            x.grades.filter(y => y === grade).length > 0
+        );
     }
-    let type = CLASSES[currClass].type;
-    let row = [];
-    for (let i = 0; i < PERIODS; i++) {
-        row.push({
-            'name': CLASSES[currClass].name,
-            'students': []
-        });
-        n++;
-        if (n >= CLASSES[currClass].rooms * PERIODS) {
-            n = 0;
-            currClass++;
-            if (currClass === CLASSES.length || CLASSES[currClass].type !== type) {
-                //break;
+
+    // generate class table
+    let schedule = [];
+    let n = 0;
+    let currClass = 0;
+    for (let j = 0; j < 180 / PERIODS; j++) {
+        if (currClass === CLASSES.length) {
+            //break;
+        }
+        let type = CLASSES[currClass].type;
+        let row = [];
+        for (let i = 0; i < PERIODS; i++) {
+            row.push({
+                'name': CLASSES[currClass].name,
+                'students': []
+            });
+            n++;
+            if (n >= CLASSES[currClass].rooms * PERIODS) {
+                n = 0;
+                currClass++;
+                if (currClass === CLASSES.length || CLASSES[currClass].type !== type) {
+                    //break;
+                }
             }
         }
-    }
-    row.sort(() => Math.random() - 0.5);
-    schedule = schedule.concat(row);
-}
-
-
-for (let i = 0; i < schedule.length; i++) {
-    schedule[i].period = i % PERIODS;
-    schedule[i].room = Math.floor(i / PERIODS);
-}
-//console.log(schedule);
-
-let studentList = students['Students'];
-studentList = studentList.sort((x, y) => x.grade - y.grade);
-
-for (let j = 0; j < studentList.length; j++) {
-
-    let student = studentList[j];
-    let classes = [];
-
-    for (let i = 0; i < reqs.length; i++) {
-        let req = reqs[i];
-        let classList = getClass(student.grade, req);
-        let chosen = classList[Math.floor(Math.random() * classList.length)];
-
-        classes.push({'name': chosen.name, 'grades': chosen.grades, 'rooms': chosen.rooms});
+        row.sort(() => Math.random() - 0.5);
+        schedule = schedule.concat(row);
     }
 
-    // at this point, the classes the student "wants" to take has been generated
-    // no actual classes have been generated
 
-    classes.sort(() => Math.random() - 0.5); // epic randomizer
+    for (let i = 0; i < schedule.length; i++) {
+        schedule[i].period = i % PERIODS;
+        schedule[i].room = Math.floor(i / PERIODS);
+    }
+    //console.log(schedule);
 
-    let takenPeriods = [];
+    let studentList = students['Students'];
+    studentList = studentList.sort((x, y) => x.grade - y.grade);
 
-    for (let i = 0; i < classes.length; i++) {
-        let _class = classes[i];
-        let existing = schedule.filter(
-            x => x.name === _class.name && !takenPeriods.includes(x.period)
-        );
+    for (let j = 0; j < studentList.length; j++) {
 
-        if (existing.length === 0) {
-            console.log('big owie');
-            continue;
+        let student = studentList[j];
+        let classes = [];
+
+        for (let i = 0; i < reqs.length; i++) {
+            let req = reqs[i];
+            let classList = getClass(student.grade, req);
+            let chosen = classList[Math.floor(Math.random() * classList.length)];
+
+            classes.push({'name': chosen.name, 'grades': chosen.grades, 'rooms': chosen.rooms});
         }
 
-        existing.sort(() => Math.random() - 0.5);
-        existing.sort((x, y) => x.students.length - y.students.length);
-        existing[0].students.push(student.index);
-        takenPeriods.push(existing[0].period);
+        // at this point, the classes the student "wants" to take has been generated
+        // no actual classes have been generated
+
+        classes.sort(() => Math.random() - 0.5); // epic randomizer
+
+        let takenPeriods = [];
+
+        for (let i = 0; i < classes.length; i++) {
+            let _class = classes[i];
+            let existing = schedule.filter(
+                x => x.name === _class.name && !takenPeriods.includes(x.period)
+            );
+
+            if (existing.length === 0) {
+                console.log('big owie');
+                continue;
+            }
+
+            existing.sort(() => Math.random() - 0.5);
+            existing.sort((x, y) => x.students.length - y.students.length);
+            existing[0].students.push(student.index);
+            takenPeriods.push(existing[0].period);
+        }
+    }
+
+    console.log(schedule.sort((x, y) => x.room - y.room));
+
+    function getStudentSchedule(student) {
+        console.log(schedule.filter(x => x.students.includes(student.index)).sort((x, y) => x.period - y.period));
     }
 }
 
-console.log(schedule.sort((x, y) => x.room - y.room));
-
-function getStudentSchedule(student) {
-    console.log(schedule.filter(x => x.students.includes(student.index)).sort((x, y) => x.period - y.period));
-}
+main();

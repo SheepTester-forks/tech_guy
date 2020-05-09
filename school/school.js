@@ -2,13 +2,8 @@ import * as NAMES from '../characters/names/ntv2.js';
 
 const NAME_DATA = {};
 
-function getNames() {
-    let given_d = NAMES.getData('../characters/names/json/given-names.json');
-    let sur_d = NAMES.getData('../characters/names/json/surnames.json');
-
-    NAME_DATA.boys = NAMES.parseData(given_d, 'boys');
-    NAME_DATA.girls = NAMES.parseData(given_d, 'girls');
-    NAME_DATA.surnames = NAMES.parseData(sur_d, 'surnames');
+async function getNames() {
+    Object.assign(NAME_DATA, await NAMES.getAllData());
 }
 
 
@@ -98,9 +93,9 @@ function randomlyRound(r) {
     }
 }
 
-function generateSchool() {
+async function generateSchool() {
     // School contains classes, teachers, students
-    getNames();
+    await getNames();
 
     let Students = [...Array(1000).keys()].map(i => ({...randomStudent(), index: i}));
     let MAX_ITER = 20;
