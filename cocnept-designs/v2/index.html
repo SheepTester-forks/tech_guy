@@ -5,250 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Suspension</title>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <script src="../sean/injection.js" charset="utf-8" type="module"></script>
-        <style>
-            @import url('https://fonts.googleapis.com/css?family=Inconsolata');
-            * {
-                color: #fff;
-                font-family: "Inconsolata", monospace;
-                margin: 0;
-            }
-            p,
-            span,
-            button,
-            input {
-                font-size: 15px;
-                line-height: 20px;
-            }
-            h3 {
-                font-size: 20px;
-                line-height: 25px;
-            }
-            body,
-            html {
-                background-color: #000;
-                height: 100%;
-            }
-
-            #container {
-                display: flex;
-                flex-direction: column;
-                padding: 5px;
-                position: fixed;
-                top: 50%; left: 50%;
-            }
-
-            #controls {
-                align-items: center;
-                box-shadow: inset 0 0 0 2px #333;
-                display: flex;
-                flex-basis: 50px;
-            }
-            #controls p,
-            #controls button {
-                background-color: #222;
-                border: none;
-                margin: 5px;
-                padding: 5px 10px;
-            }
-            #controls *:first-child {
-                margin-left: 10px;
-            }
-            #controls *:last-child {
-                margin-right: 10px;
-            }
-
-            #game {
-                display: flex;
-                flex-basis: calc(100% - 55px);
-                margin-top: 5px;
-            }
-
-            #leftpanel {
-                flex-basis: calc(100% - 305px);
-                margin-right: 5px;
-                position: relative;
-            }
-
-            #rightpanel {
-                display: flex;
-                flex-basis: 300px;
-                flex-direction: column;
-            }
-
-            #camchoose {
-                flex-basis: 25%;
-                height: 200px;
-                position: absolute;
-                top: 5px; right: 5px;
-                width: 300px;
-            }
-            #camdetect {
-                display: flex;
-                overflow-x: auto;
-                position: absolute;
-                bottom: 10px; left: 10px; right: 10px;
-            }
-            #camdetect .student {
-                border: none;
-                margin: 0 20px 0 0;
-                padding: 0;
-            }
-            #camvis {
-                background-color: #999;
-                box-shadow: inset 0 0 0 2px #333;
-                height: 100%;
-            }
-
-            #directory {
-                box-shadow: inset 0 0 0 2px #333;
-                display: flex;
-                flex-basis: calc(100% - 205px);
-                flex-direction: column;
-                margin-bottom: 5px;
-            }
-
-            #listwrap {
-                flex-basis: calc(100% - 60px);
-                position: relative;
-            }
-            #list {
-                height: 100%;
-                overflow-y: auto;
-                position: absolute;
-                width: 100%;
-            }
-            .student {
-                align-items: center;
-                border-top: 2px solid #222;
-                display: flex;
-                margin: 10px;
-                padding-top: 10px;
-            }
-            .student:first-child {
-                margin-top: 0;
-            }
-            .student:last-child {
-                margin-bottom: 0;
-            }
-            .spic {
-                background-color: aliceblue;
-                height: 50px;
-                margin-right: 10px;
-                width: 50px;
-            }
-            .sinfo {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-            }
-            .sname {
-                font-size: 17.5px;
-                font-weight: bold;
-            }
-            .ssusp {
-                color: #f00;
-            }
-
-            #schedule {
-                box-shadow: inset 0 0 0 2px #333;
-                flex-basis: 200px;
-            }
-
-            #map {
-                display: flex;
-                flex-direction: column;
-                height: 100%;
-            }
-            #map button {
-                background-color: #000;
-                border: 2px solid #111;
-                left: 50%;
-                padding: 5px;
-                position: absolute;
-                top: 50%; left: 50%;
-                transform: translate(-50%, -25%);
-                z-index: 1;
-            }
-            .mbot button {
-                transform: translate(-50%, -75%) !important;
-            }
-            .maprow {
-                display: flex;
-                flex-basis: 12.5%;
-            }
-            .mbuild {
-                flex-basis: 25%;
-            }
-            .mapbox {
-                flex-basis: calc(100% / 3);
-                margin: 0 10px;
-                position: relative;
-            }
-            .mbuild .mapbox {
-                background-color: #0009;
-                border: 2px solid #111;
-            }
-
-            #table {
-                display: flex;
-                flex-direction: column;
-                height: calc(100% - 20px);
-                margin: 10px;
-            }
-            #table button {
-                background-color: #f00;
-                border: 2px solid #c00;
-                flex-grow: 1;
-                margin-top: 5px;
-            }
-            .tablerow {
-                display: flex;
-            }
-            .tablerow:first-child {
-                border-bottom: 2px solid #222;
-            }
-            .tablerow p:first-child,
-            .tablerow p:last-child {
-                flex-basis: 15px;
-            }
-            .tablerow p:nth-child(2) {
-                flex-grow: 1;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-
-            #search {
-                border: none;
-                background-color: #111;
-                margin: 10px;
-                padding: 5px;
-                width: calc(100% - 30px);
-            }
-
-            .screen {
-                align-content: center;
-                background-color: #000;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                padding: 10px;
-                position: fixed;
-                text-align: center;
-                top: 0; bottom: 0; left: 0; right: 0;
-                z-index: 100;
-            }
-            #s-smallscreen {
-                transition: 0.1s;
-                opacity: 0;
-                visibility: hidden;
-            }
-
-            .stretch {
-                flex-grow: 1;
-            }
-        </style>
+        <!--<script src="../sean/injection.js" charset="utf-8" type="module"></script>-->
+        <link href="styles.css" rel="stylesheet">
     </head>
 
     <body>
@@ -266,7 +24,8 @@
                 <button>Menu</button>
             </div>
             <div id="game">
-                <div id="leftpanel">
+                
+                <div id="campanel">
                     <div id="camchoose">
                         <div id="map">
                             <div class="maprow">
@@ -353,7 +112,8 @@
                     </div>
                     <div id="camvis">just imagine this nice gray is security footage :)</div>
                 </div>
-                <div id="rightpanel">
+                
+                <div id="infopanel">
                     <div id="directory">
                         <input id="search" type="text" placeholder="Search">
                         <div id="listwrap">
@@ -451,6 +211,70 @@
                         </div>
                     </div>
                 </div>
+                
+            </div>
+            
+            <div id="office">
+                
+                <div id="studentpanel">
+                    <div id="studentview">insert face here</div>
+                    <div id="dialogue">
+                        <p class="sname">Ovinus Real</p>
+                        <div id="transwrap">
+                            <div id="transcript">
+                                <p><span class="tjoin">Ovinus entered the office</span></p>
+                                <p><span class="tname">Ovinus: </span>When I was young. When I was young. When I was young. When I was young.</p>
+                                <p><span class="tname">Tech Guy: </span>I love gamepro5.</p>
+                                <p><span class="tname">Ovinus: </span>If you <span class="trel">release</span> me, I'll tell you who gives us all the drugs.</p>
+                                <p><span class="tname">Tech Guy: </span>I love gamepro5.</p>
+                                <p><span class="tname">Ovinus: </span>When I was young.</p>
+                                <p><span class="tname">Tech Guy: </span>I love gamepro5.</p>
+                                <p><span class="tname">Ovinus: </span>When I was young.</p>
+                                <p><span class="tname">Tech Guy: </span>I love gamepro5.</p>
+                                <p><span class="tname">Ovinus: </span>When I was young.</p>
+                                <p><span class="tname">Tech Guy: </span>I love gamepro5.</p>
+                                <p><span class="tname">Ovinus: </span>When I was young.</p>
+                                <p><span class="tname">Tech Guy: </span>I love gamepro5.</p>
+                                <p><span class="tname">Ovinus: </span>When I was young.</p>
+                                <p><span class="tname">Tech Guy: </span>I love gamepro5.</p>
+                                <p><span class="tname">Ovinus: </span>When I was young.</p>
+                                <p><span class="tname">Tech Guy: </span>I love gamepro5.</p>
+                                <p><span class="tname">Ovinus: </span>When I was young.</p>
+                                <p><span class="tname">Tech Guy: </span>I love gamepro5.</p>
+                                <p><span class="tname">Ovinus: </span>When I was young.</p>
+                                <p><span class="tname">Tech Guy: </span>I love gamepro5.</p>
+                                <p><span class="tname">Ovinus: </span>When I was young.</p>
+                                <p><span class="tname">Tech Guy: </span>I love gamepro5.</p>
+                                <p><span class="tname">Ovinus: </span>When I was young.</p>
+                                <p><span class="tname">Tech Guy: </span>I love gamepro5.</p>
+                                <p><span class="tname">Ovinus: </span>When I was young.</p>
+                                <p><span class="tname">Tech Guy: </span>I love gamepro5.</p>
+                                <p><span class="tname">Ovinus: </span>When I was young.</p>
+                                <p><span class="tname">Tech Guy: </span>I love gamepro5.</p>
+                            </div>
+                        </div>
+                        <div id="studentoptions">
+                            <div id="talk">
+                                <button>Interrogate</button>
+                                <button>Bargain</button>
+                                <button id="release">Release</button>
+                            </div>
+                            <div id="sustitle">
+                                <p>Suspend</p>
+                            </div>
+                            <div id="suspend">
+                                <button>Drugs</button>
+                                <button>Disobediance</button>
+                                <button>Bullying</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="envpanel">
+                    <div id="envvis">insert drag and drop backpack desk here</div>
+                </div>
+                
             </div>
         </div>
         <script type="module">

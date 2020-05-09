@@ -1,5 +1,5 @@
 import * as NAMES from '../characters/names/ntv2.js';
-import { generateSchool } from './school.js';
+import * as SCHOOL from './school.js';
 
 const CLASSES = [
     {
@@ -85,7 +85,7 @@ const CLASSES = [
 ];
 
 async function main() {
-    let students = await generateSchool();
+    let students = await SCHOOL.generateSchool();
     console.log(students);
 
     const reqs = ['soc', 'lang', 'sci', 'eng', 'math'];
