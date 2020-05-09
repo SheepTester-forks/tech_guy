@@ -318,7 +318,7 @@ export class Dialogue {
         }
     }
 
-    async start(dialogueData) {
+    async start(dialogueData, imageURLs={}) {
         let {
             dialogue: dialogueText,
             canvas,
@@ -366,6 +366,10 @@ export class Dialogue {
                     data[saveTo] = this.markings;
                     dialogueText.classList.remove('speak-remove');
                     canvas.classList.add('speak-remove');
+                    break;
+                }
+                case 'set-thumbnail': {
+                    this.setThumbnail(imageURLs[special['image-id']], special.color)
                     break;
                 }
                 default: {
