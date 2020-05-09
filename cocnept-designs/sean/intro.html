@@ -75,7 +75,8 @@ Promise.all([
       penSize: +params.get('pen-size') || undefined,
       penDegradationRate: +params.get('pen-degradation-rate') || undefined,
       width: +params.get('width') || undefined,
-      height: +params.get('height') || undefined
+      height: +params.get('height') || undefined,
+      wrapperClass: 'intro'
     })
       .addTo(document.body)
       .setThumbnail('./munkler.png', '#ebdeae')
