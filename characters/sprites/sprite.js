@@ -18,16 +18,14 @@ let paths = [
 ];
 let images = {};
 
-function loadImages(onLoad) {
-    for (let i = 0; i < paths.length; i++) {
+function loadImages() {
+    return Promise.all(paths.map(path => new Promise(resolve => {
         let img = new Image();
         img.crossOrigin = "Anonymous";
-        img.src = `./images/student/${paths[i]}.png`;
-        img.onload = function() {
-            addLoad(onLoad);
-        };
+        img.src = new URL(`./images/student/${path}.png`, import.meta.url);
+        img.onload = resolve;
 
-        let split = paths[i].split('/');
+        let split = path.split('/');
         let code = split[1];
         if (split[2]) {
             code += split[2] === 'shadow' ? 's' : '';
@@ -35,14 +33,7 @@ function loadImages(onLoad) {
             code = 'hat' + (split[1] === 'shadow' ? 's' : '');
         }
         images[code] = img;
-    }
-}
-
-function addLoad(onLoad) {
-    loaded++;
-    if (loaded === paths.length) {
-        onLoad();
-    }
+    })))
 }
 
 function drawTinted(image, y, facing, cuts) {
