@@ -6,6 +6,8 @@
     <meta name="description" content=""/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
+    <link rel="stylesheet" href="./dialogue.css">
+    <link rel="stylesheet" href="./intro.css">
     <style>
       html,
       body {
@@ -37,60 +39,6 @@
       }
       button:not(:disabled):hover {
         cursor: pointer;
-      }
-
-      .speak-wrapper {
-        padding: 20px;
-        box-sizing: border-box;
-
-        display: flex;
-        flex-direction: column;
-        max-width: 440px;
-        width: 100%;
-      }
-      .speak-thumbnail {
-        border: 3px solid #a1a1a1;
-        background-color: #ebdeae;
-        image-rendering: pixelated;
-        object-fit: contain;
-        object-position: bottom;
-        height: 300px;
-      }
-      .speak-dialogue {
-        margin: 10px 0;
-      }
-      .speak-to-speak {
-        visibility: hidden;
-      }
-      .speak-options {
-        display: flex;
-        justify-content: space-around;
-        justify-content: space-evenly;
-        opacity: 1;
-        transition: opacity .2s;
-      }
-      .speak-hide-options {
-        visibility: hidden;
-        opacity: 0;
-      }
-      .speak-option {
-        background-color: rgba(255, 255, 255, 0.3);
-        padding: 5px 15px;
-      }
-      .speak-canvas-wrapper {
-        display: flex;
-      }
-      .speak-canvas {
-        border: 3px solid #a1a1a1;
-        background-color: white;
-        image-rendering: pixelated;
-        cursor: crosshair;
-        touch-action: none;
-        margin: 10px 0;
-        width: 100%;
-      }
-      .speak-remove {
-        display: none;
       }
 
       :disabled {

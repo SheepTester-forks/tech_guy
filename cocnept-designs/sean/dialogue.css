@@ -1,0 +1,9 @@
+.speak-to-speak {
+    visibility: hidden;
+}
+.speak-remove {
+    display: none;
+}
+.speak-hide-options {
+    visibility: hidden;
+}
