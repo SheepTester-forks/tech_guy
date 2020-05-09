@@ -1,144 +1,140 @@
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(factory((global.SCHOOL = global.SCHOOL || {})));
-} (this, (function (exports) {
-    'use strict';
-    
-    const NAME_DATA = {};
+import * as NAMES from '../characters/names/ntv2.js';
 
-    function getNames() {
-        let given_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/given-names.json');
-        let sur_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/surnames.json');
+const NAME_DATA = {};
 
-        NAME_DATA.boys = NAMES.parseData(given_d, 'boys');
-        NAME_DATA.girls = NAMES.parseData(given_d, 'girls');
-        NAME_DATA.surnames = NAMES.parseData(sur_d, 'surnames');
-    }
+async function getNames() {
+    Object.assign(NAME_DATA, await NAMES.getAllData());
+}
 
+function getNames() {
+    let given_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/given-names.json');
+    let sur_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/surnames.json');
 
-    function weightedChoose(list, pow=2) {
-        return list[Math.floor(Math.pow(Math.random(), pow) * list.length)];
-    }
+    NAME_DATA.boys = NAMES.parseData(given_d, 'boys');
+    NAME_DATA.girls = NAMES.parseData(given_d, 'girls');
+    NAME_DATA.surnames = NAMES.parseData(sur_d, 'surnames');
+}
 
-    function randomStudent() {
-        let grade = Math.floor(Math.random() * 4) + 9; // 9 through 12
-        // Gender = social
-        // Name = traditionally boy or girl names
-        let name = Math.random() < 0.5 ? 'F' : 'M';
+function weightedChoose(list, pow=2) {
+    return list[Math.floor(Math.pow(Math.random(), pow) * list.length)];
+}
 
-        let rand = Math.random();
-        let gender = rand < 0.95 ? name : rand < 0.975 ? (name === 'F' ? 'M' : 'F') : 'O';
+function randomStudent() {
+    let grade = Math.floor(Math.random() * 4) + 9; // 9 through 12
+    // Gender = social
+    // Name = traditionally boy or girl names
+    let name = Math.random() < 0.5 ? 'F' : 'M';
 
-        let skinColor = Math.floor(Math.random() * 4);
-        let hair = gender === 'F' ? 3 : 0;
-        let hairType =
-            gender === 'O' ? Math.floor(Math.random() * 6) : (Math.floor(Math.random() * 3) +
-            ((Math.random() < 0.95) ? hair : (-hair + 3)));
-        let hairColor = Math.floor(Math.random() * (skinColor === 3 ? 4 : skinColor));
-        
-        let height = Math.random();
+    let rand = Math.random();
+    let gender = rand < 0.95 ? name : rand < 0.975 ? (name === 'F' ? 'M' : 'F') : 'O';
 
-        return {
-            name: {
-                first: NAMES.generate(name === "F" ? NAME_DATA.girls : NAME_DATA.boys, 8, 5),
-                last: NAMES.generate(NAME_DATA.surnames, 8, 7)
-            },
-            gender: gender,
-            grade: grade,
-            friendliness: Math.random() * (0.5 + (grade - 9) / 6), // seniors have more connections
-            chance: {
-                drug: Math.random(),
-                disobey: Math.random(),
-                violent: Math.random()
-            },
-            friends: [],
-            appearance: {
-                skinColor: skinColor,
-                hairType: hairType,
-                hairColor: hairColor,
-                height:
-                Math.pow(height - (grade - 9) / 3, 2) * ((height < (grade - 9) / 3) ? (-9 / (a - 9)) : (9 / (12 - a))) + grade - 9
-            },
-            picture: {
-                hairType: Math.random() < 0.95 ? hairType :
-                (gender === 'O' ? Math.floor(Math.random() * 6) :
-                 (Math.floor(Math.random() * 3) + ((Math.random() < 0.95) ? hair : (-hair + 3)))),
-                hairColor: hairColor
-            }
+    let skinColor = Math.floor(Math.random() * 4);
+    let hair = gender === 'F' ? 3 : 0;
+    let hairType =
+        gender === 'O' ? Math.floor(Math.random() * 6) : (Math.floor(Math.random() * 3) +
+        ((Math.random() < 0.95) ? hair : (-hair + 3)));
+    let hairColor = Math.floor(Math.random() * (skinColor === 3 ? 4 : skinColor));
+
+    let height = Math.random();
+
+    return {
+        name: {
+            first: NAMES.generate(name === "F" ? NAME_DATA.girls : NAME_DATA.boys, 8, 5),
+            last: NAMES.generate(NAME_DATA.surnames, 8, 7)
+        },
+        gender: gender,
+        grade: grade,
+        friendliness: Math.random() * (0.5 + (grade - 9) / 6), // seniors have more connections
+        chance: {
+            drug: Math.random(),
+            disobey: Math.random(),
+            violent: Math.random()
+        },
+        friends: [],
+        appearance: {
+            skinColor: skinColor,
+            hairType: hairType,
+            hairColor: hairColor,
+            height:
+            Math.pow(height - (grade - 9) / 3, 2) * ((height < (grade - 9) / 3) ? (-9 / (a - 9)) : (9 / (12 - a))) + grade - 9
+        },
+        picture: {
+            hairType: Math.random() < 0.95 ? hairType :
+            (gender === 'O' ? Math.floor(Math.random() * 6) :
+             (Math.floor(Math.random() * 3) + ((Math.random() < 0.95) ? hair : (-hair + 3)))),
+            hairColor: hairColor
         }
     }
 
-    function getSimilarity(student1, student2) {
-        let similarity = 0;
+function getSimilarity(student1, student2) {
+    let similarity = 0;
+    similarity += student1.gender === student2.gender; // segregation rules the nation \("/)/
 
-        similarity += student1.gender === student2.gender; // segregation rules the nation \("/)/
+    similarity += 1 - Math.abs(student1.chance.drug - student2.chance.drug);
+    similarity += 1 - Math.abs(student1.chance.disobey - student2.chance.disobey);
+    similarity += 1 - Math.abs(student1.chance.violent - student2.chance.violent);
 
-        similarity += 1 - Math.abs(student1.chance.drug - student2.chance.drug);
-        similarity += 1 - Math.abs(student1.chance.disobey - student2.chance.disobey);
-        similarity += 1 - Math.abs(student1.chance.violent - student2.chance.violent);
+    similarity += (student1.friendliness + student2.friendliness) / 2;
+    similarity += 2 * (student1.grade === student2.grade); // most important factor
 
-        similarity += (student1.friendliness + student2.friendliness) / 2;
-        similarity += 2 * (student1.grade === student2.grade); // most important factor
+    return similarity / 7; // hopefully now this is 0-1
+}
 
-        return similarity / 7; // hopefully now this is 0-1
+function friendCurve(friendliness) {
+    // return how many friends a person with this friendliness should try to have
+    return friendliness * 40 + 10;
+}
+
+function shouldBeFriends(s1, s2) {
+    let similarity = getSimilarity(s1, s2);
+
+    similarity += (s1.friends.some(f => f.index === s2.index));
+    similarity += (s2.friends.some(f => f.index === s1.index));
+
+    if (similarity > 0.5 || Math.random() < 0.05) {
+        return similarity / 3;
+    } else {
+        return 0;
     }
+}
 
-    function friendCurve(friendliness) {
-        // return how many friends a person with this friendliness should try to have
-        return friendliness * 40 + 10;
+function randomlyRound(r) {
+    if (Math.random() < Math.trunc(r)) {
+        return Math.ceil(r);
+    } else {
+        return Math.floor(r);
     }
+}
 
-    function shouldBeFriends(s1, s2) {
-        let similarity = getSimilarity(s1, s2);
+async function generateSchool() {
+    // School contains classes, teachers, students
+    await getNames();
 
-        similarity += (s1.friends.some(f => f.index === s2.index));
-        similarity += (s2.friends.some(f => f.index === s1.index));
+    let Students = [...Array(1000).keys()].map(i => ({...randomStudent(), index: i}));
+    let MAX_ITER = 20;
 
-        if (similarity > 0.5 || Math.random() < 0.05) {
-            return similarity / 3;
-        } else {
-            return 0;
-        }
-    }
+    for (let iterations = 0; iterations < MAX_ITER; iterations++) {
+        for (let i = 0; i < Students.length; i++) {
+            let student = Students[i];
+\
+            for (let k = 0; k < randomlyRound(friendCurve(student.friendliness) / MAX_ITER); k++) {
+                let random_student = weightedChoose(Students, 1);
 
-    function randomlyRound(r) {
-        if (Math.random() < Math.trunc(r)) {
-            return Math.ceil(r);
-        } else {
-            return Math.floor(r);
-        }
-    }
+                if (student.friends.some(s => s.index === i)) { continue; }
 
-    function generateSchool() {
-        // School contains classes, teachers, students
-        getNames();
+                let degree = shouldBeFriends(student, random_student);
 
-        let Students = [...Array(1000).keys()].map(i => ({...randomStudent(), index: i}));
-        let MAX_ITER = 20;
-
-        for (let iterations = 0; iterations < MAX_ITER; iterations++) {
-            for (let i = 0; i < Students.length; i++) {
-                let student = Students[i];
-
-                for (let k = 0; k < randomlyRound(friendCurve(student.friendliness) / MAX_ITER); k++) {
-                    let random_student = weightedChoose(Students, 1);
-
-                    if (student.friends.some(s => s.index === i)) { continue; }
-
-                    let degree = shouldBeFriends(student, random_student);
-
-                    if (degree > 0) {
-                        student.friends.push({degree, index: random_student.index});
-                        random_student.friends.push({degree, index: student.index});
-                    }
+                if (degree > 0) {
+                    student.friends.push({degree, index: random_student.index});
+                    random_student.friends.push({degree, index: student.index});
                 }
             }
         }
-
-        return {Students};
     }
-    
-    exports.generateSchool = generateSchool;
-    
-})));
+
+    return {Students};
+}
+
+export {
+    generateSchool
+};

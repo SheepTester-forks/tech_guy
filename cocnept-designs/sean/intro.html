@@ -41,10 +41,12 @@
 
       .speak-wrapper {
         padding: 20px;
+        box-sizing: border-box;
 
         display: flex;
         flex-direction: column;
-        width: 400px;
+        max-width: 440px;
+        width: 100%;
       }
       .speak-thumbnail {
         border: 3px solid #a1a1a1;
@@ -97,7 +99,7 @@
     </style>
   </head>
   <body>
-    <script>
+    <script type="module">
 const params = new URL(window.location).searchParams
 
 /**
@@ -107,6 +109,30 @@ const params = new URL(window.location).searchParams
  *   width (default 100)
  *   height (default 50)
  */
+
+function getAllDialogue (dialogue, defaultOption) {
+  const dialogueItems = []
+  if (!Array.isArray(dialogue)) {
+    dialogue = [dialogue]
+  }
+  for (let item of dialogue) {
+    if (typeof item === 'string') {
+      item = { say: item }
+    }
+    const { say = '', options, special = null } = item
+    dialogueItems.push({
+      say,
+      options: options ? Object.keys(options) : [defaultOption],
+      special
+    })
+    if (options) {
+      for (const option of Object.values(options)) {
+        dialogueItems.push(...getAllDialogue(option, defaultOption))
+      }
+    }
+  }
+  return dialogueItems
+}
 
 function * processDialogue (dialogue, defaultOption) {
   if (!Array.isArray(dialogue)) {
@@ -329,6 +355,70 @@ class SpeakIntroduction {
     }
   }
 
+  _setMaxHeight (dialogueData) {
+    const {
+      wrapper,
+      dialogue: dialogueText,
+      spoken,
+      toSpeak,
+      canvas,
+      options: optionsWrapper
+    } = this.elems
+
+    const old = {
+      spoken: spoken.textContent,
+      toSpeak: toSpeak.textContent,
+      buttons: [...optionsWrapper.children],
+      showingCanvas: !canvas.classList.contains('speak-remove')
+    }
+
+    wrapper.style.height = null
+    toSpeak.textContent = ''
+
+    let maxHeight = 0
+    for (const { say, options, special } of getAllDialogue(dialogueData, 'OK')) {
+      this._clearOptions()
+      for (const option of options) {
+        this._addOption(option)
+      }
+      spoken.textContent = say
+      let height
+      switch (special && special.type) {
+        case 'canvas': {
+          dialogueText.classList.add('speak-remove')
+          canvas.classList.remove('speak-remove')
+
+          ;({ height } = wrapper.getBoundingClientRect())
+
+          dialogueText.classList.remove('speak-remove')
+          canvas.classList.add('speak-remove')
+          break
+        }
+        default: {
+          ;({ height } = wrapper.getBoundingClientRect())
+        }
+      }
+      if (height > maxHeight) maxHeight = height
+    }
+
+    wrapper.style.height = maxHeight + 'px'
+
+    // Recover old state if was in the middle of a conversation
+    ;({
+      spoken: spoken.textContent,
+      toSpeak: toSpeak.textContent
+    } = old)
+
+    this._clearOptions()
+    for (const button of old.buttons) {
+      optionsWrapper.appendChild(button)
+    }
+
+    if (old.showingCanvas) {
+      canvas.classList.remove('speak-remove')
+    }
+  }
+
   async start (dialogueData) {
     const {
       dialogue: dialogueText,
@@ -336,6 +426,12 @@ class SpeakIntroduction {
       context,
       options: optionsWrapper
     } = this.elems
+
+    this._setMaxHeight(dialogueData)
+    const remeasure = () => {
+      this._setMaxHeight(dialogueData)
+    }
+    window.addEventListener('resize', remeasure)
 
     const dialogue = processDialogue(dialogueData, 'OK')
     const data = {}
@@ -386,11 +482,16 @@ class SpeakIntroduction {
 
     }
 
+    window.removeEventListener('resize', remeasure)
     document.removeEventListener('keydown', this._onKeyDown)
 
     return data
   }
 }
+
+// Preload Munkler sprite
+// https://stackoverflow.com/questions/3646036/preloading-images-with-javascript
+new Image().src = '../../characters/sprites/images/munkler/sprite.png'
 
 Promise.all([
   fetch('./intro-dialogue.json')
@@ -406,14 +507,14 @@ Promise.all([
     const data = await intro.start(introData)
     console.log(data)
 
-    intro.setThumbnail('./former-principal.png', '#a8afae')
+    intro.setThumbnail('../../characters/sprites/images/munkler/sprite.png', '#d1efea')
 
     await intro.start(principalData)
 
     intro.removeFromParent()
 
     // Simulate showing the Computer screen
-    window.location.href = '../v2/index.html?principal-demo=true'
+    window.location.href = './responsive.html?principal-demo=true'
   })
 
 /*

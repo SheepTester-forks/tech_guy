@@ -8,7 +8,7 @@ function bindMethods (instance, methods) {
   }
 }
 
-class PrincipalDemo {
+export class PrincipalDemo {
   constructor () {
     bindMethods(this, [
       '_onKeyDown'
