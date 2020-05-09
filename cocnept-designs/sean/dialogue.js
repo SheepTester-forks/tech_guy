@@ -348,7 +348,8 @@ export class Dialogue {
             this._clearOptions();
             let selectedOption = Promise.race(options.map(this._addOption));
 
-            switch (special && special.type) {
+            const specialType = special && special.type
+            switch (specialType) {
                 case 'canvas': {
                     let {saveTo} = special;
 
@@ -368,6 +369,12 @@ export class Dialogue {
                     break;
                 }
                 default: {
+                    let elem;
+                    if (specialType === 'add-class') {
+                        elem = document.querySelector(special.select);
+                        elem.classList.add(special.class);
+                    }
+
                     optionsWrapper.classList.add('speak-hide-options');
 
                     this.skipDialog = false;
@@ -377,6 +384,10 @@ export class Dialogue {
 
                     optionsWrapper.children[0].focus();
                     lastChoice = await selectedOption;
+
+                    if (specialType === 'add-class') {
+                        elem.classList.remove(special.class);
+                    }
                 }
             }
 
