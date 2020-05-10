@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Suspension</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="./canvas-stuff.css">
     <script src="../sean/injection.js" charset="utf-8" type="module"></script>
     <style>
       @import url('https://fonts.googleapis.com/css?family=Inconsolata');
@@ -89,12 +90,14 @@
         position: absolute;
         top: 5px; right: 5px;
         width: 300px;
+        z-index: 1;
       }
       #camdetect {
         display: flex;
         overflow-x: auto;
         position: absolute;
         bottom: 10px; left: 10px; right: 10px;
+        z-index: 1;
       }
       #camdetect .student {
         border: none;
@@ -365,7 +368,7 @@
               <p class="sname">Munkler,<br>Leuf</p>
             </div>
           </div>
-          <div id="camvis">just imagine this nice gray is security footage :)</div>
+          <div id="camvis"></div>
         </div>
         <button id="toggle-panels">&gt;</button>
         <div class="game-panel" id="rightpanel">
@@ -469,6 +472,9 @@
       </div>
     </div>
     <script type="module">
+      import main from './students-roam.js';
+      main(document.getElementById('camvis'));
+
       const gameWrapper = document.getElementById('game')
       const panelToggleBtn = document.getElementById('toggle-panels')
       panelToggleBtn.addEventListener('click', e => {

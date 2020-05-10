@@ -1,6 +1,9 @@
+const WIDTH = 12;
+const HEIGHT = 27;
+
 let out = document.createElement('canvas');
-out.width = 12;
-out.height = 27;
+out.width = WIDTH;
+out.height = HEIGHT;
 let ctx = out.getContext('2d');
 
 let loaded = 0;
@@ -39,13 +42,13 @@ function loadImages() {
 function drawTinted(image, y, facing, cuts) {
     cuts.push(23);
     for (let i = 0; i < cuts.length; i++) {
-        ctx.drawImage(image, 0, cuts[i - 1] || 0, 12, cuts[i] - (cuts[i - 1] || 0) + 1, 0, (cuts[i - 1] || 0) + y + i, facing * 12, cuts[i] - (cuts[i - 1] || 0) + 1);
+        ctx.drawImage(image, 0, cuts[i - 1] || 0, WIDTH, cuts[i] - (cuts[i - 1] || 0) + 1, 0, (cuts[i - 1] || 0) + y + i, facing * WIDTH, cuts[i] - (cuts[i - 1] || 0) + 1);
     }
 }
 
 function getSprite(sprite, imageData=false) {
     ctx.save();
-    ctx.clearRect(0, 0, 12, 27);
+    ctx.clearRect(0, 0, WIDTH, HEIGHT);
     ctx.scale(sprite.facing, 1);
 
     let cuts = [];
@@ -65,7 +68,7 @@ function getSprite(sprite, imageData=false) {
         drawTinted(images['hat'], 3 - sprite.height, sprite.facing, []);
     }
 
-    let gid = ctx.getImageData(0, 0, 12, 27);
+    let gid = ctx.getImageData(0, 0, WIDTH, HEIGHT);
 
     for (let i = 0; i < gid.data.length; i += 4) {
         let id = [];
@@ -115,6 +118,8 @@ function getSprite(sprite, imageData=false) {
 }
 
 export {
+    WIDTH,
+    HEIGHT,
     loadImages,
     getSprite
 };

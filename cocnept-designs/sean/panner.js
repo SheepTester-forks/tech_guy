@@ -42,7 +42,7 @@ export class Panner {
             offsetX = -this._getOffset(scaledWidth - this.canvas.width);
         } else {
             // Image is taller than canvas
-            scale = this.canvas.width * this.width;
+            scale = this.canvas.width / this.width;
             let scaledHeight = this.height * scale;
             offsetY = -this._getOffset(scaledHeight - this.canvas.height);
         }
