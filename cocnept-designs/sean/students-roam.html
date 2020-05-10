@@ -7,6 +7,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <link rel="stylesheet" href="./canvas-stuff.css">
         <style media="screen">
+            @import url('../game.css');
+            @import url('../basic-flex.css');
+
             #wrapper {
                 flex: auto;
             }
@@ -24,16 +27,43 @@
             import {frame} from '../../utils.js';
 
             let wrappedCanvas = new WrappedCanvas(document.getElementById('wrapper'));
-            window.addEventListener('resize', e => {
-                wrappedCanvas.resize();
-            });
 
             let panner = new Panner({
                 canvas: wrappedCanvas,
-                width: 100,
-                height: 50
+                width: 130,
+                height: 56
             });
             let c = wrappedCanvas.context;
+            let students = [];
+            let lastTime;
+            let ready = false;
+
+            function paint() {
+                let now = Date.now();
+                let elapsedTime = now - lastTime;
+                if (elapsedTime < 500) {
+                    panner.time += elapsedTime;
+                }
+                lastTime = now;
+
+                let {offsetX, offsetY, scale} = panner.getTransform();
+                c.clearRect(0, 0, wrappedCanvas.width, wrappedCanvas.height);
+                c.save();
+                c.imageSmoothingEnabled = false;
+                c.translate(offsetX, offsetY);
+                c.scale(scale, scale);
+
+                for (let {sprite, x, y} of students) {
+                    c.drawImage(sprite, x, y);
+                }
+
+                c.restore();
+            }
+
+            window.addEventListener('resize', async e => {
+                await wrappedCanvas.resize();
+                if (ready) paint();
+            });
 
             async function main() {
                 await Promise.all([
@@ -41,25 +71,21 @@
                     loadImages()
                 ]);
 
-                let student = getSprite(randomSprite());
-
-                let lastTime = Date.now();
-                while (true) {
-                    let now = Date.now();
-                    let elapsedTime = now - lastTime;
-                    if (elapsedTime < 500) {
-                        panner.time += elapsedTime;
+                for (let x = 0; x < panner.width; x += 13) {
+                    for (let y = 0; y < panner.height; y += 28) {
+                        students.push({
+                            sprite: getSprite(randomSprite()),
+                            x,
+                            y
+                        });
                     }
-                    lastTime = now;
+                }
+                lastTime = Date.now();
 
-                    let {offsetX, offsetY, scale} = panner.getTransform();
-                    c.save();
-                    c.translate(offsetX, offsetY);
-                    c.scale(scale, scale);
-
-                    c.drawImage(student, 10, 10);
-
-                    c.restore();
+                ready = true;
+                while (true) {
+                    paint();
+                    await frame();
                 }
             }
 
