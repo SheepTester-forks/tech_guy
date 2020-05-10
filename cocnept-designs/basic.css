@@ -6,6 +6,17 @@ body {
     margin: 0;
 }
 
+/* todo: extend to other browsers */
+*::-webkit-scrollbar {
+    width: 5px;
+}
+*::-webkit-scrollbar-thumb {
+    background-color: #333;
+}
+*::-webkit-scrollbar-track {
+    width: 10px;
+}
+
 button,
 input,
 select,
@@ -17,6 +28,19 @@ textarea {
     color: inherit;
     font: inherit;
 }
+
+input[type=range]::-webkit-slider-runnable-track {
+    background-color: #222;
+    height: 10px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    background-color: #333;
+    height: 10px;
+    width: 10px;
+}
+
 button:not(:disabled):hover {
     cursor: pointer;
 }
@@ -28,4 +52,7 @@ a {
 
 :disabled {
     opacity: 0.5;
+}
+:focus {
+    outline: none;
 }
