@@ -73,6 +73,7 @@ class Student {
                 temp = temp.parent;
             }
         }
+        return this;
     }
 
     simulate(elapsedTime) {
@@ -86,6 +87,7 @@ class Student {
         } else {
             this._distance += elapsedTime * this.speed;
         }
+        return this;
     }
 
     updatePath() {
@@ -107,9 +109,10 @@ class Student {
                 this._distanceToNext = Math.hypot(x - next.x, y - next.y);
             }
         }
+        return this;
     }
 
-    draw(context, spriteCache) {
+    calculateVisualPosition() {
         let {x, y} = this.current;
         if (this._distanceToNext !== null) {
             let next = this._path[0];
@@ -117,7 +120,8 @@ class Student {
             x += (next.x - x) * progress;
             y += (next.y - y) * progress;
         }
-        spriteCache.draw(context, this.spriteId, x, y + 0.5 - HEIGHT / WIDTH, 1, HEIGHT / WIDTH);
+        y += 0.5 - HEIGHT / WIDTH;
+        this.visual = {x, y};
     }
 }
 
@@ -164,9 +168,14 @@ export default async function main(wrapper) {
         }
 
         for (let student of students) {
-            student.simulate(elapsedTime);
-            student.updatePath();
-            student.draw(c, spriteCache);
+            student
+                .simulate(elapsedTime)
+                .updatePath()
+                .calculateVisualPosition()
+        }
+        students.sort((a, b) => a.visual.y - b.visual.y);
+        for (let {spriteId, visual: {x, y}} of students) {
+            spriteCache.draw(c, spriteId, x, y, 1, HEIGHT / WIDTH);
         }
 
         c.restore();
