@@ -1,4 +1,36 @@
+
 @import url('../game.css');
+
+#menu {
+    background-color: #000;
+    box-shadow: inset 0 0 0 2px #333;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+}
+.menurow {
+    display: flex;
+}
+.menutitle {
+    font-size: 17.5px;
+    margin: 10px 10px -5px;
+}
+.menutable {
+    display: flex;
+    margin-left: 10px;
+}
+.menutable div {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+.menutable div * {
+    flex-grow: 1;
+}
 
 #container {
     padding: 5px;
@@ -13,7 +45,8 @@
     height: 50px;
 }
 #controls p,
-#controls button {
+#controls button,
+#menu button {
     background-color: #222;
     border: none;
     margin: 5px;
@@ -24,10 +57,6 @@
 }
 #controls *:last-child {
     margin-right: 10px;
-}
-
-#game {
-    display: none !important;
 }
 
 #game,
@@ -192,6 +221,17 @@
     white-space: nowrap;
 }
 
+#envpanel {
+    flex-basis: calc(100% - 305px);
+    margin-right: 5px;
+    position: relative;
+}
+#envvis {
+    background-color: #999;
+    box-shadow: inset 0 0 0 2px #333;
+    height: 100%;
+}
+
 #studentpanel {
     display: flex;
     flex-basis: 300px;
@@ -272,17 +312,6 @@
     font-size: 20px;
 }
 
-#envpanel {
-    flex-basis: calc(100% - 305px);
-    margin-left: 5px;
-    position: relative;
-}
-#envvis {
-    background-color: #999;
-    box-shadow: inset 0 0 0 2px #333;
-    height: 100%;
-}
-
 .screen {
     align-content: center;
     background-color: #000;
@@ -293,12 +322,16 @@
     position: fixed;
     text-align: center;
     top: 0; bottom: 0; left: 0; right: 0;
-    z-index: 100;
+    z-index: 2;
 }
 #s-smallscreen {
     transition: 0.1s;
     opacity: 0;
     visibility: hidden;
+    z-index: 100;
+}
+#s-menu {
+    opacity: 0.5;
 }
 
 .stretch {
