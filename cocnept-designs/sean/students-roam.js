@@ -148,10 +148,11 @@ export default async function main(wrapper) {
     function paint() {
         let now = Date.now();
         let elapsedTime = now - lastTime;
-        if (elapsedTime < 500) {
+        lastTime = now;
+        let simulate = elapsedTime < 500;
+        if (simulate) {
             panner.time += elapsedTime;
         }
-        lastTime = now;
 
         let {offsetX, offsetY, scale} = panner.getTransform();
         c.clearRect(0, 0, wrappedCanvas.width, wrappedCanvas.height);
@@ -168,10 +169,12 @@ export default async function main(wrapper) {
         }
 
         for (let student of students) {
-            student
-                .simulate(elapsedTime)
-                .updatePath()
-                .calculateVisualPosition()
+            if (simulate) {
+                student
+                    .simulate(elapsedTime)
+                    .updatePath();
+            }
+            student.calculateVisualPosition();
         }
         students.sort((a, b) => a.visual.y - b.visual.y);
         for (let {spriteId, visual: {x, y}} of students) {
