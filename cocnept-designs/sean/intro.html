@@ -5,44 +5,16 @@
     <title>Intro speak thing</title>
     <meta name="description" content=""/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
-    <link rel="stylesheet" href="./dialogue.css">
-    <link rel="stylesheet" href="./intro.css">
     <style>
-      html,
-      body {
-        height: 100%;
-      }
-      body {
-        margin: 0;
+      @import url('../game.css');
+      @import url('../basic-flex.css');
 
-        display: flex;
-        flex-direction: column;
+      @import url('./dialogue.css');
+      @import url('./intro.css');
+
+      body {
         justify-content: center;
         align-items: center;
-
-        font-family: 'Inconsolata', monospace;
-        background-color: black;
-        color: white;
-      }
-
-      button,
-      input,
-      select,
-      textarea {
-        -webkit-appearance: none;
-        border: none;
-        padding: 0;
-        background: none;
-        color: inherit;
-        font: inherit;
-      }
-      button:not(:disabled):hover {
-        cursor: pointer;
-      }
-
-      :disabled {
-        opacity: 0.5;
       }
     </style>
   </head>
