@@ -25,3 +25,7 @@ export function HSVtoRGB(h, s, v) {
     }
     return [Math.floor(r * 255), Math.floor(g * 255), Math.floor(b * 255)];
 }
+
+export function inRange(num, {min=-Infinity, max=Infinity}={}) {
+    return num >= min && num <= max;
+}

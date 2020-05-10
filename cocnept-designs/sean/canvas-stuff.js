@@ -11,8 +11,10 @@ export class WrappedCanvas {
     }
 
     async resize(then = Promise.resolve()) {
-        let { width, height } = this.wrapper.getBoundingClientRect();
+        let { left, top, width, height } = this.wrapper.getBoundingClientRect();
         let dpr = window.devicePixelRatio;
+        this.x = left;
+        this.y = top;
         if (this.width !== width || this.height !== height || this.dpr !== dpr) {
             await then;
             this.width = width;

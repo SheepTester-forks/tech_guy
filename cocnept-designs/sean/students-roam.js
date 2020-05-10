@@ -1,4 +1,4 @@
-import {WrappedCanvas} from './canvas-stuff.js';
+import {WrappedCanvas, loadImage} from './canvas-stuff.js';
 import {Panner} from './panner.js';
 
 import {WIDTH, HEIGHT, loadImages, getSprite} from '../../characters/sprites/sprite.js';
@@ -7,9 +7,9 @@ import {SpriteCache} from '../../characters/sprites/sprite-cache.js';
 
 import * as FINDER from '../../pathfinding/finder.js';
 
-import {frame} from '../../utils.js';
+import {frame, inRange} from '../../utils.js';
 
-const WIGGLE_RADIUS = 1;
+const WIGGLE_RADIUS = 0.5;
 
 let width = 10;
 let height = 5;
@@ -48,6 +48,8 @@ class Student {
         this._timeUntilMovement = 0;
         // Sprite ID in a sprite cache
         this.spriteId = null;
+        // "Actual" position of the student in motion
+        this.visual = {x: 0, y: 0};
     }
 
     goToRandomPosition() {
@@ -67,8 +69,8 @@ class Student {
             let temp = success;
             while (temp.parent) {
                 this._path.unshift({
-                    x: temp.x + (2 * WIGGLE_RADIUS - WIGGLE_RADIUS) * Math.random(),
-                    y: temp.y + (2 * WIGGLE_RADIUS - WIGGLE_RADIUS) * Math.random()
+                    x: temp.x + 2 * WIGGLE_RADIUS * Math.random() - WIGGLE_RADIUS,
+                    y: temp.y + 2 * WIGGLE_RADIUS * Math.random() - WIGGLE_RADIUS
                 });
                 temp = temp.parent;
             }
@@ -125,25 +127,41 @@ class Student {
     }
 }
 
-export default async function main(wrapper) {
+export default async function main(wrapper, debug=false) {
     let wrappedCanvas = new WrappedCanvas(wrapper);
 
-    let topHeightPadding = HEIGHT / WIDTH - 0.5;
+    let leftPadding = 1;
+    let topPadding = 3;
     let panner = new Panner({
         canvas: wrappedCanvas,
-        width,
-        height: height + topHeightPadding
+        width: width + leftPadding * 2, // 12
+        height: height + topPadding // 8
     });
     let c = wrappedCanvas.context;
     let lastTime;
     let ready = false;
+    let transform;
 
     let students = [];
     let spriteCache;
-    for (let i = 0; i < 10; i++) {
-        students.push(new Student().goToRandomPosition());
+    for (let i = 0; i < 50; i++) {
+        students.push(new Student({
+            speed: Math.random() * 0.003 + 0.0002
+        }).goToRandomPosition());
     }
     spriteCache = new SpriteCache(students.length);
+
+    function getStudents({clientX, clientY}) {
+        const selectX = (clientX - wrappedCanvas.x - transform.offsetX) / transform.scale - leftPadding;
+        const selectY = (clientY - wrappedCanvas.y - transform.offsetY) / transform.scale - topPadding;
+        const width = 1;
+        const height = HEIGHT / WIDTH;
+        return students
+            .filter(({visual: {x, y}}) => {
+                return inRange(selectX, {min: x, max: x + width}) &&
+                    inRange(selectY, {min: y, max: y + height});
+            });
+    }
 
     function paint() {
         let now = Date.now();
@@ -154,17 +172,29 @@ export default async function main(wrapper) {
             panner.time += elapsedTime;
         }
 
-        let {offsetX, offsetY, scale} = panner.getTransform();
+        transform = panner.getTransform();
+        let {offsetX, offsetY, scale} = transform;
         c.clearRect(0, 0, wrappedCanvas.width, wrappedCanvas.height);
         c.save();
         c.imageSmoothingEnabled = false;
-        c.translate(offsetX, offsetY + topHeightPadding * scale);
+        c.translate(offsetX + leftPadding * scale, offsetY + topPadding * scale);
         c.scale(scale, scale);
 
-        for (let x = 0; x < width; x++) {
-            for (let y = 0; y < height; y++) {
-                c.fillStyle = isAccessible({x, y}) ? 'black' : 'grey';
-                c.fillRect(x, y, 1, 1);
+        let backgroundHeight = background.height / background.width * panner.width;
+        c.drawImage(
+            background,
+            -leftPadding,
+            (panner.height - topPadding) - backgroundHeight,
+            panner.width,
+            backgroundHeight
+        );
+
+        if (debug) {
+            for (let x = 0; x < width; x++) {
+                for (let y = 0; y < height; y++) {
+                    c.fillStyle = isAccessible({x, y}) ? 'rgba(0, 255, 0, 0.1)' : 'rgba(255, 0, 0, 0.1)';
+                    c.fillRect(x + 0.01, y + 0.01, 0.98, 0.98);
+                }
             }
         }
 
@@ -177,8 +207,13 @@ export default async function main(wrapper) {
             student.calculateVisualPosition();
         }
         students.sort((a, b) => a.visual.y - b.visual.y);
-        for (let {spriteId, visual: {x, y}} of students) {
+        c.lineWidth = 0.05;
+        for (let {spriteId, visual: {x, y}, lastTouched} of students) {
             spriteCache.draw(c, spriteId, x, y, 1, HEIGHT / WIDTH);
+            if (now - lastTouched < 200) {
+                c.strokeStyle = `rgba(255, 0, 0, ${1 - (now - lastTouched) / 200})`;
+                c.strokeRect(x, y, 1, HEIGHT / WIDTH);
+            }
         }
 
         c.restore();
@@ -189,13 +224,22 @@ export default async function main(wrapper) {
         if (ready) paint();
     });
 
-    await Promise.all([
+    let [background] = await Promise.all([
+        loadImage('./campus.png'),
         wrappedCanvas.resize(),
         loadImages()
     ]);
 
     for (let student of students) {
         student.spriteId = spriteCache.add(getSprite(randomSprite()));
+    }
+
+    if (debug) {
+        wrappedCanvas.canvas.addEventListener('pointermove', e => {
+            for (let student of getStudents(e)) {
+                student.lastTouched = Date.now();
+            }
+        });
     }
 
     lastTime = Date.now();
