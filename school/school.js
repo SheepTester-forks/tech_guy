@@ -1,4 +1,5 @@
 import * as NAMES from '../characters/names/ntv2.js';
+import * as WARDROBE from '../characters/sprites/wardrobe.js';
 
 const NAME_DATA = {};
 
@@ -6,14 +7,14 @@ async function getNames() {
     Object.assign(NAME_DATA, await NAMES.getAllData());
 }
 
-function getNames() {
+/*function getNames() {
     let given_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/given-names.json');
     let sur_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/surnames.json');
 
     NAME_DATA.boys = NAMES.parseData(given_d, 'boys');
     NAME_DATA.girls = NAMES.parseData(given_d, 'girls');
     NAME_DATA.surnames = NAMES.parseData(sur_d, 'surnames');
-}
+}*/
 
 function weightedChoose(list, pow=2) {
     return list[Math.floor(Math.pow(Math.random(), pow) * list.length)];
@@ -27,15 +28,19 @@ function randomStudent() {
 
     let rand = Math.random();
     let gender = rand < 0.95 ? name : rand < 0.975 ? (name === 'F' ? 'M' : 'F') : 'O';
-
-    let skinColor = Math.floor(Math.random() * 4);
+    
+    let skinIndex = Math.floor(Math.random() * 4);
+    let skinColor = [WARDROBE.getTint('skin', skinIndex)];
     let hair = gender === 'F' ? 3 : 0;
     let hairType =
         gender === 'O' ? Math.floor(Math.random() * 6) : (Math.floor(Math.random() * 3) +
         ((Math.random() < 0.95) ? hair : (-hair + 3)));
-    let hairColor = Math.floor(Math.random() * (skinColor === 3 ? 4 : skinColor));
+    let hairColor = [WARDROBE.getTint('hair', Math.floor(Math.random() * (skinIndex === 3 ? 4 : skinIndex)))];
 
     let height = Math.random();
+    
+    let wardrobe = WARDROBE.getWardrobe();
+                // todo: some people have fancy coloured hair
 
     return {
         name: {
@@ -52,19 +57,22 @@ function randomStudent() {
         },
         friends: [],
         appearance: {
-            skinColor: skinColor,
-            hairType: hairType,
-            hairColor: hairColor,
+            skin: { tint: skinColor },
+            hair: { type: hairType, tint: hairColor },
             height:
-            Math.pow(height - (grade - 9) / 3, 2) * ((height < (grade - 9) / 3) ? (-9 / (a - 9)) : (9 / (12 - a))) + grade - 9
+            Math.pow(height - (grade - 9) / 3, 2) * ((height < (grade - 9) / 3) ? (-9 / (grade - 9)) : (9 / (12 - grade))) + grade - 9
         },
+        wardrobe: wardrobe,
         picture: {
-            hairType: Math.random() < 0.95 ? hairType :
-            (gender === 'O' ? Math.floor(Math.random() * 6) :
-             (Math.floor(Math.random() * 3) + ((Math.random() < 0.95) ? hair : (-hair + 3)))),
-            hairColor: hairColor
+            hair: {
+                type: Math.random() < 0.95 ? hairType : gender === 'O' ? Math.floor(Math.random() * 6) :
+                (Math.floor(Math.random() * 3) + ((Math.random() < 0.95) ? hair : (-hair + 3))),
+                tint: hairColor
+            },
+            shirt: wardrobe.shirt[Math.floor(Math.random() * wardrobe.shirt.length)]
         }
     }
+}
 
 function getSimilarity(student1, student2) {
     let similarity = 0;
@@ -99,7 +107,7 @@ function shouldBeFriends(s1, s2) {
 }
 
 function randomlyRound(r) {
-    if (Math.random() < Math.trunc(r)) {
+    if (Math.random() < r - Math.trunc(r)) {
         return Math.ceil(r);
     } else {
         return Math.floor(r);
