@@ -7,7 +7,7 @@ import {SpriteCache} from '../../characters/sprites/sprite-cache.js';
 
 import * as FINDER from '../../pathfinding/finder.js';
 
-import {frame} from '../../utils.js';
+import {frame, inRange} from '../../utils.js';
 
 const WIGGLE_RADIUS = 0.5;
 
@@ -48,6 +48,8 @@ class Student {
         this._timeUntilMovement = 0;
         // Sprite ID in a sprite cache
         this.spriteId = null;
+        // "Actual" position of the student in motion
+        this.visual = {x: 0, y: 0};
     }
 
     goToRandomPosition() {
@@ -125,7 +127,7 @@ class Student {
     }
 }
 
-export default async function main(wrapper, showValidSpots=false) {
+export default async function main(wrapper, debug=false) {
     let wrappedCanvas = new WrappedCanvas(wrapper);
 
     let leftPadding = 1;
@@ -138,6 +140,7 @@ export default async function main(wrapper, showValidSpots=false) {
     let c = wrappedCanvas.context;
     let lastTime;
     let ready = false;
+    let transform;
 
     let students = [];
     let spriteCache;
@@ -148,6 +151,18 @@ export default async function main(wrapper, showValidSpots=false) {
     }
     spriteCache = new SpriteCache(students.length);
 
+    function getStudents({clientX, clientY}) {
+        const selectX = (clientX - wrappedCanvas.x - transform.offsetX) / transform.scale - leftPadding;
+        const selectY = (clientY - wrappedCanvas.y - transform.offsetY) / transform.scale - topPadding;
+        const width = 1;
+        const height = HEIGHT / WIDTH;
+        return students
+            .filter(({visual: {x, y}}) => {
+                return inRange(selectX, {min: x, max: x + width}) &&
+                    inRange(selectY, {min: y, max: y + height});
+            });
+    }
+
     function paint() {
         let now = Date.now();
         let elapsedTime = now - lastTime;
@@ -157,7 +172,8 @@ export default async function main(wrapper, showValidSpots=false) {
             panner.time += elapsedTime;
         }
 
-        let {offsetX, offsetY, scale} = panner.getTransform();
+        transform = panner.getTransform();
+        let {offsetX, offsetY, scale} = transform;
         c.clearRect(0, 0, wrappedCanvas.width, wrappedCanvas.height);
         c.save();
         c.imageSmoothingEnabled = false;
@@ -173,7 +189,7 @@ export default async function main(wrapper, showValidSpots=false) {
             backgroundHeight
         );
 
-        if (showValidSpots) {
+        if (debug) {
             for (let x = 0; x < width; x++) {
                 for (let y = 0; y < height; y++) {
                     c.fillStyle = isAccessible({x, y}) ? 'rgba(0, 255, 0, 0.1)' : 'rgba(255, 0, 0, 0.1)';
@@ -191,8 +207,13 @@ export default async function main(wrapper, showValidSpots=false) {
             student.calculateVisualPosition();
         }
         students.sort((a, b) => a.visual.y - b.visual.y);
-        for (let {spriteId, visual: {x, y}} of students) {
+        c.lineWidth = 0.05;
+        for (let {spriteId, visual: {x, y}, lastTouched} of students) {
             spriteCache.draw(c, spriteId, x, y, 1, HEIGHT / WIDTH);
+            if (now - lastTouched < 200) {
+                c.strokeStyle = `rgba(255, 0, 0, ${1 - (now - lastTouched) / 200})`;
+                c.strokeRect(x, y, 1, HEIGHT / WIDTH);
+            }
         }
 
         c.restore();
@@ -211,6 +232,14 @@ export default async function main(wrapper, showValidSpots=false) {
 
     for (let student of students) {
         student.spriteId = spriteCache.add(getSprite(randomSprite()));
+    }
+
+    if (debug) {
+        wrappedCanvas.canvas.addEventListener('pointermove', e => {
+            for (let student of getStudents(e)) {
+                student.lastTouched = Date.now();
+            }
+        });
     }
 
     lastTime = Date.now();
