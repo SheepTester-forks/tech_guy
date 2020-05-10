@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css?family=Inconsolata');
+@import url('./basic.css');
+
+body {
+    color: #fff;
+    font-family: "Inconsolata", monospace;
+    background-color: #000;
+}
+p,
+span,
+button,
+input {
+    font-size: 15px;
+    line-height: 20px;
+}
+h3 {
+    font-size: 20px;
+    line-height: 25px;
+}

@@ -1,7 +1,35 @@
 [
-  { "say": "You’ll be working here." },
-  { "say": "This is the camera. You can click on students and our advanced facial recognition software will identify potential matches.", "select": "#camvis" },
-  { "say": "Here you can switch camera views.", "select": "#camchoose" },
-  { "say": "Here you can see our smoke detectors. These are designed to catch smoke from some newfangled “smile smokers” that kids have been using in the bathrooms.", "select": "#list > div:nth-child(7) > div.sinfo > p.sname" },
-  { "say": "And here is the directory, where you can see a student’s schedule and potential call them into the office for searching.", "select": "#directory" }
+    "You’ll be working here.",
+    {
+      "say": "This is the camera. You can click on students and our advanced facial recognition software will identify potential matches.",
+      "special": {
+          "type": "add-class",
+          "select": "#camvis",
+          "class": "principal-highlight"
+      }
+    },
+    {
+        "say": "Here you can switch camera views.",
+        "special": {
+            "type": "add-class",
+            "select": "#camchoose",
+            "class": "principal-highlight"
+        }
+    },
+    {
+        "say": "Here you can see our smoke detectors. These are designed to catch smoke from some newfangled “smile smokers” that kids have been using in the bathrooms.",
+        "special": {
+            "type": "add-class",
+            "select": "#list > div:nth-child(7) > div.sinfo > p.sname",
+            "class": "principal-highlight"
+        }
+    },
+    {
+        "say": "And here is the directory, where you can see a student’s schedule and potential call them into the office for searching.",
+        "special": {
+            "type": "add-class",
+            "select": "#directory",
+            "class": "principal-highlight"
+        }
+    }
 ]

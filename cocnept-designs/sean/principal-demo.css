@@ -1,45 +1,48 @@
 :root {
-  --principal-highlight: #fdd402;
+    --principal-highlight: #fdd402;
 }
 .principal-highlight {
-  outline: 5px solid var(--principal-highlight);
+    outline: 5px solid var(--principal-highlight);
 }
 
-.demo-wrapper {
-  position: fixed;
-  display: flex;
-  align-items: center;
-  max-width: 500px;
-  padding: 10px;
-  margin: 10px;
-  padding-right: 40px;
-  border-radius: 500px;
-  background-color: rgba(31, 31, 31, 0.8);
+.principal-demo {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    max-width: 500px;
+    padding: 10px;
+    margin: 10px;
+    padding-right: 40px;
+    border-radius: 500px;
+    background-color: rgba(31, 31, 31, 0.8);
 }
-.demo-thumbnail {
-  border: 5px solid var(--principal-highlight);
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  image-rendering: pixelated;
-  object-fit: cover;
-  object-position: top;
-  margin-right: 10px;
-  flex: none;
+.principal-demo .speak-thumbnail {
+    border: 5px solid var(--principal-highlight);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    image-rendering: pixelated;
+    object-fit: cover;
+    object-position: top;
+    margin-right: 10px;
+    flex: none;
 }
-.demo-dialogue {
-  flex: auto;
+.principal-demo .speak-dialogue {
+    display: inline;
 }
-.demo-to-speak {
-  visibility: hidden;
+.principal-demo .speak-to-speak {
+    margin-right: 5px;
 }
-.demo-ok {
-  -webkit-appearance: none;
-  border: none;
-  background: none;
-  background-color: #666;
-  cursor: pointer;
+.principal-demo .speak-canvas-wrapper {
+    display: none;
 }
-.demo-hide {
-  visibility: hidden;
+.principal-demo .speak-options {
+    display: inline;
+}
+.principal-demo .speak-option {
+    -webkit-appearance: none;
+    border: none;
+    background: none;
+    background-color: #666;
+    cursor: pointer;
 }

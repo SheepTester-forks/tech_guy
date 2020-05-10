@@ -33,10 +33,4 @@ export function loadImage(url) {
     });
 }
 
-export function wait(delay) {
-    return new Promise(resolve => setTimeout(resolve, delay));
-}
-
-export function frame() {
-    return new Promise(resolve => window.requestAnimationFrame(resolve));
-}
+export {frame} from '../../utils.js';
