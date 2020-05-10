@@ -1,4 +1,4 @@
-import {WrappedCanvas} from './canvas-stuff.js';
+import {WrappedCanvas, loadImage} from './canvas-stuff.js';
 import {Panner} from './panner.js';
 
 import {WIDTH, HEIGHT, loadImages, getSprite} from '../../characters/sprites/sprite.js';
@@ -9,7 +9,7 @@ import * as FINDER from '../../pathfinding/finder.js';
 
 import {frame} from '../../utils.js';
 
-const WIGGLE_RADIUS = 1;
+const WIGGLE_RADIUS = 0.5;
 
 let width = 10;
 let height = 5;
@@ -67,8 +67,8 @@ class Student {
             let temp = success;
             while (temp.parent) {
                 this._path.unshift({
-                    x: temp.x + (2 * WIGGLE_RADIUS - WIGGLE_RADIUS) * Math.random(),
-                    y: temp.y + (2 * WIGGLE_RADIUS - WIGGLE_RADIUS) * Math.random()
+                    x: temp.x + 2 * WIGGLE_RADIUS * Math.random() - WIGGLE_RADIUS,
+                    y: temp.y + 2 * WIGGLE_RADIUS * Math.random() - WIGGLE_RADIUS
                 });
                 temp = temp.parent;
             }
@@ -125,14 +125,15 @@ class Student {
     }
 }
 
-export default async function main(wrapper) {
+export default async function main(wrapper, showValidSpots=false) {
     let wrappedCanvas = new WrappedCanvas(wrapper);
 
-    let topHeightPadding = HEIGHT / WIDTH - 0.5;
+    let leftPadding = 1;
+    let topPadding = 3;
     let panner = new Panner({
         canvas: wrappedCanvas,
-        width,
-        height: height + topHeightPadding
+        width: width + leftPadding * 2, // 12
+        height: height + topPadding // 8
     });
     let c = wrappedCanvas.context;
     let lastTime;
@@ -140,8 +141,10 @@ export default async function main(wrapper) {
 
     let students = [];
     let spriteCache;
-    for (let i = 0; i < 10; i++) {
-        students.push(new Student().goToRandomPosition());
+    for (let i = 0; i < 50; i++) {
+        students.push(new Student({
+            speed: Math.random() * 0.003 + 0.0002
+        }).goToRandomPosition());
     }
     spriteCache = new SpriteCache(students.length);
 
@@ -158,13 +161,24 @@ export default async function main(wrapper) {
         c.clearRect(0, 0, wrappedCanvas.width, wrappedCanvas.height);
         c.save();
         c.imageSmoothingEnabled = false;
-        c.translate(offsetX, offsetY + topHeightPadding * scale);
+        c.translate(offsetX + leftPadding * scale, offsetY + topPadding * scale);
         c.scale(scale, scale);
 
-        for (let x = 0; x < width; x++) {
-            for (let y = 0; y < height; y++) {
-                c.fillStyle = isAccessible({x, y}) ? 'black' : 'grey';
-                c.fillRect(x, y, 1, 1);
+        let backgroundHeight = background.height / background.width * panner.width;
+        c.drawImage(
+            background,
+            -leftPadding,
+            (panner.height - topPadding) - backgroundHeight,
+            panner.width,
+            backgroundHeight
+        );
+
+        if (showValidSpots) {
+            for (let x = 0; x < width; x++) {
+                for (let y = 0; y < height; y++) {
+                    c.fillStyle = isAccessible({x, y}) ? 'rgba(0, 255, 0, 0.1)' : 'rgba(255, 0, 0, 0.1)';
+                    c.fillRect(x + 0.01, y + 0.01, 0.98, 0.98);
+                }
             }
         }
 
@@ -189,7 +203,8 @@ export default async function main(wrapper) {
         if (ready) paint();
     });
 
-    await Promise.all([
+    let [background] = await Promise.all([
+        loadImage('./campus.png'),
         wrappedCanvas.resize(),
         loadImages()
     ]);
