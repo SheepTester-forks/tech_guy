@@ -12,6 +12,7 @@
 
     <body>
         <canvas></canvas>
+        <!-- Draw a grid of random sprites via random-sprite.js (outdated) -->
         <script type="module">
             import * as SPRITES from './sprite.js';
           
@@ -31,8 +32,8 @@
 
             SPRITES.loadImages().then(function () {
                 for (let i = 0; i < canvas.width; i += 50) {
-                    for (let j = 0; j < canvas.height; j += 195) {
-                        ctx.drawImage(SPRITES.getSprite(randomSprite()), i, j, 49, 110);
+                    for (let j = 0; j < canvas.height; j += 50) {
+                        ctx.drawImage(SPRITES.getSprite(randomSprite(), true), i, j, 49, 49);
                     }
                 }
             });

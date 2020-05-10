@@ -1,12 +1,6 @@
-const WIDTH = 12;
-const HEIGHT = 27;
-
-let out = document.createElement('canvas');
-out.width = WIDTH;
-out.height = HEIGHT;
-let ctx = out.getContext('2d');
-
 let loaded = 0;
+const WIDTH = 12; // leaving these here because Sean might use em
+const HEIGHT = 27; // these are the dimensions of the normal sprite, not the picture
 
 let paths = [
     'skin/skin', 'skin/shadow',
@@ -17,7 +11,8 @@ let paths = [
     'hair/hair3/hair', 'hair/hair4/hair', 'hair/hair5/hair',
     'hair/hair0/shadow', 'hair/hair1/shadow', 'hair/hair2/shadow',
     'hair/hair3/shadow', 'hair/hair4/shadow', 'hair/hair5/shadow',
-    'hat/hat', 'hat/shadow'
+    'hat/hat', 'hat/shadow',
+    'picture/picture'
 ];
 let images = {};
 
@@ -36,39 +31,52 @@ function loadImages() {
             code = 'hat' + (split[1] === 'shadow' ? 's' : '');
         }
         images[code] = img;
-    })))
+    })));
 }
 
-function drawTinted(image, y, facing, cuts) {
+function drawTinted(ctx, image, x, y, w, facing, cuts) {
     cuts.push(23);
     for (let i = 0; i < cuts.length; i++) {
-        ctx.drawImage(image, 0, cuts[i - 1] || 0, WIDTH, cuts[i] - (cuts[i - 1] || 0) + 1, 0, (cuts[i - 1] || 0) + y + i, facing * WIDTH, cuts[i] - (cuts[i - 1] || 0) + 1);
+        ctx.drawImage(image, 0, cuts[i - 1] || 0, w, cuts[i] - (cuts[i - 1] || 0) + 1, x, (cuts[i - 1] || 0) + y + i, facing * w, cuts[i] - (cuts[i - 1] || 0) + 1);
     }
 }
 
-function getSprite(sprite, imageData=false) {
+function getSprite(sprite, picture=false) {
+    let width = picture ? 16 : 12;
+    let height = picture ? 16 : 27;
+    let xOff = picture ? 2 : 0;
+    
+    // maybe creating a canvas every time is slow, but ill fix that later if it becomes an issue
+    let out = document.createElement('canvas');
+    out.width = width;
+    out.height = height;
+    let ctx = out.getContext('2d');
+    
     ctx.save();
-    ctx.clearRect(0, 0, WIDTH, HEIGHT);
     ctx.scale(sprite.facing, 1);
 
     let cuts = [];
     for (let i = 0; i < sprite.height; i++) {
         cuts.push(i === sprite.height - 1 && i !== 0 ? 22 : 15);
     }
-
-    drawTinted(images.skin, 3 - sprite.height, sprite.facing, cuts);
-    drawTinted(images['pants' + sprite.pants.type], 3 - sprite.height, sprite.facing, cuts);
-    drawTinted(images['shoes' + sprite.shoes.type], 3, sprite.facing, []);
-    drawTinted(images['shirt' + sprite.shirt.type], 3 - sprite.height, sprite.facing, cuts);
-    drawTinted(images.shadow, 3 - sprite.height, sprite.facing, cuts);
-    drawTinted(images['hair' + sprite.hair.type], 3 - sprite.height, sprite.facing, cuts);
-    drawTinted(images['hair' + sprite.hair.type + 's'], 3 - sprite.height, sprite.facing, cuts);
+    
+    if (picture) {
+        drawTinted(ctx, images.picture, 0, 0, width, sprite.facing, []);    
+    }
+    
+    drawTinted(ctx, images.skin, xOff, 3 - sprite.height, width, sprite.facing, cuts);
+    drawTinted(ctx, images['pants' + sprite.pants.type], xOff, 3 - sprite.height, width, sprite.facing, cuts);
+    drawTinted(ctx, images['shoes' + sprite.shoes.type], xOff, 3, width, sprite.facing, []);
+    drawTinted(ctx, images['shirt' + sprite.shirt.type], xOff, 3 - sprite.height, width, sprite.facing, cuts);
+    drawTinted(ctx, images.shadow, xOff, 3 - sprite.height, width, sprite.facing, cuts);
+    drawTinted(ctx, images['hair' + sprite.hair.type], xOff, 3 - sprite.height, width, sprite.facing, cuts);
+    drawTinted(ctx, images['hair' + sprite.hair.type + 's'], xOff, 3 - sprite.height, width, sprite.facing, cuts);
 
     if (sprite.hat.type) {
-        drawTinted(images['hat'], 3 - sprite.height, sprite.facing, []);
+        drawTinted(ctx, images['hat'], xOff, 3 - sprite.height, width, sprite.facing, []);
     }
 
-    let gid = ctx.getImageData(0, 0, WIDTH, HEIGHT);
+    let gid = ctx.getImageData(0, 0, width, height);
 
     for (let i = 0; i < gid.data.length; i += 4) {
         let id = [];
@@ -98,8 +106,11 @@ function getSprite(sprite, imageData=false) {
         } else {
             if (gid.data[i] === 0) { // #0xx (shirt 1)
                 id = ['shirt', 1, 0];
-            } else { // #x00 (skin)
+            } else if (gid.data[i + 1] === 0) { // #x00 (skin)
+                // extra check for picture
                 id = ['skin', 0];
+            } else { // picture
+                continue;
             }
         }
 
@@ -111,10 +122,10 @@ function getSprite(sprite, imageData=false) {
 
     }
 
-    if (!imageData) ctx.putImageData(gid, 0, 0);
+    ctx.putImageData(gid, 0, 0);
     ctx.restore();
 
-    return imageData ? gid : out;
+    return out;
 }
 
 export {

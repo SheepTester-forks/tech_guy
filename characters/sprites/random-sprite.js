@@ -1,5 +1,9 @@
 import {HSVtoRGB} from '../../utils.js';
 
+// vestigial code with functions used elsewhere
+// note that the hdeg vary parameters are not all the same as the actual random sprite generator (to be fixed)
+// so don't modify this or anything, i need to update the real code to match this one.
+
 function randomSkin(color) {
     return vary([[136, 102, 85], [204, 170, 153], [247, 221, 196], [255, 221, 204]][color], 2, 8);
 }
