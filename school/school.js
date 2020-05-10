@@ -6,6 +6,14 @@ async function getNames() {
     Object.assign(NAME_DATA, await NAMES.getAllData());
 }
 
+function getNames() {
+    let given_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/given-names.json');
+    let sur_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/surnames.json');
+
+    NAME_DATA.boys = NAMES.parseData(given_d, 'boys');
+    NAME_DATA.girls = NAMES.parseData(given_d, 'girls');
+    NAME_DATA.surnames = NAMES.parseData(sur_d, 'surnames');
+}
 
 function weightedChoose(list, pow=2) {
     return list[Math.floor(Math.pow(Math.random(), pow) * list.length)];
@@ -13,16 +21,21 @@ function weightedChoose(list, pow=2) {
 
 function randomStudent() {
     let grade = Math.floor(Math.random() * 4) + 9; // 9 through 12
-    // Gender = social / pronouns
+    // Gender = social
     // Name = traditionally boy or girl names
-    let name = Math.random() < 0.5 ? "F" : "M";
+    let name = Math.random() < 0.5 ? 'F' : 'M';
 
     let rand = Math.random();
-    let gender = rand < 0.95 ? name : rand < 0.975 ? (name === "F" ? "M" : "F") : "O";
+    let gender = rand < 0.95 ? name : rand < 0.975 ? (name === 'F' ? 'M' : 'F') : 'O';
 
-    let skinColor = Math.random();
-    let hairType = Math.random();
-    let hairColor = Math.random();
+    let skinColor = Math.floor(Math.random() * 4);
+    let hair = gender === 'F' ? 3 : 0;
+    let hairType =
+        gender === 'O' ? Math.floor(Math.random() * 6) : (Math.floor(Math.random() * 3) +
+        ((Math.random() < 0.95) ? hair : (-hair + 3)));
+    let hairColor = Math.floor(Math.random() * (skinColor === 3 ? 4 : skinColor));
+
+    let height = Math.random();
 
     return {
         name: {
@@ -41,20 +54,20 @@ function randomStudent() {
         appearance: {
             skinColor: skinColor,
             hairType: hairType,
-            hairColor: hairColor
+            hairColor: hairColor,
+            height:
+            Math.pow(height - (grade - 9) / 3, 2) * ((height < (grade - 9) / 3) ? (-9 / (a - 9)) : (9 / (12 - a))) + grade - 9
         },
         picture: {
-            hairType: Math.random() < 0.9 ? hairType : Math.random(),
-            hairColor: Math.random() < 0.9 ? hairColor : Math.random(),
-            shirtType: Math.random(),
-            shirtColor: Math.random()
+            hairType: Math.random() < 0.95 ? hairType :
+            (gender === 'O' ? Math.floor(Math.random() * 6) :
+             (Math.floor(Math.random() * 3) + ((Math.random() < 0.95) ? hair : (-hair + 3)))),
+            hairColor: hairColor
         }
     }
-}
 
 function getSimilarity(student1, student2) {
     let similarity = 0;
-
     similarity += student1.gender === student2.gender; // segregation rules the nation \("/)/
 
     similarity += 1 - Math.abs(student1.chance.drug - student2.chance.drug);
