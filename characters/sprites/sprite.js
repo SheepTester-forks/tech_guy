@@ -43,7 +43,7 @@ function drawTinted(image, y, facing, cuts) {
     }
 }
 
-function getSprite(sprite) {
+function getSprite(sprite, imageData=false) {
     ctx.save();
     ctx.clearRect(0, 0, 12, 27);
     ctx.scale(sprite.facing, 1);
@@ -108,10 +108,10 @@ function getSprite(sprite) {
 
     }
 
-    ctx.putImageData(gid, 0, 0);
+    if (!imageData) ctx.putImageData(gid, 0, 0);
     ctx.restore();
 
-    return out;
+    return imageData ? gid : out;
 }
 
 export {
