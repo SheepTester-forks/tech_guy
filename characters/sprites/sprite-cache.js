@@ -2,6 +2,10 @@ import {WIDTH, HEIGHT} from './sprite.js';
 
 export class SpriteCache {
     constructor(capacity) {
+        if (!Number.isInteger(capacity)) {
+            throw new TypeError('Capacity should be an integer.')
+        }
+
         this.capacity = capacity;
         this.sprites = 0;
 
@@ -16,6 +20,9 @@ export class SpriteCache {
     }
 
     add(sprite) {
+        if (this.sprites >= this.capacity) {
+            throw new Error('Cache is full and cannot accept any more students.');
+        }
         let spriteId = this.sprites++;
         this._context.drawImage(sprite, spriteId * WIDTH, 0);
         return spriteId;
