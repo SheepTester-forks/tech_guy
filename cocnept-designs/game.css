@@ -9,9 +9,11 @@ body {
 p,
 span,
 button,
-input {
+input,
+label {
     font-size: 15px;
     line-height: 20px;
+    margin: 0;
 }
 h3 {
     font-size: 20px;
