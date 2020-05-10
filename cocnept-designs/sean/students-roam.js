@@ -15,8 +15,8 @@ let width = 10;
 let height = 5;
 function isAccessible({x, y}) {
     return x >= 0 && x < width &&
-    y >= 0 && y < height &&
-    (x < 6 || y > 2);
+        y >= 0 && y < height &&
+        (x < 6 || y > 2);
 }
 function getRandomPosition() {
     let position;
@@ -25,13 +25,13 @@ function getRandomPosition() {
             x: Math.random() * width | 0,
             y: Math.random() * height | 0
         };
-    } while (isAccessible(position));
+    } while (!isAccessible(position));
     return position;
 }
 
 class Student {
     constructor({
-        speed=0.01
+        speed=0.002
     }={}) {
         this.speed = speed;
 
@@ -42,7 +42,10 @@ class Student {
         // Distance walked between two tiles
         this._distance = null;
         // Distance to the next tile
+        // Use this to determine if it is walking
         this._distanceToNext = null;
+        // Time until movement
+        this._timeUntilMovement = 0;
         // Sprite ID in a sprite cache
         this.spriteId = null;
     }
@@ -54,7 +57,11 @@ class Student {
 
     setDestination({x: destX, y: destY}) {
         let {x, y} = this.current;
-        let success = FINDER.simple(new FINDER.Node(x, y), new FINDER.Node(destX, destY), isAccessible)
+        let success = FINDER.simple(
+            new FINDER.Node(Math.floor(x), Math.floor(y)),
+            new FINDER.Node(destX, destY),
+            isAccessible
+        );
         if (success !== -1) {
             this._path = [];
             let temp = success;
@@ -68,8 +75,15 @@ class Student {
         }
     }
 
-    incrementDistance(elapsedTime) {
-        if (this._distance !== null) {
+    simulate(elapsedTime) {
+        if (this._distanceToNext === null) {
+            this._timeUntilMovement -= elapsedTime;
+            if (this._timeUntilMovement < 0) {
+                this.setDestination(getRandomPosition());
+                // TODO: Better way to set idle time?
+                this._timeUntilMovement = Math.random() * 4000 + 1000;
+            }
+        } else {
             this._distance += elapsedTime * this.speed;
         }
     }
@@ -97,23 +111,24 @@ class Student {
 
     draw(context, spriteCache) {
         let {x, y} = this.current;
-        if (this._distance !== null) {
+        if (this._distanceToNext !== null) {
             let next = this._path[0];
             let progress = this._distance / this._distanceToNext;
             x += (next.x - x) * progress;
             y += (next.y - y) * progress;
         }
-        spriteCache.draw(context, this.spriteId, x + 0.5, y + 0.5, 1, HEIGHT / WIDTH);
+        spriteCache.draw(context, this.spriteId, x, y + 0.5 - HEIGHT / WIDTH, 1, HEIGHT / WIDTH);
     }
 }
 
 export default async function main(wrapper) {
     let wrappedCanvas = new WrappedCanvas(wrapper);
 
+    let topHeightPadding = HEIGHT / WIDTH - 0.5;
     let panner = new Panner({
         canvas: wrappedCanvas,
         width,
-        height
+        height: height + topHeightPadding
     });
     let c = wrappedCanvas.context;
     let lastTime;
@@ -138,11 +153,18 @@ export default async function main(wrapper) {
         c.clearRect(0, 0, wrappedCanvas.width, wrappedCanvas.height);
         c.save();
         c.imageSmoothingEnabled = false;
-        c.translate(offsetX, offsetY);
+        c.translate(offsetX, offsetY + topHeightPadding * scale);
         c.scale(scale, scale);
 
+        for (let x = 0; x < width; x++) {
+            for (let y = 0; y < height; y++) {
+                c.fillStyle = isAccessible({x, y}) ? 'black' : 'grey';
+                c.fillRect(x, y, 1, 1);
+            }
+        }
+
         for (let student of students) {
-            student.incrementDistance(elapsedTime);
+            student.simulate(elapsedTime);
             student.updatePath();
             student.draw(c, spriteCache);
         }
