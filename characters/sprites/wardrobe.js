@@ -1,11 +1,20 @@
 const bases = {
+    skin: [[136, 102, 85], [204, 170, 153], [247, 221, 196], [255, 221, 204]],
+    hair: [[51, 34, 0], [153, 102, 51], [204, 102, 0], [255, 238, 204]],
     hat: [[51, 51, 51], [102, 0, 34], [0, 34, 102], [238, 238, 238]],
     jacket: [[51, 51, 51], [102, 0, 34], [0, 34, 102], [238, 238, 238]],
     pants: [[51, 51, 51], [204, 170, 102], [0, 68, 153], [153, 153, 153]],
     shoes: [[51, 51, 51], [102, 68, 0], [102, 102, 102], [238, 238, 238]]
 };
+const varies = {
+    skin: 2, hair: 8
+}//todo: extend this to the other types
 
-function getWardrobe(sprite) {
+function getTint(type, index) {
+    return vary(bases[type][index], varies[type], 8);
+}
+
+function getWardrobe() {
     let favorite = {
         hat: {
             chance: Math.random() < 0.9 ? 0 : Math.random() < 0.5 ? 1 : Math.random(),
@@ -79,5 +88,6 @@ function HSVtoRGB(h, s, v) {
 }
 
 export {
-    getWardrobe
+    getWardrobe,
+    getTint
 };
