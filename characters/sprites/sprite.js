@@ -2,6 +2,17 @@ let loaded = 0;
 const WIDTH = 12; // leaving these here because Sean might use em
 const HEIGHT = 27; // these are the dimensions of the normal sprite, not the picture
 
+
+let out = document.createElement('canvas');
+out.width = WIDTH;
+out.height = HEIGHT;
+let ctx = out.getContext('2d');
+
+let pout = document.createElement('canvas');
+pout.width = 16;
+pout.height = 16;
+let pctx = pout.getContext('2d');
+
 let paths = [
     'skin/skin', 'skin/shadow',
     'pants/pants0', 'pants/pants1', 'shoes/shoes0', 'shoes/shoes1',
@@ -34,25 +45,21 @@ function loadImages() {
     })));
 }
 
-function drawTinted(ctx, image, x, y, w, facing, cuts) {
+function drawTinted(image, y, facing, cuts) {
     cuts.push(23);
     for (let i = 0; i < cuts.length; i++) {
-        ctx.drawImage(image, 0, cuts[i - 1] || 0, w, cuts[i] - (cuts[i - 1] || 0) + 1, x, (cuts[i - 1] || 0) + y + i, facing * w, cuts[i] - (cuts[i - 1] || 0) + 1);
+        ctx.drawImage(image, 0, cuts[i - 1] || 0, WIDTH, cuts[i] - (cuts[i - 1] || 0) + 1, 0, (cuts[i - 1] || 0) + y + i, facing * WIDTH, cuts[i] - (cuts[i - 1] || 0) + 1);
     }
 }
 
 function getSprite(sprite, picture=false) {
-    let width = picture ? 16 : 12;
-    let height = picture ? 16 : 27;
-    let xOff = picture ? 2 : 0;
     
-    // maybe creating a canvas every time is slow, but ill fix that later if it becomes an issue
-    let out = document.createElement('canvas');
-    out.width = width;
-    out.height = height;
-    let ctx = out.getContext('2d');
+    if (picture) {
+        pctx.drawImage(images.picture, 0, 0);
+    }
     
     ctx.save();
+    ctx.clearRect(0, 0, WIDTH, HEIGHT);
     ctx.scale(sprite.facing, 1);
 
     let cuts = [];
@@ -60,23 +67,20 @@ function getSprite(sprite, picture=false) {
         cuts.push(i === sprite.height - 1 && i !== 0 ? 22 : 15);
     }
     
-    if (picture) {
-        drawTinted(ctx, images.picture, 0, 0, width, sprite.facing, []);    
-    }
-    
-    drawTinted(ctx, images.skin, xOff, 3 - sprite.height, width, sprite.facing, cuts);
-    drawTinted(ctx, images['pants' + sprite.pants.type], xOff, 3 - sprite.height, width, sprite.facing, cuts);
-    drawTinted(ctx, images['shoes' + sprite.shoes.type], xOff, 3, width, sprite.facing, []);
-    drawTinted(ctx, images['shirt' + sprite.shirt.type], xOff, 3 - sprite.height, width, sprite.facing, cuts);
-    drawTinted(ctx, images.shadow, xOff, 3 - sprite.height, width, sprite.facing, cuts);
-    drawTinted(ctx, images['hair' + sprite.hair.type], xOff, 3 - sprite.height, width, sprite.facing, cuts);
-    drawTinted(ctx, images['hair' + sprite.hair.type + 's'], xOff, 3 - sprite.height, width, sprite.facing, cuts);
+    drawTinted(images.skin, 3 - sprite.height, sprite.facing, cuts);
+    drawTinted(images['pants' + sprite.pants.type], 3 - sprite.height, sprite.facing, cuts);
+    drawTinted(images['shoes' + sprite.shoes.type], 3, sprite.facing, []);
+    drawTinted(images['shirt' + sprite.shirt.type], 3 - sprite.height, sprite.facing, cuts);
+    drawTinted(images.shadow, 3 - sprite.height, sprite.facing, cuts);
+    drawTinted(images['hair' + sprite.hair.type], 3 - sprite.height, sprite.facing, cuts);
+    drawTinted(images['hair' + sprite.hair.type + 's'], 3 - sprite.height, sprite.facing, cuts);
 
     if (sprite.hat.type) {
-        drawTinted(ctx, images['hat'], xOff, 3 - sprite.height, width, sprite.facing, []);
+        drawTinted(images.hat, 3 - sprite.height, sprite.facing, []);
+        drawTinted(images.hats, 3 - sprite.height, sprite.facing, []);
     }
 
-    let gid = ctx.getImageData(0, 0, width, height);
+    let gid = ctx.getImageData(0, 0, WIDTH, HEIGHT);
 
     for (let i = 0; i < gid.data.length; i += 4) {
         let id = [];
@@ -106,11 +110,8 @@ function getSprite(sprite, picture=false) {
         } else {
             if (gid.data[i] === 0) { // #0xx (shirt 1)
                 id = ['shirt', 1, 0];
-            } else if (gid.data[i + 1] === 0) { // #x00 (skin)
-                // extra check for picture
+            } else { // #x00 (skin)
                 id = ['skin', 0];
-            } else { // picture
-                continue;
             }
         }
 
@@ -124,7 +125,11 @@ function getSprite(sprite, picture=false) {
 
     ctx.putImageData(gid, 0, 0);
     ctx.restore();
-
+    
+    if (picture) {
+        pctx.drawImage(out, 2, 0);
+        return pout;
+    }
     return out;
 }
 

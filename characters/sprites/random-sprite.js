@@ -43,7 +43,7 @@ function randomSprite() {
         shoes: { type: Math.floor(Math.random() * 2), tint: [randomShoes()] },
         shirt: { type: Math.floor(Math.random() * 6), tint: [randomShirt(), randomJacket()] },
         hair: { type: Math.floor(Math.random() * 6), tint: [randomHair(color)] },
-        hat: { type: Math.floor(Math.random() * 100) === 0, tint: [randomJacket()] },
+        hat: { type: Math.floor(Math.random() * 20) === 0, tint: [randomJacket()] },
         height: Math.floor(Math.random() * 4),
         facing: Math.floor(Math.random() * 2) * 2 - 1
     };
