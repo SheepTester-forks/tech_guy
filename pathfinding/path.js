@@ -1,3 +1,5 @@
+import {Node, simple} from './finder.js';
+
 let map = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0],
@@ -60,54 +62,8 @@ for (let i = 0; i < 8; i++) {
     }
 }
 
-function getNeighbors(node) {
-    let poss = [new Node(node.x - 1, node.y), new Node(node.x, node.y - 1), new Node(node.x + 1, node.y), new Node(node.x, node.y + 1)];
-    let neighbors = [];
-    for (let i = 0; i < 4; i++) {
-        if (poss[i].x > -1 && poss[i].x < 8 && poss[i].y > -1 && poss[i].y < 15 && map[poss[i].x][poss[i].y] === 0) {
-            neighbors.push(poss[i]);
-        }
-    }
-    neighbors.sort(() => Math.random() - 0.5);
-    return neighbors;
-}
-
-class Node {
-    constructor(x, y, parent) {
-        this.x = x;
-        this.y = y;
-        this.parent = parent;
-        this.str = x + ',' + y;
-    }
-}
-
-function simple(start, end) {
-    let queue = [];
-    let seen = [];
-    
-    queue.push(start);
-    seen.push(start.str);
-
-    while (queue.length) {
-        let curr = queue.shift();
-
-        if (curr.str === end.str) {
-            return curr;
-        }
-
-        let neighbors = getNeighbors(curr);
-        for (let k = 0; k < neighbors.length; k++) {
-            let neighbor = neighbors[k];
-            
-            if (!seen.includes(neighbor.str)) {
-                queue.push(neighbor);
-                seen.push(neighbor.str);
-                neighbor.parent = curr;
-            }
-        }
-    }
-    
-    return -1;
+function isValidNeighbor(pos) {
+    return pos.x > -1 && pos.x < 8 && pos.y > -1 && pos.y < 15 && map[pos.x][pos.y] === 0;
 }
 
 let doorList = Object.values(doors.classes);
@@ -126,7 +82,7 @@ let iter = 1000;
 for (let i = 0; i < iter; i++) {
     let randS = doorList[Math.floor(Math.random() * doorList.length)];
     let randE = doorList[Math.floor(Math.random() * doorList.length)];
-    let path = simple(new Node(randS[0], randS[1]), new Node(randE[0], randE[1]));
+    let path = simple(new Node(randS[0], randS[1]), new Node(randE[0], randE[1]), isValidNeighbor);
     thing[path.x][path.y]++;
     while (path.parent) {
         path = path.parent;

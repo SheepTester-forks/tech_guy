@@ -1,26 +1,5 @@
-@import url('https://fonts.googleapis.com/css?family=Inconsolata');
-* {
-    color: #fff;
-    font-family: "Inconsolata", monospace;
-    margin: 0;
-}
-p,
-span,
-button,
-input,
-label {
-    font-size: 15px;
-    line-height: 20px;
-}
-h3 {
-    font-size: 20px;
-    line-height: 25px;
-}
-body,
-html {
-    background-color: #000;
-    height: 100%;
-}
+
+@import url('../game.css');
 
 #menu {
     background-color: #000;

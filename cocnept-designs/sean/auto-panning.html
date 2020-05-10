@@ -33,6 +33,7 @@
         <div id="wrapper"></div>
         <script type="module">
             import {WrappedCanvas, loadImage, frame} from './canvas-stuff.js';
+            import {Panner} from './panner.js';
 
             let wrapper = document.getElementById('wrapper');
 
@@ -40,54 +41,42 @@
             wrappedCanvas.resize();
 
             // In the actual game we'll be using the window resize event
-            let observer = new ResizeObserver(() => {
-                wrappedCanvas.resize();
+            let observer = new ResizeObserver(async () => {
+                await wrappedCanvas.resize();
+                if (image) {
+                    paint();
+                }
             });
             observer.observe(wrapper);
 
             let params = new URL(window.location).searchParams;
 
-            /** Time in milliseconds that the pan pauses at either end of the panning */
-            const EDGE_PAUSE = +params.get('edge-pause') || 2000;
+            let panner = new Panner({
+                canvas: wrappedCanvas,
+                edgePause: +params.get('edge-pause') || undefined,
+                speed: +params.get('speed') || undefined
+            });
+            let c = wrappedCanvas.context;
+            let image;
+            function paint() {
+                c.clearRect(0, 0, wrappedCanvas.width, wrappedCanvas.height);
+                c.imageSmoothingEnabled = false;
 
-            /** Time in milliseconds per pixel that the pan moves */
-            const SPEED = +params.get('speed') || 10;
-
-            loadImage('./munkler.png').then(async image => {
-                let c = wrappedCanvas.context;
-                let time = 0;
-
-                function getVisualOffset(offset) {
-                    let state = time % (EDGE_PAUSE * 2 + offset * SPEED * 2);
-                    let visualOffset = 0;
-                    if (state < offset * SPEED) {
-                        visualOffset = state / SPEED;
-                    } else if (state >= offset * SPEED && state < offset * SPEED + EDGE_PAUSE) {
-                        visualOffset = offset;
-                    } else if (state >= offset * SPEED + EDGE_PAUSE && state < (offset * SPEED) * 2 + EDGE_PAUSE) {
-                        visualOffset = ((offset * SPEED) * 2 + EDGE_PAUSE - state) / SPEED;
-                    }
-                    return visualOffset;
-                }
-
+                let {scale, offsetX, offsetY} = panner.getTransform();
+                c.save();
+                c.translate(offsetX, offsetY);
+                c.scale(scale, scale);
+                c.drawImage(image, 0, 0);
+                c.restore();
+            }
+            loadImage('./munkler.png').then(async loadedImage => {
+                image = loadedImage;
+                panner.width = image.width;
+                panner.height = image.height;
                 while (true) {
-                    c.clearRect(0, 0, wrappedCanvas.width, wrappedCanvas.height);
-                    c.imageSmoothingEnabled = false;
-
-                    let offset;
-                    if (image.width / image.height > wrappedCanvas.width / wrappedCanvas.height) {
-                        // Image is wider than canvas
-                        let scaledWidth = image.width / image.height * wrappedCanvas.height;
-                        let visualOffset = getVisualOffset(scaledWidth - wrappedCanvas.width);
-                        c.drawImage(image, -visualOffset, 0, scaledWidth, wrappedCanvas.height);
-                    } else {
-                        // Image is taller than canvas
-                        let scaledHeight = image.height / image.width * wrappedCanvas.width;
-                        let visualOffset = getVisualOffset(scaledHeight - wrappedCanvas.height);
-                        c.drawImage(image, 0, -visualOffset, wrappedCanvas.width, scaledHeight);
-                    }
-
-                    time = await frame();
+                    let time = await frame();
+                    panner.time = time;
+                    paint();
                 }
             })
         </script>
