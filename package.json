@@ -1,0 +1,16 @@
+{
+  "name": "tech_guy",
+  "version": "1.0.0",
+  "description": "Great repository names are short and memorable. Need inspiration? How about tech_guy?",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SheepTester/tech_guy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SheepTester/tech_guy/issues"
+  },
+  "homepage": "https://github.com/SheepTester/tech_guy#readme"
+}
