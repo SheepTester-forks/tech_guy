@@ -1,0 +1,79 @@
+env:
+    browser: true
+    es6: true
+extends: 'eslint:recommended'
+globals:
+    Atomics: readonly
+    SharedArrayBuffer: readonly
+parserOptions:
+    ecmaVersion: 11
+    sourceType: module
+plugins:
+    - html
+rules:
+    indent:
+        - error
+        - 4
+        - SwitchCase: 1
+    quotes:
+        - error
+        - single
+    semi:
+        - error
+        - always
+    require-atomic-updates: error
+    default-case-last: error
+    default-param-last: error
+    curly:
+        - error
+        - multi-line
+        - consistent
+    no-floating-decimal: error
+    no-multi-spaces: error
+    no-return-await: error
+    no-sequences: error
+    no-unmodified-loop-condition: error
+    require-await: error
+    block-spacing:
+        - error
+        - always
+    brace-style:
+        - error
+        - 1tbs
+        - allowSingleLine: true
+    camelcase: error
+    comma-dangle: error
+    eol-last: error
+    function-call-argument-newline:
+        - error
+        - consistent
+    keyword-spacing: error
+    lines-between-class-members: error
+    max-statements-per-line:
+        - error
+        - max: 1
+    no-multiple-empty-lines: error
+    no-negated-condition: error
+    nonblock-statement-body-position:
+        - error
+        - beside
+    object-curly-spacing:
+        - error
+        - never
+    padded-blocks:
+        - error
+        - never
+    spaced-comment: error
+    generator-star-spacing:
+        - error
+        -
+            named: after
+            method: neither
+    no-duplicate-imports: error
+    no-var: error
+
+    no-console: warn
+    no-warning-comments: warn
+settings:
+    html/indent: "+4"
+    html/report-bad-indent: error
