@@ -77,7 +77,7 @@ export class PrincipalDemo {
     }
 
     async _animateSpeak (text, delay = 20) {
-        const { spoken, toSpeak } = this.elems;
+        const {spoken, toSpeak} = this.elems;
         for (let i = 0; i < text.length; i++) {
             if (this.skipDialog) break;
 
@@ -117,7 +117,7 @@ export class PrincipalDemo {
 
         document.addEventListener('keydown', this._onKeyDown);
 
-        for (const { say, select } of dialogueData) {
+        for (const {say, select} of dialogueData) {
             const highlightTarget = select && document.querySelector(select);
             if (highlightTarget) {
                 highlightTarget.classList.add('principal-highlight');

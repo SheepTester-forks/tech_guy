@@ -327,7 +327,7 @@ export class Dialogue {
         } = this.elems;
 
         let remeasure = () => {
-            this._setMaxHeight(dialogueData)
+            this._setMaxHeight(dialogueData);
         };
         if (this.options.measureHeight) {
             window.addEventListener('resize', remeasure);
@@ -348,7 +348,7 @@ export class Dialogue {
             this._clearOptions();
             let selectedOption = Promise.race(options.map(this._addOption));
 
-            const specialType = special && special.type
+            const specialType = special && special.type;
             switch (specialType) {
                 case 'canvas': {
                     let {saveTo} = special;
@@ -369,7 +369,7 @@ export class Dialogue {
                     break;
                 }
                 case 'set-thumbnail': {
-                    this.setThumbnail(imageURLs[special['image-id']], special.color)
+                    this.setThumbnail(imageURLs[special['image-id']], special.color);
                     break;
                 }
                 default: {
@@ -394,7 +394,6 @@ export class Dialogue {
                     }
                 }
             }
-
         }
 
         if (this.options.measureHeight) {
