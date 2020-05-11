@@ -9,7 +9,7 @@
         link2.href = new URL('./principal-demo.css', import.meta.url);
         link2.rel = 'stylesheet';
 
-        const [{ Dialogue }, json] = await Promise.all([
+        const [{Dialogue}, json] = await Promise.all([
             import('./dialogue.js'),
             fetch(new URL('./principal-demo.json', import.meta.url))
                 .then(r => r.json())

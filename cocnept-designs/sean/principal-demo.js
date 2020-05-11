@@ -31,7 +31,7 @@ export class PrincipalDemo {
         const ok = document.createElement('button');
         ok.className = 'demo-ok';
         ok.textContent = 'OK';
-        ok.addEventListener('click', e => {
+        ok.addEventListener('click', () => {
             if (this._nextClickResolve) {
                 this._nextClickResolve();
             }
@@ -77,7 +77,7 @@ export class PrincipalDemo {
     }
 
     async _animateSpeak (text, delay = 20) {
-        const { spoken, toSpeak } = this.elems;
+        const {spoken, toSpeak} = this.elems;
         for (let i = 0; i < text.length; i++) {
             if (this.skipDialog) break;
 
@@ -110,14 +110,11 @@ export class PrincipalDemo {
     }
 
     async start (dialogueData) {
-        const {
-            dialogue: dialogueText,
-            ok
-        } = this.elems;
+        const {ok} = this.elems;
 
         document.addEventListener('keydown', this._onKeyDown);
 
-        for (const { say, select } of dialogueData) {
+        for (const {say, select} of dialogueData) {
             const highlightTarget = select && document.querySelector(select);
             if (highlightTarget) {
                 highlightTarget.classList.add('principal-highlight');

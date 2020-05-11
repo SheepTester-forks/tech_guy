@@ -20,64 +20,64 @@
   </head>
   <body>
     <script type="module">
-import { Dialogue } from './dialogue.js'
+        import {Dialogue} from './dialogue.js';
 
-const params = new URL(window.location).searchParams
+        const params = new URL(window.location).searchParams;
 
-/**
- * Search parameters:
- *   pen-size (default 2)
- *   pen-degradation-rate (default 0.003)
- *   width (default 100)
- *   height (default 50)
- */
+        /**
+         * Search parameters:
+         *   pen-size (default 2)
+         *   pen-degradation-rate (default 0.003)
+         *   width (default 100)
+         *   height (default 50)
+         */
 
-// Preload Munkler sprite
-// https://stackoverflow.com/questions/3646036/preloading-images-with-javascript
-new Image().src = '../../characters/sprites/images/munkler/sprite.png'
+        // Preload Munkler sprite
+        // https://stackoverflow.com/questions/3646036/preloading-images-with-javascript
+        new Image().src = '../../characters/sprites/images/munkler/sprite.png';
 
-Promise.all([
-  fetch('./intro-dialogue.json')
-    .then(r => r.json()),
-  fetch('./principal-dialogue.json')
-    .then(r => r.json())
-])
-  .then(async ([introData, principalData]) => {
-    const intro = new Dialogue({
-      penSize: +params.get('pen-size') || undefined,
-      penDegradationRate: +params.get('pen-degradation-rate') || undefined,
-      width: +params.get('width') || undefined,
-      height: +params.get('height') || undefined,
-      wrapperClass: 'intro'
-    })
-      .addTo(document.body)
-      .setThumbnail('./munkler.png', '#ebdeae')
+        Promise.all([
+            fetch('./intro-dialogue.json')
+                .then(r => r.json()),
+            fetch('./principal-dialogue.json')
+                .then(r => r.json())
+        ])
+            .then(async ([introData, principalData]) => {
+                const intro = new Dialogue({
+                    penSize: +params.get('pen-size') || undefined,
+                    penDegradationRate: +params.get('pen-degradation-rate') || undefined,
+                    width: +params.get('width') || undefined,
+                    height: +params.get('height') || undefined,
+                    wrapperClass: 'intro'
+                })
+                    .addTo(document.body)
+                    .setThumbnail('./munkler.png', '#ebdeae');
 
-    const data = await intro.start(introData)
-    console.log(data)
+                const data = await intro.start(introData);
+                console.log(data);
 
-    intro.setThumbnail('../../characters/sprites/images/munkler/sprite.png', '#d1efea')
+                intro.setThumbnail('../../characters/sprites/images/munkler/sprite.png', '#d1efea');
 
-    await intro.start(principalData)
+                await intro.start(principalData);
 
-    intro.removeFromParent()
+                intro.removeFromParent();
 
-    // Simulate showing the Computer screen
-    window.location.href = './responsive.html?principal-demo=true'
-  })
+                // Simulate showing the Computer screen
+                window.location.href = './responsive.html?principal-demo=true';
+            });
 
-/*
-const audio = new Audio('./speak.wav')
-const audioReady = new Promise(resolve => audio.addEventListener('canplaythrough', resolve))
-function speakNoise () {
-  // const audio = new Audio('./speak.wav')
-  audio.currentTime = 0
-  audio.play()
-}
-audioReady.then(() => {
-  setTimeout(speakNoise, 100)
-})
-*/
+        /*
+        const audio = new Audio('./speak.wav')
+        const audioReady = new Promise(resolve => audio.addEventListener('canplaythrough', resolve))
+        function speakNoise () {
+          // const audio = new Audio('./speak.wav')
+          audio.currentTime = 0
+          audio.play()
+        }
+        audioReady.then(() => {
+          setTimeout(speakNoise, 100)
+        })
+        */
     </script>
   </body>
 </html>
