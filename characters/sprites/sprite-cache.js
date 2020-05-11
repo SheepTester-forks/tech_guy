@@ -6,13 +6,13 @@ const ENTRY_WIDTH = WIDTH + 1;
 export class SpriteCache {
     constructor(capacity) {
         if (!Number.isInteger(capacity)) {
-            throw new TypeError('Capacity should be an integer.')
+            throw new TypeError('Capacity should be an integer.');
         }
 
         this.capacity = capacity;
         this.sprites = 0;
 
-        this._canvas = document.createElement('canvas')
+        this._canvas = document.createElement('canvas');
         this._context = this._canvas.getContext('2d');
         this._canvas.width = capacity * ENTRY_WIDTH - 1;
         this._canvas.height = HEIGHT;
