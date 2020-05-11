@@ -8,6 +8,8 @@ globals:
 parserOptions:
     ecmaVersion: 11
     sourceType: module
+plugins:
+    - html
 rules:
     indent:
         - error
@@ -72,3 +74,6 @@ rules:
 
     no-console: warn
     no-warning-comments: warn
+settings:
+    html/indent: "+4"
+    html/report-bad-indent: error

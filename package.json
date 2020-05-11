@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Great repository names are short and memorable. Need inspiration? How about tech_guy?",
     "scripts": {
-        "lint": "npx eslint \"**/*.js\" --color",
+        "lint": "npx eslint \"**/*.js **/*.html\" --color",
         "test": "npm run lint"
     },
     "repository": {
@@ -15,6 +15,7 @@
     },
     "homepage": "https://github.com/SheepTester/tech_guy#readme",
     "devDependencies": {
-        "eslint": "^7.0.0"
+        "eslint": "^7.0.0",
+        "eslint-plugin-html": "^6.0.2"
     }
 }
