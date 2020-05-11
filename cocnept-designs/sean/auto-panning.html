@@ -73,7 +73,7 @@
                 image = loadedImage;
                 panner.width = image.width;
                 panner.height = image.height;
-                while (true) {
+                for (;;) {
                     let time = await frame();
                     panner.time = time;
                     paint();

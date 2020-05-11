@@ -477,7 +477,7 @@
 
         const gameWrapper = document.getElementById('game');
         const panelToggleBtn = document.getElementById('toggle-panels');
-        panelToggleBtn.addEventListener('click', e => {
+        panelToggleBtn.addEventListener('click', () => {
             gameWrapper.classList.toggle('show-right-panel');
             if (gameWrapper.classList.contains('show-right-panel')) {
                 panelToggleBtn.textContent = '<';

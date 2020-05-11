@@ -219,7 +219,7 @@ export default async function main(wrapper, debug=false) {
         c.restore();
     }
 
-    window.addEventListener('resize', async e => {
+    window.addEventListener('resize', async () => {
         await wrappedCanvas.resize();
         if (ready) paint();
     });
@@ -245,7 +245,7 @@ export default async function main(wrapper, debug=false) {
     lastTime = Date.now();
 
     ready = true;
-    while (true) {
+    for (;;) {
         paint();
         await frame();
     }

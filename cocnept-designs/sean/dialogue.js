@@ -195,7 +195,7 @@ export class Dialogue {
 
     _pointerMove(e) {
         if (this._canvasPointer && this._canvasPointer.pointerId === e.pointerId) {
-            let {canvas, context: c} = this.elems;
+            let {context: c} = this.elems;
 
             if (this.ink > 0) {
                 let {prevX, prevY} = this._canvasPointer;
@@ -232,7 +232,7 @@ export class Dialogue {
         button.textContent = label;
         this.elems.options.appendChild(button);
 
-        return new Promise(resolve => button.addEventListener('click', e => resolve(label)));
+        return new Promise(resolve => button.addEventListener('click', () => resolve(label)));
     }
 
     async _animateSpeak(text, delay=20) {

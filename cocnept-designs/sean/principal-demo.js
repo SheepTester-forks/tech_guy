@@ -31,7 +31,7 @@ export class PrincipalDemo {
         const ok = document.createElement('button');
         ok.className = 'demo-ok';
         ok.textContent = 'OK';
-        ok.addEventListener('click', e => {
+        ok.addEventListener('click', () => {
             if (this._nextClickResolve) {
                 this._nextClickResolve();
             }
@@ -110,10 +110,7 @@ export class PrincipalDemo {
     }
 
     async start (dialogueData) {
-        const {
-            dialogue: dialogueText,
-            ok
-        } = this.elems;
+        const {ok} = this.elems;
 
         document.addEventListener('keydown', this._onKeyDown);
 
