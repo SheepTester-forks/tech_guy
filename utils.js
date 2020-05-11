@@ -12,6 +12,13 @@ export function frame() {
     return new Promise(resolve => window.requestAnimationFrame(resolve));
 }
 
+export function vary(color, hdeg, bdeg) {
+    let brand = Math.random() * (bdeg * 2 + 1) - bdeg;
+    return [Math.min(Math.max(color[0] + Math.random() * (hdeg * 2 + 1) - hdeg + brand, 0), 255),
+            Math.min(Math.max(color[1] + Math.random() * (hdeg * 2 + 1) - hdeg + brand, 0), 255),
+            Math.min(Math.max(color[2] + Math.random() * (hdeg * 2 + 1) - hdeg + brand, 0), 255)]
+}
+
 export function HSVtoRGB(h, s, v) {
     var r, g, b, i, f, p, q, t;
     i = Math.floor(h * 6); f = h * 6 - i; p = v * (1 - s); q = v * (1 - f * s); t = v * (1 - (1 - f) * s);
