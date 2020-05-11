@@ -38,10 +38,12 @@ function randomStudent() {
     let hairColor = [WARDROBE.getTint('hair', Math.floor(Math.random() * (skinIndex === 3 ? 4 : skinIndex)))];
 
     let height = Math.random();
+    let realHeight =
+        Math.round(Math.pow(height - (grade - 9) / 3, 2) * ((height < (grade - 9) / 3) ? (-9 / (grade - 9)) : (9 / (12 - grade))) + grade - 9);
     
     let wardrobe = WARDROBE.getWardrobe();
                 // todo: some people have fancy coloured hair
-
+    console.log(realHeight);
     return {
         name: {
             first: NAMES.generate(name === "F" ? NAME_DATA.girls : NAME_DATA.boys, 8, 5),
@@ -59,17 +61,20 @@ function randomStudent() {
         appearance: {
             skin: { tint: skinColor },
             hair: { type: hairType, tint: hairColor },
-            height:
-            Math.pow(height - (grade - 9) / 3, 2) * ((height < (grade - 9) / 3) ? (-9 / (grade - 9)) : (9 / (12 - grade))) + grade - 9
+            height: realHeight
         },
         wardrobe: wardrobe,
         picture: {
+            skin: { tint: skinColor },
             hair: {
                 type: Math.random() < 0.95 ? hairType : gender === 'O' ? Math.floor(Math.random() * 6) :
                 (Math.floor(Math.random() * 3) + ((Math.random() < 0.95) ? hair : (-hair + 3))),
                 tint: hairColor
             },
-            shirt: wardrobe.shirt[Math.floor(Math.random() * wardrobe.shirt.length)]
+            shirt: wardrobe.shirt[Math.floor(Math.random() * wardrobe.shirt.length)],
+            hat: {},
+            facing: 1,
+            height: realHeight
         }
     }
 }
@@ -144,5 +149,7 @@ async function generateSchool() {
 }
 
 export {
+    getNames,
+    randomStudent,
     generateSchool
 };

@@ -1,12 +1,17 @@
-const WIDTH = 12;
-const HEIGHT = 27;
+let loaded = 0;
+const WIDTH = 12; // leaving these here because Sean might use em
+const HEIGHT = 27; // these are the dimensions of the normal sprite, not the picture
+
 
 let out = document.createElement('canvas');
 out.width = WIDTH;
 out.height = HEIGHT;
 let ctx = out.getContext('2d');
 
-let loaded = 0;
+let pout = document.createElement('canvas');
+pout.width = 16;
+pout.height = 16;
+let pctx = pout.getContext('2d');
 
 let paths = [
     'skin/skin', 'skin/shadow',
@@ -17,7 +22,8 @@ let paths = [
     'hair/hair3/hair', 'hair/hair4/hair', 'hair/hair5/hair',
     'hair/hair0/shadow', 'hair/hair1/shadow', 'hair/hair2/shadow',
     'hair/hair3/shadow', 'hair/hair4/shadow', 'hair/hair5/shadow',
-    'hat/hat', 'hat/shadow'
+    'hat/hat', 'hat/shadow',
+    'picture/picture'
 ];
 let images = {};
 
@@ -36,7 +42,7 @@ function loadImages() {
             code = 'hat' + (split[1] === 'shadow' ? 's' : '');
         }
         images[code] = img;
-    })))
+    })));
 }
 
 function drawTinted(image, y, facing, cuts) {
@@ -46,7 +52,12 @@ function drawTinted(image, y, facing, cuts) {
     }
 }
 
-function getSprite(sprite, imageData=false) {
+function getSprite(sprite, picture=false) {
+    
+    if (picture) {
+        pctx.drawImage(images.picture, 0, 0);
+    }
+    
     ctx.save();
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
     ctx.scale(sprite.facing, 1);
@@ -55,17 +66,20 @@ function getSprite(sprite, imageData=false) {
     for (let i = 0; i < sprite.height; i++) {
         cuts.push(i === sprite.height - 1 && i !== 0 ? 22 : 15);
     }
-
+    
     drawTinted(images.skin, 3 - sprite.height, sprite.facing, cuts);
-    drawTinted(images['pants' + sprite.pants.type], 3 - sprite.height, sprite.facing, cuts);
-    drawTinted(images['shoes' + sprite.shoes.type], 3, sprite.facing, []);
+    if (!picture) {
+        drawTinted(images['pants' + sprite.pants.type], 3 - sprite.height, sprite.facing, cuts);
+        drawTinted(images['shoes' + sprite.shoes.type], 3, sprite.facing, []);
+    };
     drawTinted(images['shirt' + sprite.shirt.type], 3 - sprite.height, sprite.facing, cuts);
     drawTinted(images.shadow, 3 - sprite.height, sprite.facing, cuts);
     drawTinted(images['hair' + sprite.hair.type], 3 - sprite.height, sprite.facing, cuts);
     drawTinted(images['hair' + sprite.hair.type + 's'], 3 - sprite.height, sprite.facing, cuts);
 
     if (sprite.hat.type) {
-        drawTinted(images['hat'], 3 - sprite.height, sprite.facing, []);
+        drawTinted(images.hat, 3 - sprite.height, sprite.facing, []);
+        drawTinted(images.hats, 3 - sprite.height, sprite.facing, []);
     }
 
     let gid = ctx.getImageData(0, 0, WIDTH, HEIGHT);
@@ -111,10 +125,14 @@ function getSprite(sprite, imageData=false) {
 
     }
 
-    if (!imageData) ctx.putImageData(gid, 0, 0);
+    ctx.putImageData(gid, 0, 0);
     ctx.restore();
-
-    return imageData ? gid : out;
+    
+    if (picture) {
+        pctx.drawImage(out, 2, 0);
+        return pout;
+    }
+    return out;
 }
 
 export {

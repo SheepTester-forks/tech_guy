@@ -1,0 +1,23 @@
+#disclaimer {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    position: fixed;
+    top: 0; bottom: 0; left: 0; right: 0;
+}
+#discont {
+    margin: auto;
+    max-width: 600px;
+    min-width: 400px;
+    padding: 10%;
+}
+.distitle {
+    font-size: 17.5px;
+}
+.disp {
+    margin: 10px 0 20px 10px;
+}
+#discont button {
+    background-color: #333;
+    padding: 10px;
+}

@@ -1,6 +1,10 @@
 import {HSVtoRGB, vary} from '../../utils.js';
 import {getTint} from './wardrobe.js';
 
+// vestigial code with functions used elsewhere
+// note that the hdeg vary parameters are not all the same as the actual random sprite generator (to be fixed)
+// so don't modify this or anything, i need to update the real code to match this one.
+
 function randomSkin(color) {
     return getTint('skin', color);
 }
@@ -29,13 +33,13 @@ function randomSprite() {
     let color = Math.floor(Math.random() * 4);
     return {
         skin: { tint: [randomSkin(color)] },
-        pants: { type: Math.floor(Math.random() * 2), tint: [randomPants()] },
-        shoes: { type: Math.floor(Math.random() * 2), tint: [randomShoes()] },
+        //pants: { type: Math.floor(Math.random() * 2), tint: [randomPants()] },
+        //shoes: { type: Math.floor(Math.random() * 2), tint: [randomShoes()] },
         shirt: { type: Math.floor(Math.random() * 6), tint: [randomShirt(), randomJacket()] },
         hair: { type: Math.floor(Math.random() * 6), tint: [randomHair(color)] },
-        hat: { type: Math.floor(Math.random() * 100) === 0, tint: [randomJacket()] },
+        hat: { type: Math.floor(Math.random() * 20) === 0, tint: [randomJacket()] },
         height: Math.floor(Math.random() * 4),
-        facing: Math.floor(Math.random() * 2) * 2 - 1
+        facing: 1 //Math.floor(Math.random() * 2) * 2 - 1
     };
 }
 
