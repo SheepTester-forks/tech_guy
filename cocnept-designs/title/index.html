@@ -1,0 +1,224 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Untitled Document</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
+            * {
+                margin: 0;
+            }
+            html,
+            body {
+                background-color: #000;
+                height: 100%;
+            }
+            
+            #container {
+                display: none;
+                position: fixed;
+                top: 50%; left: 50%;
+                transform: translate(-50%, -50%);
+            }
+            #table {
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                top: 50%; left: 50%;
+                transform: translate(-50%, -50%);
+            }
+            .tablerow {
+                display: flex;
+            }
+            .paper {
+                background-color: #fff;
+                box-shadow: 0 10px 0 #ccc;
+                margin: 25px;
+                padding: 20px 20px 50px 20px;
+            }
+            #title {
+                align-items: center;
+                cursor: pointer;
+                display: flex;
+                justify-content: center;
+                min-width: 760px;
+            }
+            #title p {
+                color: #fff;
+                font-family: Righteous;
+                font-size: 100px;
+                transition: 0.1s;
+            }
+            #title p:hover {
+                color: #f00;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="container">
+            <div id="table">
+                <div class="tablerow">
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                </div>
+                <div class="tablerow">
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                </div>
+                <div class="tablerow">
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div id="title">
+                        <p>SUSPENSION</p>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                </div>
+                <div class="tablerow">
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                </div>
+                <div class="tablerow">
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                    <div class="paper">
+                        <canvas class="picture"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script type="module">
+            function rescale() {
+                let container = document.getElementById('container');
+                let maxWidth = Math.min(window.innerWidth - 10, 1280);
+                let maxHeight = Math.min(window.innerHeight - 10, 720);
+                container.style.width = ((1280 + maxWidth * 720 / maxHeight) / 2) + 'px';
+                container.style.height = ((720 + maxHeight * 1280 / maxWidth) / 2) + 'px';
+                container.style.transform = 'translate(-50%, -50%) scale(' + (2 / (720 / maxHeight + 1280 / maxWidth)) + ')';
+            } rescale();
+            window.onresize = function () {rescale();}
+        </script>
+        
+        <script type="module">
+            import * as SCHOOL from '../../school/school.js';
+            import * as SPRITES from '../../characters/sprites/sprite.js';
+            
+            async function doStuff() {
+                await SCHOOL.getNames(); //note: this loads names which are currently not needed
+                await SPRITES.loadImages(); //note: this loads hats, pants, and shoes which are not needed
+                //this contributes to it taking like 2 secs to load (for me), but i'm too lazy to fix so
+                
+                document.getElementById('container').style.display = 'initial';
+                let canvases = document.getElementsByTagName('canvas');
+                
+                for (let i = 0; i < canvases.length; i++) {
+                    canvases[i].style.width = '100px';
+                    canvases[i].style.height = '100px';
+                    canvases[i].width = 100 * window.devicePixelRatio;
+                    canvases[i].height = 100 * window.devicePixelRatio;
+                    let ctx = canvases[i].getContext('2d');
+                    ctx.imageSmoothingEnabled = false;
+                    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+                    ctx.drawImage(SPRITES.getSprite(SCHOOL.randomStudent().picture, true), 0, 0, 100, 100);
+                }
+            }
+            
+            doStuff();
+        </script>
+    </body>
+</html>

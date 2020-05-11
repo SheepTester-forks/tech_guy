@@ -39,13 +39,13 @@ function randomSprite() {
     let color = Math.floor(Math.random() * 4);
     return {
         skin: { tint: [randomSkin(color)] },
-        pants: { type: Math.floor(Math.random() * 2), tint: [randomPants()] },
-        shoes: { type: Math.floor(Math.random() * 2), tint: [randomShoes()] },
+        //pants: { type: Math.floor(Math.random() * 2), tint: [randomPants()] },
+        //shoes: { type: Math.floor(Math.random() * 2), tint: [randomShoes()] },
         shirt: { type: Math.floor(Math.random() * 6), tint: [randomShirt(), randomJacket()] },
         hair: { type: Math.floor(Math.random() * 6), tint: [randomHair(color)] },
         hat: { type: Math.floor(Math.random() * 20) === 0, tint: [randomJacket()] },
         height: Math.floor(Math.random() * 4),
-        facing: Math.floor(Math.random() * 2) * 2 - 1
+        facing: 1 //Math.floor(Math.random() * 2) * 2 - 1
     };
 }
 

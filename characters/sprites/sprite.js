@@ -68,8 +68,10 @@ function getSprite(sprite, picture=false) {
     }
     
     drawTinted(images.skin, 3 - sprite.height, sprite.facing, cuts);
-    drawTinted(images['pants' + sprite.pants.type], 3 - sprite.height, sprite.facing, cuts);
-    drawTinted(images['shoes' + sprite.shoes.type], 3, sprite.facing, []);
+    if (!picture) {
+        drawTinted(images['pants' + sprite.pants.type], 3 - sprite.height, sprite.facing, cuts);
+        drawTinted(images['shoes' + sprite.shoes.type], 3, sprite.facing, []);
+    };
     drawTinted(images['shirt' + sprite.shirt.type], 3 - sprite.height, sprite.facing, cuts);
     drawTinted(images.shadow, 3 - sprite.height, sprite.facing, cuts);
     drawTinted(images['hair' + sprite.hair.type], 3 - sprite.height, sprite.facing, cuts);
