@@ -4,6 +4,12 @@ It's about suspension and everything else is uncertain! What fun!
 
 ### Development
 
+You might want to have [Node](https://nodejs.org/) installed and run
+
+```sh
+npm install
+```
+
 To run ESLint, do
 
 ```sh
