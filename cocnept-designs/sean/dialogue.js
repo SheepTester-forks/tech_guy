@@ -195,7 +195,7 @@ export class Dialogue {
 
     _pointerMove(e) {
         if (this._canvasPointer && this._canvasPointer.pointerId === e.pointerId) {
-            let {canvas, context: c} = this.elems;
+            let {context: c} = this.elems;
 
             if (this.ink > 0) {
                 let {prevX, prevY} = this._canvasPointer;
@@ -232,7 +232,7 @@ export class Dialogue {
         button.textContent = label;
         this.elems.options.appendChild(button);
 
-        return new Promise(resolve => button.addEventListener('click', e => resolve(label)));
+        return new Promise(resolve => button.addEventListener('click', () => resolve(label)));
     }
 
     async _animateSpeak(text, delay=20) {
@@ -327,7 +327,7 @@ export class Dialogue {
         } = this.elems;
 
         let remeasure = () => {
-            this._setMaxHeight(dialogueData)
+            this._setMaxHeight(dialogueData);
         };
         if (this.options.measureHeight) {
             window.addEventListener('resize', remeasure);
@@ -348,7 +348,7 @@ export class Dialogue {
             this._clearOptions();
             let selectedOption = Promise.race(options.map(this._addOption));
 
-            const specialType = special && special.type
+            const specialType = special && special.type;
             switch (specialType) {
                 case 'canvas': {
                     let {saveTo} = special;
@@ -369,7 +369,7 @@ export class Dialogue {
                     break;
                 }
                 case 'set-thumbnail': {
-                    this.setThumbnail(imageURLs[special['image-id']], special.color)
+                    this.setThumbnail(imageURLs[special['image-id']], special.color);
                     break;
                 }
                 default: {
@@ -394,7 +394,6 @@ export class Dialogue {
                     }
                 }
             }
-
         }
 
         if (this.options.measureHeight) {

@@ -472,19 +472,19 @@
       </div>
     </div>
     <script type="module">
-      import main from './students-roam.js';
-      main(document.getElementById('camvis'));
+        import main from './students-roam.js';
+        main(document.getElementById('camvis'));
 
-      const gameWrapper = document.getElementById('game')
-      const panelToggleBtn = document.getElementById('toggle-panels')
-      panelToggleBtn.addEventListener('click', e => {
-        gameWrapper.classList.toggle('show-right-panel')
-        if (gameWrapper.classList.contains('show-right-panel')) {
-          panelToggleBtn.textContent = '<'
-        } else {
-          panelToggleBtn.textContent = '>'
-        }
-      })
+        const gameWrapper = document.getElementById('game');
+        const panelToggleBtn = document.getElementById('toggle-panels');
+        panelToggleBtn.addEventListener('click', () => {
+            gameWrapper.classList.toggle('show-right-panel');
+            if (gameWrapper.classList.contains('show-right-panel')) {
+                panelToggleBtn.textContent = '<';
+            } else {
+                panelToggleBtn.textContent = '>';
+            }
+        });
     </script>
   </body>
 </html>

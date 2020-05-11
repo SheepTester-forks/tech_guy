@@ -1,1 +1,6 @@
 *.psd
+node_modules
+
+# Should we gitignore package-lock.json? It's rather annoying.
+# I'll track it for now but we can delete it if it causes problems.
+# package-lock.json
