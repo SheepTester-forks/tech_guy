@@ -31,12 +31,16 @@ function getRandomPosition() {
 
 class Student {
     constructor({
-        speed=0.002
+        speed=0.002,
+        idleMin=1000,
+        idleMax=4000
     }={}) {
         this.speed = speed;
+        this.idleMin = idleMin;
+        this.idleMax = idleMax;
 
         // The current or old* position of the student (*old if the student is walking between tiles)
-        this.current = {x: 0, y: 0};
+        this.current = {x: 0, y: 0, actualX: 0, actualY: 0};
         // List of next tiles to go to
         this._path = [];
         // Distance walked between two tiles
@@ -53,15 +57,16 @@ class Student {
     }
 
     goToRandomPosition() {
-        this.current = getRandomPosition();
+        let {x, y} = getRandomPosition();
+        this.current = {x, y, actualX: x, actualY: y};
         return this;
     }
 
-    setDestination({x: destX, y: destY}) {
-        let {x, y} = this.current;
+    setDestination({x, y}) {
+        let {actualX, actualY} = this.current;
         let success = FINDER.simple(
-            new FINDER.Node(Math.floor(x), Math.floor(y)),
-            new FINDER.Node(destX, destY),
+            new FINDER.Node(actualX, actualY),
+            new FINDER.Node(x, y),
             isAccessible
         );
         if (success !== -1) {
@@ -70,7 +75,9 @@ class Student {
             while (temp.parent) {
                 this._path.unshift({
                     x: temp.x + 2 * WIGGLE_RADIUS * Math.random() - WIGGLE_RADIUS,
-                    y: temp.y + 2 * WIGGLE_RADIUS * Math.random() - WIGGLE_RADIUS
+                    y: temp.y + 2 * WIGGLE_RADIUS * Math.random() - WIGGLE_RADIUS,
+                    actualX: temp.x,
+                    actualY: temp.y
                 });
                 temp = temp.parent;
             }
@@ -81,10 +88,16 @@ class Student {
     simulate(elapsedTime) {
         if (this._distanceToNext === null) {
             this._timeUntilMovement -= elapsedTime;
+            if (this._distance !== null) {
+                if (this._distance > 0) {
+                    this._timeUntilMovement -= this._distance / this.speed;
+                }
+                this._distance = null;
+            }
             if (this._timeUntilMovement < 0) {
                 this.setDestination(getRandomPosition());
                 // TODO: Better way to set idle time?
-                this._timeUntilMovement = Math.random() * 4000 + 1000;
+                this._timeUntilMovement = Math.random() * (this.idleMax - this.idleMin) + this.idleMin;
             }
         } else {
             this._distance += elapsedTime * this.speed;
