@@ -124,18 +124,14 @@
 .student {
     align-items: center;
     border-top: 2px solid #222;
+    cursor: pointer;
     display: flex;
-    margin: 10px;
-    padding-top: 10px;
-}
-.student:first-child {
-    margin-top: 0;
-}
-.student:last-child {
-    margin-bottom: 0;
+    margin: 0 10px;
+    padding: 10px 0;
+    transition: 0.1s;
 }
 .spic {
-    background-color: aliceblue;
+    background-color: aliceblue; /* this should not show */
     height: 50px;
     margin-right: 10px;
     width: 50px;
@@ -148,6 +144,10 @@
 .sname {
     font-size: 17.5px;
     font-weight: bold;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .ssusp {
     color: #f00;
@@ -186,6 +186,9 @@
     overflow-y: auto;
     position: absolute;
     width: 100%;
+}
+#list .student:hover {
+    background-color: #333;
 }
 #schedule {
     box-shadow: inset 0 0 0 2px #333;
