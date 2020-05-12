@@ -35,6 +35,7 @@
                 box-shadow: 0 10px 0 #ccc;
                 margin: 25px;
                 padding: 20px 20px 50px 20px;
+                transition: 0.1s;
             }
             #title {
                 align-items: center;
@@ -47,7 +48,7 @@
                 color: #fff;
                 font-family: Righteous;
                 font-size: 100px;
-                transition: 0.1s;
+                transition: 0.25s;
             }
             #title p:hover {
                 color: #f00;
@@ -118,7 +119,7 @@
                         <canvas class="picture"></canvas>
                     </div>
                     <div id="title">
-                        <p>SUSPENSION</p>
+                        <p onclick="getOut()">SUSPENSION</p>
                     </div>
                     <div class="paper">
                         <canvas class="picture"></canvas>
@@ -219,6 +220,40 @@
             }
             
             doStuff();
+        </script>
+        <script>
+            let time = -50;
+            let left = [];
+            let total = 0;
+            
+            function getOut() {
+                document.getElementById('title').children[0].style.color = '#333';
+                let papers = document.getElementsByClassName('paper'); //papers please!
+                
+                if (time === -50) {
+                    for (let i = 0; i < papers.length; i++) {
+                        papers[i].style.filter = 'invert(1)';
+                        left.push(i);
+                    }
+                    total = left.length;
+                }
+                
+                time++;
+                
+                if (time % 3 === 0 && time > 0) {
+                    document.getElementById('title').style.opacity = 1 - Math.pow(time / 3 / total, 2);
+                    let choose = Math.floor(Math.random() * left.length);
+                    papers[left[choose]].style.opacity = 0;
+
+                    left.splice(choose, 1);
+                }
+                
+                if (time / 3 < total) {
+                    window.requestAnimationFrame(getOut);
+                } else {
+                    // go to next page
+                }
+            }
         </script>
     </body>
 </html>
