@@ -7,15 +7,6 @@ async function getNames() {
     Object.assign(NAME_DATA, await NAMES.getAllData());
 }
 
-/*function getNames() {
-    let given_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/given-names.json');
-    let sur_d = NAMES.getData('https://raw.githubusercontent.com/Nichodon/tech_guy/master/characters/names/json/surnames.json');
-
-    NAME_DATA.boys = NAMES.parseData(given_d, 'boys');
-    NAME_DATA.girls = NAMES.parseData(given_d, 'girls');
-    NAME_DATA.surnames = NAMES.parseData(sur_d, 'surnames');
-}*/
-
 function weightedChoose(list, pow=2) {
     return list[Math.floor(Math.pow(Math.random(), pow) * list.length)];
 }
@@ -43,7 +34,6 @@ function randomStudent() {
     
     let wardrobe = WARDROBE.getWardrobe();
                 // todo: some people have fancy coloured hair
-    console.log(realHeight);
     return {
         name: {
             first: NAMES.generate(name === "F" ? NAME_DATA.girls : NAME_DATA.boys, 8, 5),
@@ -75,7 +65,11 @@ function randomStudent() {
             hat: {},
             facing: 1,
             height: realHeight
-        }
+        },
+        schedule: [{}, {}, {}, {}, {}, {}],
+        suspended: false,
+        id: Math.floor(Math.random() * 1000000000) // only for coding purposes, not to be displayed
+        // hopefully large enough that its unique
     }
 }
 
@@ -144,6 +138,8 @@ async function generateSchool() {
             }
         }
     }
+    
+    Students.sort((x, y) => x.name.last.localeCompare(y.name.last));
 
     return {Students};
 }
