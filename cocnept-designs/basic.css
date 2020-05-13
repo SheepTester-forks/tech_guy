@@ -17,6 +17,10 @@ body {
     width: 10px;
 }
 
+*::selection {
+    background-color: #fff3;
+}
+
 button,
 input,
 select,
