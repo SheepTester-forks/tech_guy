@@ -272,10 +272,15 @@
             import * as SPRITES from '../../characters/sprites/sprite.js';
             
             let school;
+            let selected = 0;
+            let selElement;
+            
             async function dewit() {
                 await SPRITES.loadImages();
                 school = await SCHOOL.generateSchool();
                 SCHEDULE.generateSchedule(school);
+    
+                school.Students.sort((x, y) => x.name.last.localeCompare(y.name.last));
 
                 for (let i = 0; i < school.Students.length; i++) {
                     addStudent(school.Students[i]);
@@ -292,12 +297,20 @@
             }
             
             function getSchedule(student) {
+                if (student.id === selected) {
+                    return getSchedule({schedule: [{}, {}, {}, {}, {}, {}]});
+                }
+                
                 let schedule = student.schedule;
                 
                 for (let i = 0; i < 6; i++) {
                     let row = document.getElementById('tlist' + i);
-                    row.innerHTML = `<p>${'ABCDEF'[i]}</p><p>${schedule[i].name || ''}</p><p>${(schedule[i].room + 1) || ''}</p>`;
-                }
+                    let clase = student.name ? schedule[i].name || 'IDENTITY' : '';
+                    row.innerHTML = `<p>${'ABCDEF'[i]}</p><p>${clase}</p><p>${(schedule[i].room + 1) || ''}</p>`;
+                }//Intrapersonal Discipline and Educational Nurturing for Teaching Information to Teenaged Youth
+                
+                selected = student.id || 0;
+                return selected !== 0;
             } getSchedule({schedule: [{}, {}, {}, {}, {}, {}]});
             
             function addStudent(student) {
@@ -305,7 +318,14 @@
                 wrapper.classList.add('student');
                 wrapper.id = student.id;
                 wrapper.addEventListener('click', function() {
-                    getSchedule(student);
+                    if (selElement) {
+                        selElement.classList.remove('selected');
+                    }
+                    
+                    if (getSchedule(student)) {
+                        selElement = wrapper;
+                        selElement.classList.add('selected');
+                    }
                 });
                 document.getElementById('list').appendChild(wrapper);
                 
