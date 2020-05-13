@@ -1,6 +1,8 @@
 @import url('../game.css');
 
-#menu {
+#menu,
+#bells,
+#layout {
     background-color: #000;
     box-shadow: inset 0 0 0 2px #333;
     display: flex;
@@ -31,6 +33,44 @@
     flex-grow: 1;
 }
 
+.bellrow {
+    display: flex;
+    margin: 10px;
+}
+.bellrow p {
+    width: 50px;
+}
+.bellrow p:first-child {
+    width: 100px;
+}
+
+.layrow {
+    display: flex;
+    margin: 0 10px;
+}
+.layrow:first-child {
+    margin-top: 10px;
+}
+.layrow:nth-child(5) {
+    margin-bottom: 10px;
+}
+.layrow p {
+    border: 1px solid #666;
+    height: 35px;
+    margin: -0.5px;
+    line-height: 35px; /*such a messy way to vertically center but hey*/
+    text-align: center;
+    width: 35px;
+}
+.layrow p:nth-child(4),
+.layrow p:nth-child(8),
+.layrow:nth-child(3) p {
+    border: none;
+}
+.layb {
+    background-color: #333;
+}
+
 #container {
     padding: 5px;
     position: fixed;
@@ -45,7 +85,9 @@
 }
 #controls p,
 #controls button,
-#menu button {
+#menu button,
+#bells button,
+#layout button {
     background-color: #222;
     border: none;
     margin: 5px;
@@ -124,18 +166,14 @@
 .student {
     align-items: center;
     border-top: 2px solid #222;
+    cursor: pointer;
     display: flex;
-    margin: 10px;
-    padding-top: 10px;
-}
-.student:first-child {
-    margin-top: 0;
-}
-.student:last-child {
-    margin-bottom: 0;
+    margin: 0 10px;
+    padding: 10px 0;
+    transition: 0.1s;
 }
 .spic {
-    background-color: aliceblue;
+    background-color: aliceblue; /* this should not show */
     height: 50px;
     margin-right: 10px;
     width: 50px;
@@ -148,6 +186,10 @@
 .sname {
     font-size: 17.5px;
     font-weight: bold;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .ssusp {
     color: #f00;
@@ -186,6 +228,12 @@
     overflow-y: auto;
     position: absolute;
     width: 100%;
+}
+#list .student:hover {
+    background-color: #222;
+}
+.selected {
+    background-color: #333 !important;
 }
 #schedule {
     box-shadow: inset 0 0 0 2px #333;

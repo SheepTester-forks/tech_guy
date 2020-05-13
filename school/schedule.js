@@ -1,4 +1,3 @@
-import * as NAMES from '../characters/names/ntv2.js';
 import * as SCHOOL from './school.js';
 
 const CLASSES = [
@@ -84,10 +83,7 @@ const CLASSES = [
     }
 ];
 
-async function main() {
-    let students = await SCHOOL.generateSchool();
-    console.log(students);
-
+function generateSchedule(students) {
     const reqs = ['soc', 'lang', 'sci', 'eng', 'math'];
     const PERIODS = 6;
 
@@ -170,15 +166,16 @@ async function main() {
             existing.sort(() => Math.random() - 0.5);
             existing.sort((x, y) => x.students.length - y.students.length);
             existing[0].students.push(student.index);
+            student.schedule[existing[0].period] = existing[0];
             takenPeriods.push(existing[0].period);
         }
     }
 
-    console.log(schedule.sort((x, y) => x.room - y.room));
-
-    function getStudentSchedule(student) {
-        console.log(schedule.filter(x => x.students.includes(student.index)).sort((x, y) => x.period - y.period));
-    }
+    //console.log(schedule.sort((x, y) => x.room - y.room));
 }
 
-main();
+//generateStudents(await SCHOOL.generateSchool());
+
+export {
+    generateSchedule
+};
