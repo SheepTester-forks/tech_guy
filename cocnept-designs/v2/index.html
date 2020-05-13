@@ -15,7 +15,7 @@
         </div>
         
         <div id="container">
-            <div class="screen" id="s-menu"></div>
+            <div class="screen" id="s-menu" onclick="cambiar('unmenu')"></div>
             <div id="menu">
                 <div class="menurow">
                     <button>Save</button>
@@ -41,11 +41,140 @@
                 </div>
             </div>
             
+            <div id="bells">
+                <div id="belltable">
+                    <div class="bellrow">
+                        <p>Time</p>
+                        <p>Mon</p>
+                        <p>Tue</p>
+                        <p>Wed</p>
+                        <p>Thu</p>
+                        <p>Fri</p>
+                    </div>
+                    <div class="bellrow">
+                        <p>08:30-09:20</p>
+                        <p>A</p>
+                        <p>D</p>
+                        <p>B</p>
+                        <p>E</p>
+                        <p>C</p>
+                    </div>
+                    <div class="bellrow">
+                        <p>09:30-10:50</p>
+                        <p>B</p>
+                        <p>E</p>
+                        <p>C</p>
+                        <p>B</p>
+                        <p>D</p>
+                    </div>
+                    <div class="bellrow">
+                        <p>11:00-12:20</p>
+                        <p>C</p>
+                        <p>B</p>
+                        <p>D</p>
+                        <p>C</p>
+                        <p>E</p>
+                    </div>
+                    <div class="bellrow">
+                        <p>12:20-01:00</p>
+                    </div>
+                    <div class="bellrow">
+                        <p>01:00-02:20</p>
+                        <p>F</p>
+                        <p>A</p>
+                        <p>E</p>
+                        <p>D</p>
+                        <p>A</p>
+                    </div>
+                    <div class="bellrow">
+                        <p>02:30-03:50</p>
+                        <p></p>
+                        <p>F</p>
+                        <p>F</p>
+                        <p>A</p>
+                        <p>F</p>
+                    </div>
+                    <button onclick="cambiar('unmenu')">Close Schedule</button>
+                </div>
+            </div>
+            
+            <div id="layout">
+                <div id="laytable">
+                    <div class="layrow">
+                        <p>2</p>
+                        <p>3</p>
+                        <p>4</p>
+                        <p></p>
+                        <p>7</p>
+                        <p>8</p>
+                        <p>9</p>
+                        <p></p>
+                        <p>12</p>
+                        <p>13</p>
+                        <p>14</p>
+                    </div>
+                    <div class="layrow">
+                        <p>1</p>
+                        <p class="layb">W</p>
+                        <p>5</p>
+                        <p></p>
+                        <p>6</p>
+                        <p class="layb">U</p>
+                        <p>10</p>
+                        <p></p>
+                        <p>11</p>
+                        <p class="layb">M</p>
+                        <p>15</p>
+                    </div>
+                    <div class="layrow">
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                    </div>
+                    <div class="layrow">
+                        <p>30</p>
+                        <p class="layb">M</p>
+                        <p>26</p>
+                        <p></p>
+                        <p>25</p>
+                        <p class="layb">U</p>
+                        <p>21</p>
+                        <p></p>
+                        <p>20</p>
+                        <p class="layb">W</p>
+                        <p>16</p>
+                    </div>
+                    <div class="layrow">
+                        <p>29</p>
+                        <p>28</p>
+                        <p>27</p>
+                        <p></p>
+                        <p>24</p>
+                        <p>23</p>
+                        <p>22</p>
+                        <p></p>
+                        <p>19</p>
+                        <p>18</p>
+                        <p>17</p>
+                    </div>
+                    <button onclick="cambiar('unmenu')">Close Map</button>
+                </div>
+            </div>
+            
             <div id="controls">
-                <p>Mon 05/12/20</p>
+                <p>Mon 05/12</p>
                 <p>10:00 AM</p>
-                <p>$500</p>
-                <div class="stretch"></div>
+                <button onclick="cambiar('bells')">Schedule</button> <!--if you are wondering why they have weird id's-->
+                <button onclick="cambiar('layout')">Map</button> <!--it's cuz i already used both "schedule" and "map"-->
+                <div class="stretch"></div> <!--and i'm too lazy to change everything.-->
                 <button onclick="cambiar('game')">Computer</button>
                 <button onclick="cambiar('office')">Office</button>
                 <button onclick="cambiar('menu')">Menu</button>
@@ -252,11 +381,13 @@
             function cambiar(id) {
                 if (id === 'unmenu') {
                     document.getElementById('menu').style.display = 'none';
+                    document.getElementById('bells').style.display = 'none';
+                    document.getElementById('layout').style.display = 'none';
                     document.getElementById('s-menu').style.display = 'none';
                     return;
                 }
                 document.getElementById(id).style.display = 'flex';
-                if (id === 'menu') {
+                if (['menu', 'bells', 'layout'].includes(id)) {
                     document.getElementById('s-menu').style.display = 'flex';
                 } else {
                     document.getElementById(id === 'game' ? 'office' : 'game').style.display = 'none';
