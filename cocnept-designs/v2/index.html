@@ -5,13 +5,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Suspension</title>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <script src="../sean/injection.js" charset="utf-8" type="module"></script>
         <link href="styles.css" rel="stylesheet">
     </head>
 
     <body>
         <div id="container">
-            <div class="screen" id="s-menu" onclick="cambiar('unmenu')"></div>
+            <div class="screen" id="s-menu" data-change-menu="unmenu"></div>
             <div id="menu" class="outlined modal">
                 <div class="menurow">
                     <button>Save</button>
@@ -29,7 +28,7 @@
                     </div>
                 </div>
                 <div class="menurow">
-                    <button onclick="cambiar('unmenu')">Exit Options</button>
+                    <button data-change-menu="unmenu">Exit Options</button>
                     <button>Exit Game</button>
                 </div>
                 <div class="menurow">
@@ -90,7 +89,7 @@
                         <p>A</p>
                         <p>F</p>
                     </div>
-                    <button onclick="cambiar('unmenu')">Close Schedule</button>
+                    <button data-change-menu="unmenu">Close Schedule</button>
                 </div>
             </div>
 
@@ -161,20 +160,20 @@
                         <p>18</p>
                         <p>17</p>
                     </div>
-                    <button onclick="cambiar('unmenu')">Close Map</button>
+                    <button data-change-menu="unmenu">Close Map</button>
                 </div>
             </div>
 
             <div id="controls" class="outlined">
                 <p>Mon 05/12</p>
                 <p>10:00 AM</p>
-                <button onclick="cambiar('bells')">Schedule</button> <!--if you are wondering why they have weird id's-->
-                <button onclick="cambiar('layout')">Map</button> <!--it's cuz i already used both "schedule" and "map"-->
+                <button data-change-menu="bells">Schedule</button> <!--if you are wondering why they have weird id's-->
+                <button data-change-menu="layout">Map</button> <!--it's cuz i already used both "schedule" and "map"-->
                 <div class="stretch"></div> <!--and i'm too lazy to change everything.-->
                 <div class="control-btns">
-                    <button onclick="cambiar('game')">Computer</button>
-                    <button onclick="cambiar('office')">Office</button>
-                    <button onclick="cambiar('menu')">Menu</button>
+                    <button data-switch-screen="game">Computer</button>
+                    <button data-switch-screen="office">Office</button>
+                    <button data-change-menu="menu">Menu</button>
                 </div>
             </div>
             <div id="game" class="game-screen">
@@ -271,7 +270,7 @@
 
                 <div id="infopanel" class="panel right-panel">
                     <div id="directory" class="outlined">
-                        <input id="search" type="text" placeholder="Search" oninput="search(this.value)" autocomplete="off" spellcheck="false">
+                        <input id="search" type="text" placeholder="Search" autocomplete="off" spellcheck="false">
                         <div id="listwrap" class="list-wrap">
                             <div id="list" class="list"></div>
                         </div>
@@ -362,6 +361,14 @@
             </div>
         </div>
         <script type="module">
+            import * as SCHOOL from '../../school/school.js';
+            import * as SCHEDULE from '../../school/schedule.js';
+            import * as SPRITES from '../../characters/sprites/sprite.js';
+
+            // For showing the camera footage and principal intro demo
+            import '../sean/injection.js';
+
+            // Toggle panel buttons for small screen
             let togglePanelBtns = document.getElementsByClassName('toggle-panel-btn');
             for (let btn of togglePanelBtns) {
                 btn.addEventListener('click', e => {
@@ -373,9 +380,9 @@
                     }
                 });
             }
-        </script>
-        <script>
-            function cambiar(id) {
+
+            // Change screens
+            function changeMenu(id) {
                 if (id === 'unmenu') {
                     document.getElementById('menu').style.display = 'none';
                     document.getElementById('bells').style.display = 'none';
@@ -384,21 +391,22 @@
                     return;
                 }
                 document.getElementById(id).style.display = 'flex';
-                if (['menu', 'bells', 'layout'].includes(id)) {
-                    document.getElementById('s-menu').style.display = 'flex';
-                } else {
-                    document.getElementById(id === 'game' ? 'office' : 'game').style.display = 'none';
-                }
+                document.getElementById('s-menu').style.display = 'flex';
+            }
+            function switchScreen(id) {
+                document.getElementById(id).style.display = 'flex';
+                document.getElementById(id === 'game' ? 'office' : 'game').style.display = 'none';
             }
 
-            cambiar('game');
-            cambiar('unmenu');
-        </script>
-        <script type="module">
-            import * as SCHOOL from '../../school/school.js';
-            import * as SCHEDULE from '../../school/schedule.js';
-            import * as SPRITES from '../../characters/sprites/sprite.js';
+            document.addEventListener('click', e => {
+                if (e.target.dataset.changeMenu) {
+                    changeMenu(e.target.dataset.changeMenu);
+                } else if (e.target.dataset.switchScreen) {
+                    switchScreen(e.target.dataset.switchScreen);
+                }
+            });
 
+            // Student directory
             let school;
             let selected = 0;
             let selElement;
@@ -413,7 +421,7 @@
                 for (let i = 0; i < school.Students.length; i++) {
                     addStudent(school.Students[i]);
                 }
-            } dewit();
+            }
 
             function search(name) {
                 for (let i = 0; i < school.Students.length; i++) {
@@ -439,7 +447,7 @@
 
                 selected = student.id || 0;
                 return selected !== 0;
-            } getSchedule({schedule: [{}, {}, {}, {}, {}, {}]});
+            }
 
             function addStudent(student) {
                 let wrapper = document.createElement('div');
@@ -487,7 +495,16 @@
                 infowrap.appendChild(info);
             }
 
-            window.search = search; //better way to do this?
+            changeMenu('game');
+            switchScreen('unmenu');
+
+            dewit();
+            getSchedule({schedule: [{}, {}, {}, {}, {}, {}]});
+
+            const searchInput = document.getElementById('search');
+            searchInput.addEventListener('input', e => {
+                search(searchInput.value);
+            });
         </script>
     </body>
 </html>
