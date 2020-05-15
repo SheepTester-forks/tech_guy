@@ -364,11 +364,12 @@
             import * as SCHOOL from '../../school/school.js';
             import * as SCHEDULE from '../../school/schedule.js';
             import * as SPRITES from '../../characters/sprites/sprite.js';
+            import {Directory} from './directory.js';
 
             // Toggle panel buttons for small screen
             let togglePanelBtns = document.getElementsByClassName('toggle-panel-btn');
             for (let btn of togglePanelBtns) {
-                btn.addEventListener('click', e => {
+                btn.addEventListener('click', () => {
                     document.body.classList.toggle('show-right-panel');
                     if (document.body.classList.contains('show-right-panel')) {
                         for (let btn of togglePanelBtns) btn.textContent = '<';
@@ -405,8 +406,7 @@
 
             // Student directory
             let school;
-            let selected = 0;
-            let selElement;
+            let directoryList = new Directory(document.getElementById('list'));
 
             async function dewit() {
                 await SPRITES.loadImages();
@@ -415,91 +415,55 @@
 
                 school.Students.sort((x, y) => x.name.last.localeCompare(y.name.last));
 
-                for (let i = 0; i < school.Students.length; i++) {
-                    addStudent(school.Students[i]);
-                }
+                directoryList.students = [...school.Students];
+                directoryList.updateData();
+                await directoryList.resize();
+                directoryList.updateScroll();
             }
 
             function search(name) {
-                for (let i = 0; i < school.Students.length; i++) {
-                    let student = school.Students[i];
-
-                    let match = `${student.name.last}, ${student.name.first}`.toLowerCase().includes(name.toLowerCase());
-                    document.getElementById(student.id).style.display = match ? 'flex' : 'none';
-                }
+                directoryList.students = school.Students
+                    .filter(student => {
+                        return `${student.name.last}, ${student.name.first}`
+                            .toLowerCase()
+                            .includes(name.toLowerCase());
+                    });
+                directoryList.updateData();
+                directoryList.updateScroll();
             }
 
-            function getSchedule(student) {
-                if (student.id === selected) {
-                    return getSchedule({schedule: [{}, {}, {}, {}, {}, {}]});
-                }
-
-                let schedule = student.schedule;
-
+            let emptySchedule = [{}, {}, {}, {}, {}, {}];
+            function displaySchedule(schedule=emptySchedule) {
                 for (let i = 0; i < 6; i++) {
                     let row = document.getElementById('tlist' + i);
-                    let clase = student.name ? schedule[i].name || 'IDENTITY' : '';
+                    // Intrapersonal Discipline and Educational Nurturing for Teaching Information to Teenaged Youth
+                    let clase = schedule !== emptySchedule ? schedule[i].name || 'IDENTITY' : '';
                     row.innerHTML = `<p>${'ABCDEF'[i]}</p><p>${clase}</p><p>${(schedule[i].room + 1) || ''}</p>`;
-                }//Intrapersonal Discipline and Educational Nurturing for Teaching Information to Teenaged Youth
-
-                selected = student.id || 0;
-                return selected !== 0;
+                }
             }
 
-            function addStudent(student) {
-                let wrapper = document.createElement('div');
-                wrapper.classList.add('student');
-                wrapper.id = student.id;
-                wrapper.addEventListener('click', function() {
-                    if (selElement) {
-                        selElement.classList.remove('selected');
-                    }
+            directoryList.onSelect = student => {
+                if (student) {
+                    displaySchedule(student.schedule);
+                } else {
+                    displaySchedule();
+                }
+            };
 
-                    if (getSchedule(student)) {
-                        selElement = wrapper;
-                        selElement.classList.add('selected');
-                    }
-                });
-                document.getElementById('list').appendChild(wrapper);
-
-                let picwrap = document.createElement('div');
-                picwrap.classList.add('spic');
-                wrapper.appendChild(picwrap);
-
-                let pic = document.createElement('canvas');
-                pic.style.width = '50px';
-                pic.style.height = '50px';
-                pic.width = 50 * window.devicePixelRatio;
-                pic.height = 50 * window.devicePixelRatio;
-                let ctx = pic.getContext('2d');
-                ctx.imageSmoothingEnabled = false;
-                ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-                ctx.drawImage(SPRITES.getSprite(student.picture, true), 0, 0, 50, 50);
-                picwrap.appendChild(pic);
-
-                let infowrap = document.createElement('div');
-                infowrap.classList.add('sinfo');
-                wrapper.appendChild(infowrap);
-
-                let name = document.createElement('p');
-                name.classList.add('sname');
-                name.innerHTML = `${student.name.last}, ${student.name.first}`;
-                infowrap.appendChild(name);
-
-                let info = document.createElement('p');
-                let disgrade = student.grade === 9 ? '09' : student.grade;
-                info.innerHTML = `Grade ${disgrade} | ${student.gender} | <span class="sstatus">Enrolled</span>`;
-                infowrap.appendChild(info);
-            }
+            // TODO: Breaks if the user resizes while on the office screens
+            window.addEventListener('resize', async () => {
+                await directoryList.resize();
+                directoryList.updateScroll();
+            });
 
             switchScreen('game');
             changeMenu('unmenu');
 
             dewit();
-            getSchedule({schedule: [{}, {}, {}, {}, {}, {}]});
+            displaySchedule();
 
             const searchInput = document.getElementById('search');
-            searchInput.addEventListener('input', e => {
+            searchInput.addEventListener('input', () => {
                 search(searchInput.value);
             });
 
