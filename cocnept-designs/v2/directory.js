@@ -5,11 +5,12 @@ import {PICTURE_WIDTH, PICTURE_HEIGHT, getSprite} from '../../characters/sprites
  * Represents a DOM element in the directory.
  */
 class DirectoryItem {
-    constructor() {
+    constructor(onClick) {
         bindMethods(this, [
             '_onClick'
         ]);
 
+        this.onClick = onClick;
         this._parent = null;
         this._makeElements();
     }
@@ -55,24 +56,33 @@ class DirectoryItem {
     }
 
     _onClick() {
-        if (selElement) {
-            selElement.classList.remove('selected');
-        }
-
-        if (getSchedule(student)) {
-            selElement = wrapper;
-            selElement.classList.add('selected');
+        if (this.onClick) {
+            this.onClick(this);
         }
     }
 
-    setStudent(student) {
+    setSelected(selected) {
+        if (selected) {
+            this._elems.wrapper.classList.add('selected');
+        } else {
+            this._elems.wrapper.classList.remove('selected');
+        }
+        return this;
+    }
+
+    setStudent(student, selected=false) {
         let {wrapper, ctx, name, info} = this._elems;
-        wrapper.id = student.id;
-        // TODO: Cache student pictures
-        ctx.drawImage(getSprite(student.picture, true), 0, 0, PICTURE_WIDTH, PICTURE_HEIGHT);
-        name.innerHTML = `${student.name.last}, ${student.name.first}`;
-        let disgrade = student.grade === 9 ? '09' : student.grade;
-        info.innerHTML = `Grade ${disgrade} | ${student.gender} | <span class="sstatus">Enrolled</span>`;
+        if (this.student !== student) {
+            this.student = student;
+
+            wrapper.id = student.id;
+            // TODO: Cache student pictures
+            ctx.drawImage(getSprite(student.picture, true), 0, 0, PICTURE_WIDTH, PICTURE_HEIGHT);
+            name.innerHTML = `${student.name.last}, ${student.name.first}`;
+            let disgrade = student.grade === 9 ? '09' : student.grade;
+            info.innerHTML = `Grade ${disgrade} | ${student.gender} | <span class="sstatus">Enrolled</span>`;
+        }
+        this.setSelected(selected);
         return this;
     }
 
@@ -110,12 +120,15 @@ const ITEM_PADDING = 2;
 class Directory {
     constructor(wrapper, students=[]) {
         bindMethods(this, [
-            'updateScroll'
+            'updateScroll',
+            '_onItemClicked'
         ]);
 
         this.wrapper = wrapper;
         this.students = students;
 
+        // The student object of the selected item (NOT a DirectoryItem)
+        this.selected = null;
         // Maps y values/a unique Symbol (if not shown) to a DirectoryItem
         this._items = new Map();
 
@@ -125,6 +138,27 @@ class Directory {
         wrapper.appendChild(this._heightSetter);
 
         wrapper.addEventListener('scroll', this.updateScroll);
+    }
+
+    _onItemClicked(item) {
+        if (this.selected === item.student) {
+            item.setSelected(false);
+            this.selected = null;
+        } else {
+            // Mark previously selected item as unselected (if visible)
+            if (this.selected) {
+                let selectedItem = this._items.get(this.students.indexOf(this.selected));
+                if (selectedItem) {
+                    selectedItem.setSelected(false);
+                }
+            }
+
+            item.setSelected(true);
+            this.selected = item.student;
+        }
+        if (this.onSelect) {
+            this.onSelect(this.selected);
+        }
     }
 
     // Deletes all DirectoryItems
@@ -140,8 +174,10 @@ class Directory {
         for (let [y, item] of this._items) {
             if (typeof y === 'number') {
                 this._items.delete(y);
-                item.remove();
                 this._items.set(Symbol(), item);
+
+                item.remove();
+                item.wrapper.classList.remove('selected');
             }
         }
     }
@@ -151,7 +187,7 @@ class Directory {
         const itemCount = Math.ceil(this.height / ITEM_HEIGHT) + 1 + ITEM_PADDING * 2;
         for (let i = 0; i < itemCount; i++) {
             // Symbol() just means that it hasn't been assigned a y-value
-            this._items.set(Symbol(), new DirectoryItem());
+            this._items.set(Symbol(), new DirectoryItem(this._onItemClicked));
         }
     }
 
@@ -179,7 +215,7 @@ class Directory {
             // Move a recycleable to the unclaimed position
             let recycleable = recycleables.pop();
             recycleable
-                .setStudent(this.students[y])
+                .setStudent(this.students[y], this.students[y] === this.selected)
                 .addTo(this.wrapper)
                 .wrapper.style.top = y * ITEM_HEIGHT + 'px';
             this._items.set(y, recycleable);

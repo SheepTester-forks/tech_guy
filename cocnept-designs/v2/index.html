@@ -434,22 +434,23 @@
                 directoryList.updateScroll();
             }
 
-            function getSchedule(student) {
-                if (student.id === selected) {
-                    return getSchedule({schedule: [{}, {}, {}, {}, {}, {}]});
-                }
-
-                let schedule = student.schedule;
-
+            let emptySchedule = [{}, {}, {}, {}, {}, {}];
+            function displaySchedule(schedule=emptySchedule) {
                 for (let i = 0; i < 6; i++) {
                     let row = document.getElementById('tlist' + i);
-                    let clase = student.name ? schedule[i].name || 'IDENTITY' : '';
+                    //Intrapersonal Discipline and Educational Nurturing for Teaching Information to Teenaged Youth
+                    let clase = schedule !== emptySchedule ? schedule[i].name || 'IDENTITY' : '';
                     row.innerHTML = `<p>${'ABCDEF'[i]}</p><p>${clase}</p><p>${(schedule[i].room + 1) || ''}</p>`;
-                }//Intrapersonal Discipline and Educational Nurturing for Teaching Information to Teenaged Youth
-
-                selected = student.id || 0;
-                return selected !== 0;
+                }
             }
+
+            directoryList.onSelect = student => {
+                if (student) {
+                    displaySchedule(student.schedule);
+                } else {
+                    displaySchedule();
+                }
+            };
 
             function addStudent(student) {
                 let wrapper = document.createElement('div');
@@ -501,7 +502,7 @@
             changeMenu('unmenu');
 
             dewit();
-            getSchedule({schedule: [{}, {}, {}, {}, {}, {}]});
+            displaySchedule();
 
             const searchInput = document.getElementById('search');
             searchInput.addEventListener('input', e => {
