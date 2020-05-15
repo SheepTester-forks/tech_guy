@@ -83,7 +83,11 @@
     display: flex;
     height: 50px;
 }
-#controls p,
+#controls p {
+    border: 2px solid #222;
+    margin: 5px;
+    padding: 3px 8px;
+}
 #controls button,
 #menu button,
 #bells button,
