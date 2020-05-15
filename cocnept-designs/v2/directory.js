@@ -127,11 +127,23 @@ class Directory {
         wrapper.addEventListener('scroll', this.updateScroll);
     }
 
-    _clearItems() {
+    // Deletes all DirectoryItems
+    _deleteItems() {
         for (let item of this._items.values()) {
             item.remove();
         }
         this._items.clear();
+    }
+
+    // Simply removes all visible DirectoryItems from the list
+    _hideItems() {
+        for (let [y, item] of this._items) {
+            if (typeof y === 'number') {
+                this._items.delete(y);
+                item.remove();
+                this._items.set(Symbol(), item);
+            }
+        }
     }
 
     _generateItems() {
@@ -184,6 +196,7 @@ class Directory {
         let {height} = this.wrapper.getBoundingClientRect();
         await then;
         this.height = height;
+        this._deleteItems();
         this._generateItems();
         return this;
     }
@@ -191,6 +204,7 @@ class Directory {
     // Call this when `this.students` is changed. Will not call updateScroll.
     updateData() {
         this._heightSetter.style.height = this.students.length * ITEM_HEIGHT + 'px';
+        this._hideItems();
     }
 }
 

@@ -417,19 +417,21 @@
 
                 school.Students.sort((x, y) => x.name.last.localeCompare(y.name.last));
 
-                directoryList.students = school.Students;
+                directoryList.students = [...school.Students];
                 directoryList.updateData();
                 await directoryList.resize();
                 directoryList.updateScroll();
             }
 
             function search(name) {
-                for (let i = 0; i < school.Students.length; i++) {
-                    let student = school.Students[i];
-
-                    let match = `${student.name.last}, ${student.name.first}`.toLowerCase().includes(name.toLowerCase());
-                    document.getElementById(student.id).style.display = match ? 'flex' : 'none';
-                }
+                directoryList.students = school.Students
+                    .filter(student => {
+                        return `${student.name.last}, ${student.name.first}`
+                            .toLowerCase()
+                            .includes(name.toLowerCase());
+                    });
+                directoryList.updateData();
+                directoryList.updateScroll();
             }
 
             function getSchedule(student) {
