@@ -1,3 +1,6 @@
+import main from './students-roam.js';
+main(document.getElementById('camvis'));
+
 (async () => {
     const params = new URL(location).searchParams;
     if (params.get('principal-demo')) {
