@@ -72,18 +72,21 @@
 }
 
 #container {
-    padding: 5px;
-    position: fixed;
+    display: flex;
+    flex-direction: column;
     width: 100%;
     height: 100%;
+    padding: 5px;
     box-sizing: border-box;
+    /* Prevent the overflow when it does the slidey thing on small screens from
+    making the device zoom out, si me entiendes. */
+    overflow: hidden;
 }
 
 #controls {
     align-items: center;
     box-shadow: inset 0 0 0 2px #333;
     display: flex;
-    height: 50px;
     flex-wrap: wrap;
 }
 #controls p,
@@ -106,14 +109,13 @@
     display: flex;
 }
 
-#game,
-#office {
+.screen {
     display: flex;
-    position: absolute;
-    top: 60px; bottom: 0; left: 5px; right: 5px;
+    flex: auto;
 }
 
-#campanel {
+/* Switched this to a class over an ID so that flex: auto; can be overridden. */
+.campanel {
     flex: auto;
     position: relative;
 }
@@ -385,10 +387,10 @@
     display: none;
 }
 @media (max-width: 700px) {
-    #game {
+    .screen {
         transition: transform .2s;
     }
-    #game .game-panel {
+    .screen .game-panel {
         flex: none;
         width: calc(90vw - 10px);
     }
