@@ -198,14 +198,14 @@ class Directory {
         // An array containing items that are no longer visible
         // This also removes them from this._items
         let recycleables = [...this._items]
-            .filter(([y, item]) => {
+            .filter(([y]) => {
                 if (typeof y !== 'number' || y < start || y >= stop) {
                     this._items.delete(y);
                     return true;
                 }
                 return false;
             })
-            .map(([_, item]) => item);
+            .map(pair => pair[1]);
         for (let y = start; y < stop; y++) {
             // Do not show DirectoryItems that are out of bounds
             if (y < 0 || y >= this.students.length) continue;

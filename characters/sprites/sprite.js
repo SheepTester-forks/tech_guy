@@ -1,4 +1,3 @@
-let loaded = 0;
 const SPRITE_WIDTH = 12; // leaving these here because Sean might use em
 const SPRITE_HEIGHT = 27; // these are the dimensions of the normal sprite, not the picture
 
@@ -32,7 +31,7 @@ let images = {};
 function loadImages() {
     return Promise.all(paths.map(path => new Promise(resolve => {
         let img = new Image();
-        img.crossOrigin = "Anonymous";
+        img.crossOrigin = 'Anonymous';
         img.src = new URL(`./images/student/${path}.png`, import.meta.url);
         img.onload = resolve;
 
@@ -66,7 +65,6 @@ function drawTinted(image, y, facing, cuts) {
 }
 
 function getSprite(sprite, picture=false) {
-
     if (picture) {
         pctx.drawImage(images.picture, 0, 0);
     }
@@ -84,7 +82,7 @@ function getSprite(sprite, picture=false) {
     if (!picture) {
         drawTinted(images['pants' + sprite.pants.type], 3 - sprite.height, sprite.facing, cuts);
         drawTinted(images['shoes' + sprite.shoes.type], 3, sprite.facing, []);
-    };
+    }
     drawTinted(images['shirt' + sprite.shirt.type], 3 - sprite.height, sprite.facing, cuts);
     drawTinted(images.shadow, 3 - sprite.height, sprite.facing, cuts);
     drawTinted(images['hair' + sprite.hair.type], 3 - sprite.height, sprite.facing, cuts);
@@ -135,7 +133,6 @@ function getSprite(sprite, picture=false) {
         gid.data[i] = Math.max(0, rgb[0] - (255 - base));
         gid.data[i + 1] = Math.max(0, rgb[1] - (255 - base));
         gid.data[i + 2] = Math.max(0, rgb[2] - (255 - base));
-
     }
 
     ctx.putImageData(gid, 0, 0);

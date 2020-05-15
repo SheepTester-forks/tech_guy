@@ -369,7 +369,7 @@
             // Toggle panel buttons for small screen
             let togglePanelBtns = document.getElementsByClassName('toggle-panel-btn');
             for (let btn of togglePanelBtns) {
-                btn.addEventListener('click', e => {
+                btn.addEventListener('click', () => {
                     document.body.classList.toggle('show-right-panel');
                     if (document.body.classList.contains('show-right-panel')) {
                         for (let btn of togglePanelBtns) btn.textContent = '<';
@@ -436,7 +436,7 @@
             function displaySchedule(schedule=emptySchedule) {
                 for (let i = 0; i < 6; i++) {
                     let row = document.getElementById('tlist' + i);
-                    //Intrapersonal Discipline and Educational Nurturing for Teaching Information to Teenaged Youth
+                    // Intrapersonal Discipline and Educational Nurturing for Teaching Information to Teenaged Youth
                     let clase = schedule !== emptySchedule ? schedule[i].name || 'IDENTITY' : '';
                     row.innerHTML = `<p>${'ABCDEF'[i]}</p><p>${clase}</p><p>${(schedule[i].room + 1) || ''}</p>`;
                 }
@@ -463,7 +463,7 @@
             displaySchedule();
 
             const searchInput = document.getElementById('search');
-            searchInput.addEventListener('input', e => {
+            searchInput.addEventListener('input', () => {
                 search(searchInput.value);
             });
 
