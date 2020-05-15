@@ -84,7 +84,7 @@
     box-sizing: border-box;
     /* Prevent the overflow when it does the slidey thing on small screens from
     making the device zoom out, si me entiendes. */
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 #controls {
@@ -122,6 +122,17 @@
     width: 300px;
     flex-direction: column;
     margin-left: 5px;
+}
+.list-wrap {
+    flex: auto;
+    min-height: 50px;
+    position: relative;
+}
+.list {
+    height: 100%;
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
 }
 
 #camchoose {
@@ -227,16 +238,6 @@
     padding: 5px;
     box-sizing: border-box;
 }
-#listwrap {
-    flex: auto;
-    position: relative;
-}
-#list {
-    height: 100%;
-    overflow-y: auto;
-    position: absolute;
-    width: 100%;
-}
 #list .student:hover {
     background-color: #222;
 }
@@ -292,16 +293,6 @@
 }
 #dialogue .sname {
     margin: 10px;
-}
-#transwrap {
-    flex: auto;
-    position: relative;
-}
-#transcript {
-    height: 100%;
-    overflow-y: auto;
-    position: absolute;
-    width: 100%;
 }
 #transcript p {
     margin: 1px 20px;
