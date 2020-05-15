@@ -364,6 +364,7 @@
             import * as SCHOOL from '../../school/school.js';
             import * as SCHEDULE from '../../school/schedule.js';
             import * as SPRITES from '../../characters/sprites/sprite.js';
+            import {Directory} from './directory.js';
 
             // Toggle panel buttons for small screen
             let togglePanelBtns = document.getElementsByClassName('toggle-panel-btn');
@@ -407,6 +408,7 @@
             let school;
             let selected = 0;
             let selElement;
+            let directoryList = new Directory(document.getElementById('list'));
 
             async function dewit() {
                 await SPRITES.loadImages();
@@ -415,9 +417,9 @@
 
                 school.Students.sort((x, y) => x.name.last.localeCompare(y.name.last));
 
-                for (let i = 0; i < school.Students.length; i++) {
-                    addStudent(school.Students[i]);
-                }
+                directoryList.students = school.Students;
+                await directoryList.resize();
+                directoryList.updateScroll();
             }
 
             function search(name) {
