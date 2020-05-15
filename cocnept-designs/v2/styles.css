@@ -1,10 +1,7 @@
 @import url('../game.css');
 
-#menu,
-#bells,
-#layout {
+.modal {
     background-color: #000;
-    box-shadow: inset 0 0 0 2px #333;
     display: flex;
     flex-direction: column;
     padding: 20px;
@@ -12,6 +9,10 @@
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     z-index: 3;
+    max-width: 100%;
+    max-height: 100%;
+    overflow: auto;
+    box-sizing: border-box;
 }
 .menurow {
     display: flex;
@@ -85,7 +86,6 @@
 
 #controls {
     align-items: center;
-    box-shadow: inset 0 0 0 2px #333;
     display: flex;
     flex-wrap: wrap;
 }
@@ -109,16 +109,22 @@
     display: flex;
 }
 
-.screen {
+.game-screen {
     display: flex;
     flex: auto;
 }
-
-/* Switched this to a class over an ID so that flex: auto; can be overridden. */
-.campanel {
+.left-panel {
     flex: auto;
     position: relative;
 }
+.right-panel {
+    display: flex;
+    flex: none;
+    width: 300px;
+    flex-direction: column;
+    margin-left: 5px;
+}
+
 #camchoose {
     flex-basis: 25%;
     height: 200px;
@@ -203,19 +209,10 @@
 }
 #camvis {
     background-color: #999;
-    box-shadow: inset 0 0 0 2px #333;
     height: 100%;
 }
 
-#infopanel {
-    display: flex;
-    flex: none;
-    width: 300px;
-    flex-direction: column;
-    margin-left: 5px;
-}
 #directory {
-    box-shadow: inset 0 0 0 2px #333;
     display: flex;
     flex-basis: calc(100% - 205px);
     flex-direction: column;
@@ -245,7 +242,6 @@
     background-color: #333 !important;
 }
 #schedule {
-    box-shadow: inset 0 0 0 2px #333;
     flex-basis: 200px;
 }
 #table {
@@ -277,40 +273,26 @@
     white-space: nowrap;
 }
 
-#envpanel {
-    flex-basis: calc(100% - 305px);
-    margin-right: 5px;
-    position: relative;
-}
 #envvis {
     background-color: #999;
-    box-shadow: inset 0 0 0 2px #333;
     height: 100%;
 }
 
-#studentpanel {
-    display: flex;
-    flex-basis: 300px;
-    flex-direction: column;
-}
 #studentview {
     background-color: #ccc;
-    box-shadow: inset 0 0 0 2px #333;
     flex-basis: 200px;
 }
 #dialogue {
-    box-shadow: inset 0 0 0 2px #333;
     display: flex;
-    flex-basis: calc(100% - 205px);
+    flex: auto;
     flex-direction: column;
     margin-top: 5px;
 }
 #dialogue .sname {
-    flex-basis: 20px;
     margin: 10px;
 }
 #transwrap {
-    flex-basis: calc(100% - 60px);
+    flex: auto;
     position: relative;
 }
 #transcript {
@@ -333,7 +315,7 @@
 }
 #studentoptions {
     display: flex;
-    flex-basis: 125px;
+    height: 125px;
     flex-direction: column;
     margin: 10px;
 }
@@ -361,7 +343,7 @@
 #sustitle {
     align-items: center;
     display: flex;
-    flex-grow: 1;
+    flex: auto;
     justify-content: center;
     margin-top: 10px;
 }
@@ -369,11 +351,11 @@
     font-size: 20px;
 }
 
-#s-smallscreen {
-    transition: 0.1s;
-    opacity: 0;
-    visibility: hidden;
-    z-index: 100;
+.screen {
+    background-color: #000;
+    position: fixed;
+    top: 0; bottom: 0; left: 0; right: 0;
+    z-index: 2;
 }
 #s-menu {
     opacity: 0.5;
@@ -383,18 +365,18 @@
     flex-grow: 1;
 }
 
-#toggle-panels {
+.toggle-panel-btn {
     display: none;
 }
 @media (max-width: 700px) {
-    .screen {
+    .game-screen {
         transition: transform .2s;
     }
-    .screen .game-panel {
+    .game-screen .panel {
         flex: none;
         width: calc(90vw - 10px);
     }
-    #toggle-panels {
+    .toggle-panel-btn {
         display: block;
         flex: none;
         width: calc(10vw - 5px);
@@ -403,7 +385,7 @@
         border: none;
         background-color: #222;
     }
-    .show-right-panel {
+    .show-right-panel .game-screen {
         transform: translateX(calc(5px - 90vw))
     }
 }
