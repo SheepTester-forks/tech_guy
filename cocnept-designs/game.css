@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Inconsolata');
 @import url('./basic.css');
+@import url('./sean/canvas-stuff.css');
 
 body {
     color: #fff;
