@@ -223,10 +223,8 @@
     color: #f00;
 }
 #camvis {
+    background-color: #999;
     height: 100%;
-}
-#camvis .wrapped-canvas {
-    z-index: -1;
 }
 
 #directory {

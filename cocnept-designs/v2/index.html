@@ -365,9 +365,6 @@
             import * as SCHEDULE from '../../school/schedule.js';
             import * as SPRITES from '../../characters/sprites/sprite.js';
 
-            // For showing the camera footage and principal intro demo
-            import '../sean/injection.js';
-
             // Toggle panel buttons for small screen
             let togglePanelBtns = document.getElementsByClassName('toggle-panel-btn');
             for (let btn of togglePanelBtns) {
@@ -495,8 +492,8 @@
                 infowrap.appendChild(info);
             }
 
-            changeMenu('game');
-            switchScreen('unmenu');
+            switchScreen('game');
+            changeMenu('unmenu');
 
             dewit();
             getSchedule({schedule: [{}, {}, {}, {}, {}, {}]});
@@ -505,6 +502,12 @@
             searchInput.addEventListener('input', e => {
                 search(searchInput.value);
             });
+
+            // Show the camera footage and principal intro demo
+            // Using dynamic import so that it runs after switchScreen('game')
+            // without which would have both showing and making the measured
+            // height less than is actually lol
+            import('../sean/injection.js');
         </script>
     </body>
 </html>
