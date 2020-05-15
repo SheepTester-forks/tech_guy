@@ -418,6 +418,7 @@
                 school.Students.sort((x, y) => x.name.last.localeCompare(y.name.last));
 
                 directoryList.students = school.Students;
+                directoryList.updateData();
                 await directoryList.resize();
                 directoryList.updateScroll();
             }

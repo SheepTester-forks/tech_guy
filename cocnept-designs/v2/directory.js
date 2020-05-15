@@ -1,5 +1,5 @@
 import {bindMethods} from '../../utils.js';
-import {PICTURE_WIDTH, PICTURE_HEIGHT} from '../../characters/sprites/sprite.js';
+import {PICTURE_WIDTH, PICTURE_HEIGHT, getSprite} from '../../characters/sprites/sprite.js';
 
 /**
  * Represents a DOM element in the directory.
@@ -24,7 +24,7 @@ class DirectoryItem {
         wrapper.appendChild(picwrap);
 
         let pic = document.createElement('canvas');
-        picwrap.classList.add('spic-canvas');
+        pic.classList.add('spic-canvas');
         pic.width = PICTURE_WIDTH;
         pic.height = PICTURE_HEIGHT;
         let ctx = pic.getContext('2d');
@@ -69,9 +69,11 @@ class DirectoryItem {
         let {wrapper, ctx, name, info} = this._elems;
         wrapper.id = student.id;
         // TODO: Cache student pictures
-        ctx.drawImage(SPRITES.getSprite(student.picture, true), 0, 0, PICTURE_WIDTH, PICTURE_HEIGHT);
+        ctx.drawImage(getSprite(student.picture, true), 0, 0, PICTURE_WIDTH, PICTURE_HEIGHT);
         name.innerHTML = `${student.name.last}, ${student.name.first}`;
+        let disgrade = student.grade === 9 ? '09' : student.grade;
         info.innerHTML = `Grade ${disgrade} | ${student.gender} | <span class="sstatus">Enrolled</span>`;
+        return this;
     }
 
     // Note: Pass null to remove.
@@ -120,8 +122,9 @@ class Directory {
         // A dummy element to set the scroll height
         this._heightSetter = document.createElement('div');
         this._heightSetter.className = 'height-setter';
+        wrapper.appendChild(this._heightSetter);
 
-        this.wrapper.addEventListener('scroll', this.updateScroll);
+        wrapper.addEventListener('scroll', this.updateScroll);
     }
 
     _clearItems() {
@@ -164,6 +167,7 @@ class Directory {
             // Move a recycleable to the unclaimed position
             let recycleable = recycleables.pop();
             recycleable
+                .setStudent(this.students[y])
                 .addTo(this.wrapper)
                 .wrapper.style.top = y * ITEM_HEIGHT + 'px';
             this._items.set(y, recycleable);
@@ -184,10 +188,9 @@ class Directory {
         return this;
     }
 
-    // Call this when `this.students` is changed.
+    // Call this when `this.students` is changed. Will not call updateScroll.
     updateData() {
         this._heightSetter.style.height = this.students.length * ITEM_HEIGHT + 'px';
-        this.updateScroll();
     }
 }
 
