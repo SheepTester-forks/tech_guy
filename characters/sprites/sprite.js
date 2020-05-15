@@ -1,16 +1,18 @@
 let loaded = 0;
-const WIDTH = 12; // leaving these here because Sean might use em
-const HEIGHT = 27; // these are the dimensions of the normal sprite, not the picture
+const SPRITE_WIDTH = 12; // leaving these here because Sean might use em
+const SPRITE_HEIGHT = 27; // these are the dimensions of the normal sprite, not the picture
 
+const PICTURE_WIDTH = 16;
+const PICTURE_HEIGHT = 16;
 
 let out = document.createElement('canvas');
-out.width = WIDTH;
-out.height = HEIGHT;
+out.width = SPRITE_WIDTH;
+out.height = SPRITE_HEIGHT;
 let ctx = out.getContext('2d');
 
 let pout = document.createElement('canvas');
-pout.width = 16;
-pout.height = 16;
+pout.width = PICTURE_WIDTH;
+pout.height = PICTURE_HEIGHT;
 let pctx = pout.getContext('2d');
 
 let paths = [
@@ -53,11 +55,11 @@ function drawTinted(image, y, facing, cuts) {
 }
 
 function getSprite(sprite, picture=false) {
-    
+
     if (picture) {
         pctx.drawImage(images.picture, 0, 0);
     }
-    
+
     ctx.save();
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
     ctx.scale(sprite.facing, 1);
@@ -66,7 +68,7 @@ function getSprite(sprite, picture=false) {
     for (let i = 0; i < sprite.height; i++) {
         cuts.push(i === sprite.height - 1 && i !== 0 ? 22 : 15);
     }
-    
+
     drawTinted(images.skin, 3 - sprite.height, sprite.facing, cuts);
     if (!picture) {
         drawTinted(images['pants' + sprite.pants.type], 3 - sprite.height, sprite.facing, cuts);
@@ -127,7 +129,7 @@ function getSprite(sprite, picture=false) {
 
     ctx.putImageData(gid, 0, 0);
     ctx.restore();
-    
+
     if (picture) {
         pctx.drawImage(out, 2, 0);
         return pout;
@@ -136,8 +138,14 @@ function getSprite(sprite, picture=false) {
 }
 
 export {
-    WIDTH,
-    HEIGHT,
+    SPRITE_WIDTH,
+    SPRITE_HEIGHT,
+    PICTURE_WIDTH,
+    PICTURE_HEIGHT,
     loadImages,
-    getSprite
+    getSprite,
+
+    // Just in case??
+    SPRITE_WIDTH as WIDTH,
+    SPRITE_HEIGHT as HEIGHT
 };
