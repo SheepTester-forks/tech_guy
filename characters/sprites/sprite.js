@@ -50,7 +50,7 @@ function loadImages() {
 function drawTinted(image, y, facing, cuts) {
     cuts.push(23);
     for (let i = 0; i < cuts.length; i++) {
-        ctx.drawImage(image, 0, cuts[i - 1] || 0, WIDTH, cuts[i] - (cuts[i - 1] || 0) + 1, 0, (cuts[i - 1] || 0) + y + i, facing * WIDTH, cuts[i] - (cuts[i - 1] || 0) + 1);
+        ctx.drawImage(image, 0, cuts[i - 1] || 0, SPRITE_WIDTH, cuts[i] - (cuts[i - 1] || 0) + 1, 0, (cuts[i - 1] || 0) + y + i, facing * SPRITE_WIDTH, cuts[i] - (cuts[i - 1] || 0) + 1);
     }
 }
 
@@ -61,7 +61,7 @@ function getSprite(sprite, picture=false) {
     }
 
     ctx.save();
-    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+    ctx.clearRect(0, 0, SPRITE_WIDTH, SPRITE_HEIGHT);
     ctx.scale(sprite.facing, 1);
 
     let cuts = [];
@@ -84,7 +84,7 @@ function getSprite(sprite, picture=false) {
         drawTinted(images.hats, 3 - sprite.height, sprite.facing, []);
     }
 
-    let gid = ctx.getImageData(0, 0, WIDTH, HEIGHT);
+    let gid = ctx.getImageData(0, 0, SPRITE_WIDTH, SPRITE_HEIGHT);
 
     for (let i = 0; i < gid.data.length; i += 4) {
         let id = [];

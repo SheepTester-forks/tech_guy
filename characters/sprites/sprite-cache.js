@@ -1,8 +1,5 @@
 import {SPRITE_WIDTH, SPRITE_HEIGHT, PICTURE_WIDTH, PICTURE_HEIGHT} from './sprite.js';
 
-// Add a pixel space between each sprite so thin slices of them don't appear
-const ENTRY_WIDTH = WIDTH + 1;
-
 export class SpriteCache {
     constructor(capacity, type='sprite') {
         if (!Number.isInteger(capacity)) {
@@ -17,6 +14,7 @@ export class SpriteCache {
         } else {
             throw new Error('Type should be either "sprite" or "picture".');
         }
+        // Add a pixel between each entry to prevent pixel bleeding.
         this.entryWidth = this.width + 1;
 
         this.capacity = capacity;
