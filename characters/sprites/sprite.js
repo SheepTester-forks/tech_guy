@@ -47,6 +47,17 @@ function loadImages() {
     })));
 }
 
+// If more than one parts of the code call loadImages() directly, some images
+// fail to render properly initially. I think it's because the newer one
+// overwrites images[code] with a new Image that needs to be loaded
+let imagesLoaded;
+function loadImagesSafely() {
+    if (!imagesLoaded) {
+        imagesLoaded = loadImages();
+    }
+    return imagesLoaded;
+}
+
 function drawTinted(image, y, facing, cuts) {
     cuts.push(23);
     for (let i = 0; i < cuts.length; i++) {
@@ -142,7 +153,7 @@ export {
     SPRITE_HEIGHT,
     PICTURE_WIDTH,
     PICTURE_HEIGHT,
-    loadImages,
+    loadImagesSafely as loadImages,
     getSprite,
 
     // Just in case??
