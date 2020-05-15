@@ -27,7 +27,11 @@ export class SpriteCache {
             throw new Error('Cache is full and cannot accept any more students.');
         }
         let spriteId = this.sprites++;
-        this._context.drawImage(sprite, spriteId * ENTRY_WIDTH, 0);
+        if (sprite instanceof ImageData) {
+            this._context.putImageData(sprite, spriteId * ENTRY_WIDTH, 0);
+        } else {
+            this._context.drawImage(sprite, spriteId * ENTRY_WIDTH, 0);
+        }
         return spriteId;
     }
 
