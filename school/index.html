@@ -1,10 +1,19 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  </head>
-  <body>
-      <script src="schedule.js" type="module"></script>
-  </body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <script type="module">
+            import * as SCHEDULE from './schedule.js';
+            import * as SCHOOL from './school.js';
+                
+            async function mane() {
+                let school = await SCHOOL.generateSchool()
+                console.log(SCHEDULE.generateSchedule(school).sort((x, y) => x.room - y.room));
+                console.log(school);
+            } mane();
+        </script>
+    </body>
 </html>
