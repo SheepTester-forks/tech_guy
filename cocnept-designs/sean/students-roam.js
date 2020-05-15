@@ -238,7 +238,7 @@ export default async function main(wrapper, debug=false) {
     });
 
     let [background] = await Promise.all([
-        loadImage('./campus.png'),
+        loadImage(new URL('./campus.png', import.meta.url)),
         wrappedCanvas.resize(),
         loadImages()
     ]);
