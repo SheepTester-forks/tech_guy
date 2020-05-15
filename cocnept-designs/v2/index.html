@@ -10,10 +10,6 @@
     </head>
 
     <body>
-        <div class="screen" id="s-smallscreen">
-            <p>Bruh. Your screen is too small.<br>Responsive Design coming sometime</p>
-        </div>
-        
         <div id="container">
             <div class="screen" id="s-menu" onclick="cambiar('unmenu')"></div>
             <div id="menu">
@@ -40,7 +36,7 @@
                     <button>Report a Bug</button>
                 </div>
             </div>
-            
+
             <div id="bells">
                 <div id="belltable">
                     <div class="bellrow">
@@ -97,7 +93,7 @@
                     <button onclick="cambiar('unmenu')">Close Schedule</button>
                 </div>
             </div>
-            
+
             <div id="layout">
                 <div id="laytable">
                     <div class="layrow">
@@ -168,20 +164,22 @@
                     <button onclick="cambiar('unmenu')">Close Map</button>
                 </div>
             </div>
-            
+
             <div id="controls">
                 <p>Mon 05/12</p>
                 <p>10:00 AM</p>
                 <button onclick="cambiar('bells')">Schedule</button> <!--if you are wondering why they have weird id's-->
                 <button onclick="cambiar('layout')">Map</button> <!--it's cuz i already used both "schedule" and "map"-->
                 <div class="stretch"></div> <!--and i'm too lazy to change everything.-->
-                <button onclick="cambiar('game')">Computer</button>
-                <button onclick="cambiar('office')">Office</button>
-                <button onclick="cambiar('menu')">Menu</button>
+                <div class="control-btns">
+                    <button onclick="cambiar('game')">Computer</button>
+                    <button onclick="cambiar('office')">Office</button>
+                    <button onclick="cambiar('menu')">Menu</button>
+                </div>
             </div>
             <div id="game">
-                
-                <div id="campanel">
+
+                <div id="campanel" class="game-panel">
                     <div id="camchoose">
                         <div id="map">
                             <div class="maprow">
@@ -268,8 +266,10 @@
                     </div>
                     <div id="camvis">just imagine this nice gray is security footage :)</div>
                 </div>
-                
-                <div id="infopanel">
+
+                <button id="toggle-panels">&gt;</button>
+
+                <div id="infopanel" class="game-panel">
                     <div id="directory">
                         <input id="search" type="text" placeholder="Search" oninput="search(this.value)" autocomplete="off" spellcheck="false">
                         <div id="listwrap">
@@ -293,15 +293,15 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div>
-            
+
             <div id="office">
-                
+
                 <div id="envpanel">
                     <div id="envvis">insert drag and drop backpack desk here</div>
                 </div>
-                
+
                 <div id="studentpanel">
                     <div id="studentview">insert face here</div>
                     <div id="dialogue">
@@ -356,26 +356,20 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div>
         </div>
         <script type="module">
-            function rescale() {
-                if (window.innerWidth < 550 || window.innerHeight < 300) {
-                    document.getElementById('s-smallscreen').style.opacity = 1;
-                    document.getElementById('s-smallscreen').style.visibility = "visible";
+            let gameWrapper = document.getElementById('game');
+            let panelToggleBtn = document.getElementById('toggle-panels');
+            panelToggleBtn.addEventListener('click', e => {
+                gameWrapper.classList.toggle('show-right-panel');
+                if (gameWrapper.classList.contains('show-right-panel')) {
+                    panelToggleBtn.textContent = '<';
                 } else {
-                    document.getElementById('s-smallscreen').style.opacity = 0;
-                    document.getElementById('s-smallscreen').style.visibility = "hidden";
+                    panelToggleBtn.textContent = '>';
                 }
-                let container = document.getElementById('container');
-                let maxWidth = Math.min(window.innerWidth - 10, 1270);
-                let maxHeight = Math.min(window.innerHeight - 10, 710);
-                container.style.width = ((1270 + maxWidth * 710 / maxHeight) / 2) + 'px';
-                container.style.height = ((710 + maxHeight * 1270 / maxWidth) / 2) + 'px';
-                container.style.transform = 'translate(-50%, -50%) scale(' + (2 / (710 / maxHeight + 1270 / maxWidth)) + ')';
-            } rescale();
-            window.onresize = function () {rescale();}
+            });
         </script>
         <script>
             function cambiar(id) {
@@ -393,7 +387,7 @@
                     document.getElementById(id === 'game' ? 'office' : 'game').style.display = 'none';
                 }
             }
-            
+
             cambiar('game');
             cambiar('unmenu');
         </script>
@@ -401,49 +395,49 @@
             import * as SCHOOL from '../../school/school.js';
             import * as SCHEDULE from '../../school/schedule.js';
             import * as SPRITES from '../../characters/sprites/sprite.js';
-            
+
             let school;
             let selected = 0;
             let selElement;
-            
+
             async function dewit() {
                 await SPRITES.loadImages();
                 school = await SCHOOL.generateSchool();
                 SCHEDULE.generateSchedule(school);
-    
+
                 school.Students.sort((x, y) => x.name.last.localeCompare(y.name.last));
 
                 for (let i = 0; i < school.Students.length; i++) {
                     addStudent(school.Students[i]);
                 }
             } dewit();
-            
+
             function search(name) {
                 for (let i = 0; i < school.Students.length; i++) {
                     let student = school.Students[i];
-                    
+
                     let match = `${student.name.last}, ${student.name.first}`.toLowerCase().includes(name.toLowerCase());
                     document.getElementById(student.id).style.display = match ? 'flex' : 'none';
                 }
             }
-            
+
             function getSchedule(student) {
                 if (student.id === selected) {
                     return getSchedule({schedule: [{}, {}, {}, {}, {}, {}]});
                 }
-                
+
                 let schedule = student.schedule;
-                
+
                 for (let i = 0; i < 6; i++) {
                     let row = document.getElementById('tlist' + i);
                     let clase = student.name ? schedule[i].name || 'IDENTITY' : '';
                     row.innerHTML = `<p>${'ABCDEF'[i]}</p><p>${clase}</p><p>${(schedule[i].room + 1) || ''}</p>`;
                 }//Intrapersonal Discipline and Educational Nurturing for Teaching Information to Teenaged Youth
-                
+
                 selected = student.id || 0;
                 return selected !== 0;
             } getSchedule({schedule: [{}, {}, {}, {}, {}, {}]});
-            
+
             function addStudent(student) {
                 let wrapper = document.createElement('div');
                 wrapper.classList.add('student');
@@ -452,18 +446,18 @@
                     if (selElement) {
                         selElement.classList.remove('selected');
                     }
-                    
+
                     if (getSchedule(student)) {
                         selElement = wrapper;
                         selElement.classList.add('selected');
                     }
                 });
                 document.getElementById('list').appendChild(wrapper);
-                
+
                 let picwrap = document.createElement('div');
                 picwrap.classList.add('spic');
                 wrapper.appendChild(picwrap);
-                
+
                 let pic = document.createElement('canvas');
                 pic.style.width = '50px';
                 pic.style.height = '50px';
@@ -474,22 +468,22 @@
                 ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
                 ctx.drawImage(SPRITES.getSprite(student.picture, true), 0, 0, 50, 50);
                 picwrap.appendChild(pic);
-                
+
                 let infowrap = document.createElement('div');
                 infowrap.classList.add('sinfo');
                 wrapper.appendChild(infowrap);
-                
+
                 let name = document.createElement('p');
                 name.classList.add('sname');
                 name.innerHTML = `${student.name.last}, ${student.name.first}`;
                 infowrap.appendChild(name);
-                
+
                 let info = document.createElement('p');
                 let disgrade = student.grade === 9 ? '09' : student.grade;
                 info.innerHTML = `Grade ${disgrade} | ${student.gender} | <span class="sstatus">Enrolled</span>`;
                 infowrap.appendChild(info);
             }
-            
+
             window.search = search; //better way to do this?
         </script>
     </body>
