@@ -58,8 +58,7 @@ a {
     opacity: 0.5;
 }
 :focus {
-    /* TODO */
-    outline: 3px solid red;
+    outline: 1px solid white;
 }
 .focus-invisible :focus {
     outline: none;
