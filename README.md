@@ -8,17 +8,24 @@ Intro:
 <table>
   <tr>
     <td colspan="2">
-      It’s a beautiful day in Thick Stick City. Are you ready for your new job at Harry Cannon High School?
+      Welcome to Thick Stick City! What a nice place full of innovation and intellect.
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      It’s a beautiful day. Are you ready for your new job at Harry Cannon High School?
     </td>
   </tr>
   <tr>
     <td>
       Yes
-      Well that’s great! You’d better get moving along then. What an amazing opportunity this is.
+      <br>
+      Well, that’s great! You’d better get moving along then to this amazing opportunity.
     </td>
     <td>
       No
-      Well that’s too bad. But the bills don’t pay themselves, especially with the rent so high here! Why did you get this job anyway?
+      <br>
+      Well, that’s too bad. But the bills don’t pay themselves, especially with the rent so high here!
     </td>
   </tr>
   <tr>
@@ -26,24 +33,27 @@ Intro:
       It’s your first day working as a tech guy for Cannon H.S., so you’ll probably want to write your name on this sticker.
     </td>
   </tr>
-  <tr>
-    <td colspan="2">
-      Great! Let’s go suspend some students!
-    </td>
-  </tr>
 </table>
 
-Dialogue with principal:
+Principal EXPLAINS
 
 | Hello there, [mispelling of name], and welcome to Cannon H.S. As this year’s principal, let me tell you how this is going to work. |
 | --- |
-| We here at Cannon are dedicated to making a safe and amazing learning environment for our pupils and thus, have installed cameras around the school to ensure everything runs smoothly. |
-| Your job is to catch bad pupils who disrupt our learning environment. |
-| You’ll be working here: |
-| This is the camera. You can click on students and our advanced facial recognition software will identify potential matches. |
+| Oh, hello there! What’s your name? .. Erm, do you mind if I just call you “Tech Guy”? What a pleasure to meet you! Welcome to Cannon H.S. As this year’s principal, let me tell you how this is going to work. |
+| Recently, to cut down on costs and focus our pupils more on academics, we have removed all electives and regular laned classes. |
+| To ensure that our pupils stay nice and .. happy, we’ve also introduced mandatory classes of Intrapersonal Discipline and Educational Nurturing for Teaching Information to Teenaged Youth, or IDENTITY for short. |
+| Needless to say, these changes have been .. controversial among the pupils, who have begun to act out in unpleasant ways. They’ve taken to using some bad substances in the bathrooms and putting up unsatisfactory posters in the halls. |
+| We here at Cannon are dedicated to making a safe learning environment for our pupils and thus, have installed cameras around the school to ensure everything runs smoothly. |
+| Here is where you will be working, the “computer” view. |
+| This is the camera. You can click on pupils and our advanced facial recognition software will identify potential matches. |
 | Here you can switch camera views. |
-| Here you can see our smoke detectors. These are designed to catch smoke from some newfangled “smile smokers” that kids have been using in the bathrooms. |
-| And here is the directory, where you can see a student’s schedule and potential call them into the office for searching. |
+| You can also see our smoke detectors. These are designed to catch smoke from some newfangled devices that kids have been using in the bathrooms. If you see a smoke detector go off, chances are the pupil inside is doing something bad! |
+| Here is the directory, where you can see a pupil’s schedule and potentially call them into the office for searching. |
+| If you click on “office,” you go to another view. Here, you can interrogate the pupils that you summon. |
+| Here you can search a pupil’s backpack by taking things out and putting them back in. |
+| And on the right, you can try to get some answers out of a pupil, release them, or suspend them. |
+| Finally, if you click on “tools,” you can see the map and the schedule of this school. |
+| Remember, your primary task is to take care of and interact with the pupils so that we don’t have to. Thus, your salary will be based on how many pupils you suspend. Good luck! |
 
 ## Gameplay
 
@@ -71,18 +81,17 @@ Dialogue with principal:
     - Promotion: The player suspends all the drug dealers who are expelled, and the player gets a promotion to the district level. (Note that this could be seen as good or bad depending on the player’s actions to the anti-I students).
     - Dealer: The player helps the drug dealers, which is implied to be bad.
     - Leader + Promotion is true good ending while Brainwashed + Dealer is true bad.
-- Tools: See cocnept designs.
 
 ## Schedule
 
 . | M | T | W | H | F
 --- | --- | --- | --- | --- | ---
-8:00-9:20 | A | C | B | D | C
-9:30-10:50 | I | I | I | I | I
-11:00-12:20 | B | D | C | B | D
+8:00-9:20 | A | D | B | E | C
+9:30-10:50 | B | E | C | B | D
+11:00-12:20 | C | B | D | C | E
 12:20-1:00 | | | | |
-1:00-2:20 | E | A | E | A | E
-2:30-3:50 | | F | | F | F
+1:00-2:20 | F | A | E | D | A
+2:30-3:50 | | F | F | A | F
 
 # Suspension
 
