@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Untitled Document</title>
+    </head>
+
+    <body>
+        <button onclick="begin()">Restart</button>
+        <button onclick="resume()">Resume</button>
+        <button onclick="pause()">Pause</button>
+        <p id="output"></p>
+        <script> // THIS IS ALL JUST A TEST / DEBUG
+            // time is calculated by millis instead of frames
+            // because frames can slow down
+            const PARAMS = {
+                factor: 10, // a high FACTOR will mean some game minutes will be skipped
+                start: {
+                    month: 5,
+                    day: 5
+                },
+                mlength: 31 // game takes place over one month so it's not necessary to make this smarter
+            };
+            let loopOn = false;
+            
+            let timeData = {
+                pause: 0,
+                day: {
+                    number: 0,
+                    start: 0,
+                    min: 0,
+                    display: {
+                        month: 0,
+                        week: 0,
+                        day: 0,
+                        hour: 0,
+                        min: 0
+                    }
+                }
+            };
+            
+            function begin() {
+                if (!loopOn) {
+                    timeData.day.start = Date.now();
+                    loopOn = true;
+                    main();
+                }
+            } begin();
+            
+            function resume() {
+                if (!loopOn) {
+                    timeData.day.start += Date.now() - timeData.pause;
+                    loopOn = true;
+                    main();
+                }
+            }
+            
+            function pause() {
+                timeData.pause = Date.now();
+                loopOn = false;
+            }
+            
+            function main() {
+                
+                let out = '';
+                out += `Global time (real ms): ${Date.now()}<br><br>`;
+                out += `Factor: ${PARAMS.factor}x<br>`;
+                out +=
+                    `Start date (game mm-dd): ${formatTime(PARAMS.start.month)}-${formatTime(PARAMS.start.day)}<br>`;
+                out += `Month length: ${PARAMS.mlength}<br><br>`;
+                out += `Day start (real ms): ${timeData.day.start}<br>`;
+                out += `Day time (real ms): ${Date.now() - timeData.day.start}<br>`;
+                
+                timeData.day.min = Math.floor((Date.now() - timeData.day.start) * PARAMS.factor / 60000);
+                
+                out += `Day time (game min): ${timeData.day.min}<br>`;
+                
+                timeData.day.display.month =
+                    Math.floor((timeData.day.number + PARAMS.start.day - 1) / PARAMS.mlength) + PARAMS.start.month;
+                timeData.day.display.week = timeData.day.number % 7;
+                timeData.day.display.day = (timeData.day.number + PARAMS.start.day - 1) % PARAMS.mlength + 1;
+                timeData.day.display.hour = Math.floor(timeData.day.min / 60) + 8;
+                timeData.day.display.min = timeData.day.min % 60;
+                
+                function formatTime(time) {
+                    return ('0' + time).slice(-2);
+                }
+                function isPastTime(h, m) {
+                    return timeData.day.display.hour > h || (timeData.day.display.hour === h && timeData.day.display.min >= m);
+                }
+                
+                out += `Day number (game day): ${timeData.day.number}<br>`;
+                out +=
+                    `Display date (game mm-dd): ${formatTime(timeData.day.display.month)}-${formatTime(timeData.day.display.day)}<br>`;
+                out +=
+                    `Display day: ${['Mon', 'Tue', 'Wed', 'Thu', 'Fri'][timeData.day.display.week]}<br>`;
+                out +=
+                    `Display time (game hh:mm): ${formatTime(timeData.day.display.hour)}:${formatTime(timeData.day.display.min)}<br>`;
+                
+                if (isPastTime(15, 50)) {
+                    timeData.day.number += timeData.day.number % 7 === 4 ? 3 : 1;
+                    pause();
+                }
+                
+                document.getElementById('output').innerHTML = out;
+                if (loopOn) {
+                    window.requestAnimationFrame(main);
+                }
+            }
+        </script>
+    </body>
+</html>
