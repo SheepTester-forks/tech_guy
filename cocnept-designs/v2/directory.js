@@ -1,5 +1,5 @@
 import {bindMethods} from '../../utils.js';
-import {PICTURE_WIDTH, PICTURE_HEIGHT, getSprite} from '../../characters/sprites/sprite.js';
+import {PICTURE_WIDTH, PICTURE_HEIGHT} from '../../characters/sprites/sprite-constants.js';
 
 /**
  * Represents a DOM element in the directory.

@@ -30,7 +30,7 @@ function applyPixelFrom(target, source, {destX=0, destY=0, srcX=0, srcY=0}) {
         target.data[destIndex] = applyAlphaOverlay(target.data[destIndex], source.data[sourceIndex], opacity);
         target.data[destIndex + 1] = applyAlphaOverlay(target.data[destIndex + 1], source.data[sourceIndex + 1], opacity);
         target.data[destIndex + 2] = applyAlphaOverlay(target.data[destIndex + 2], source.data[sourceIndex + 2], opacity);
-        target.data[destIndex + 3] = Math.max(target.data[destIndex + 3], source.data[sourceIndex + 3])
+        target.data[destIndex + 3] = Math.max(target.data[destIndex + 3], source.data[sourceIndex + 3]);
     }
 }
 

@@ -1,4 +1,4 @@
-import {SPRITE_WIDTH, SPRITE_HEIGHT, PICTURE_WIDTH, PICTURE_HEIGHT, paths} from './sprite-constants.js';
+import {paths} from './sprite-constants.js';
 import {loadImage} from '../../cocnept-designs/sean/canvas-stuff.js';
 import {receive} from '../../utils.js';
 
