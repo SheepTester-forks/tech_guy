@@ -2,7 +2,7 @@ import {WrappedCanvas, loadImage} from './canvas-stuff.js';
 import {Panner} from './panner.js';
 
 import {SPRITE_WIDTH, SPRITE_HEIGHT} from '../../characters/sprites/sprite-constants.js';
-import {WorkerSpriteMaker} from '../../characters/sprites/worker-sprite-maker.js';
+import {getWorkerSpriteMaker} from '../../centralized.js';
 import {randomSprite} from '../../characters/sprites/random-sprite.js';
 import {SpriteCache} from '../../characters/sprites/sprite-cache.js';
 
@@ -240,7 +240,7 @@ export default async function main(wrapper, debug=false) {
 
     let [background, spriteData] = await Promise.all([
         loadImage(new URL('./campus.png', import.meta.url)),
-        new WorkerSpriteMaker().getSprites(students.map(() => randomSprite())),
+        getWorkerSpriteMaker().getSprites(students.map(() => randomSprite())),
         wrappedCanvas.resize()
     ]);
 

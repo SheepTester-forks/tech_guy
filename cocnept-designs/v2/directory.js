@@ -70,14 +70,13 @@ class DirectoryItem {
         return this;
     }
 
-    setStudent(student, selected=false) {
+    setStudent(pictureCache, student, selected=false) {
         let {wrapper, ctx, name, info} = this._elems;
         if (this.student !== student) {
             this.student = student;
 
             wrapper.id = student.id;
-            // TODO: Cache student pictures
-            ctx.drawImage(getSprite(student.picture, true), 0, 0, PICTURE_WIDTH, PICTURE_HEIGHT);
+            pictureCache.draw(ctx, student.pictureId);
             name.innerHTML = `${student.name.last}, ${student.name.first}`;
             let disgrade = student.grade === 9 ? '09' : student.grade;
             info.innerHTML = `Grade ${disgrade} | ${student.gender} | <span class="sstatus">Enrolled</span>`;
@@ -118,14 +117,17 @@ const ITEM_PADDING = 2;
  * Recycles DirectoryItems as the user scrolls to limit the number of elements.
  */
 class Directory {
-    constructor(wrapper, students=[]) {
+    constructor(wrapper) {
         bindMethods(this, [
             'updateScroll',
             '_onItemClicked'
         ]);
 
         this.wrapper = wrapper;
-        this.students = students;
+
+        // These need to be set
+        this.pictureCache = null;
+        this.students = [];
 
         // The student object of the selected item (NOT a DirectoryItem)
         this.selected = null;
@@ -215,7 +217,7 @@ class Directory {
             // Move a recycleable to the unclaimed position
             let recycleable = recycleables.pop();
             recycleable
-                .setStudent(this.students[y], this.students[y] === this.selected)
+                .setStudent(this.pictureCache, this.students[y], this.students[y] === this.selected)
                 .addTo(this.wrapper)
                 .wrapper.style.top = y * ITEM_HEIGHT + 'px';
             this._items.set(y, recycleable);
