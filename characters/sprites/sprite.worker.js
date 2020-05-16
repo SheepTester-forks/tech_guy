@@ -10,14 +10,27 @@ const PICTURE_HEIGHT = 16;
 let images;
 let ctx;
 
+// https://en.wikipedia.org/wiki/Alpha_compositing
+function applyAlphaOverlay(under, over, opacity) {
+    return over * opacity + under * (1 - opacity);
+}
+
 function applyPixelFrom(target, source, {destX=0, destY=0, srcX=0, srcY=0}) {
-    let sourceIndex = (srcY * source.width + destX) * 4;
+    let sourceIndex = (srcY * source.width + srcX) * 4;
     let destIndex = (destY * target.width + destX) * 4;
-    if (target[sourceIndex + 3] !== 0) {
-        target[destIndex] = target[sourceIndex];
-        target[destIndex + 1] = target[sourceIndex + 1];
-        target[destIndex + 2] = target[sourceIndex + 2];
-        target[destIndex + 3] = target[sourceIndex + 3];
+    if (source.data[sourceIndex + 3] === 255) {
+        target.data[destIndex] = source.data[sourceIndex];
+        target.data[destIndex + 1] = source.data[sourceIndex + 1];
+        target.data[destIndex + 2] = source.data[sourceIndex + 2];
+        target.data[destIndex + 3] = 255;
+    } else if (source.data[sourceIndex + 3] !== 0) {
+        // Assumes that the target has alpha value 255
+        // result = under * (1 - opacity) + over * opacity
+        let opacity = source.data[sourceIndex + 3] / 255;
+        target.data[destIndex] = applyAlphaOverlay(target.data[destIndex], source.data[sourceIndex], opacity);
+        target.data[destIndex + 1] = applyAlphaOverlay(target.data[destIndex + 1], source.data[sourceIndex + 1], opacity);
+        target.data[destIndex + 2] = applyAlphaOverlay(target.data[destIndex + 2], source.data[sourceIndex + 2], opacity);
+        target.data[destIndex + 3] = Math.max(target.data[destIndex + 3], source.data[sourceIndex + 3])
     }
 }
 
@@ -32,7 +45,7 @@ function copyImageData(target, source, {
 }={}) {
     for (let x = 0; x < srcWidth; x++) {
         for (let y = 0; y < srcHeight; y++) {
-            setPixelFrom(target, source, {
+            applyPixelFrom(target, source, {
                 destX: destX + x,
                 destY: destY + y,
                 srcX: srcX + (flipX ? srcWidth - 1 - x : x),
@@ -79,6 +92,8 @@ function getSprite(sprite, picture=false) {
         drawTinted(images.hat, 3 - sprite.height, sprite.facing, []);
         drawTinted(images.hats, 3 - sprite.height, sprite.facing, []);
     }
+
+    let gid = ctx;
 
     for (let i = 0; i < gid.data.length; i += 4) {
         let id = [];
@@ -133,9 +148,13 @@ function getSprite(sprite, picture=false) {
 async function* receive(worker=self) {
     let nextDone;
     let next = [];
+    function newNext() {
+        next.push(new Promise(resolve => (nextDone = resolve)));
+    }
+    newNext();
     worker.addEventListener('message', ({data}) => {
         nextDone(data);
-        next.push(new Promise(resolve => (nextDone = resolve)));
+        newNext();
     });
     for (;;) {
         yield await next.shift();
@@ -143,7 +162,7 @@ async function* receive(worker=self) {
 }
 
 async function main() {
-    for (const {type, ...data} of receive()) {
+    for await (const {type, ...data} of receive()) {
         switch (type) {
             case 'images': {
                 images = data.data;

@@ -37,12 +37,17 @@ export function inRange(num, {min=-Infinity, max=Infinity}={}) {
     return num >= min && num <= max;
 }
 
-export async function* receive(data, worker=self) {
+// Has a copy in sprite.worker.js
+export async function* receive(worker=self) {
     let nextDone;
     let next = [];
-    worker.addEventListener('message', e => {
-        nextDone();
+    function newNext() {
         next.push(new Promise(resolve => (nextDone = resolve)));
+    }
+    newNext();
+    worker.addEventListener('message', ({data}) => {
+        nextDone(data);
+        newNext();
     });
     for (;;) {
         yield await next.shift();
