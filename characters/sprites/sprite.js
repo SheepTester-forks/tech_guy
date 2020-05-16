@@ -1,16 +1,17 @@
-let loaded = 0;
-const WIDTH = 12; // leaving these here because Sean might use em
-const HEIGHT = 27; // these are the dimensions of the normal sprite, not the picture
+const SPRITE_WIDTH = 12; // leaving these here because Sean might use em
+const SPRITE_HEIGHT = 27; // these are the dimensions of the normal sprite, not the picture
 
+const PICTURE_WIDTH = 16;
+const PICTURE_HEIGHT = 16;
 
 let out = document.createElement('canvas');
-out.width = WIDTH;
-out.height = HEIGHT;
+out.width = SPRITE_WIDTH;
+out.height = SPRITE_HEIGHT;
 let ctx = out.getContext('2d');
 
 let pout = document.createElement('canvas');
-pout.width = 16;
-pout.height = 16;
+pout.width = PICTURE_WIDTH;
+pout.height = PICTURE_HEIGHT;
 let pctx = pout.getContext('2d');
 
 let paths = [
@@ -30,7 +31,7 @@ let images = {};
 function loadImages() {
     return Promise.all(paths.map(path => new Promise(resolve => {
         let img = new Image();
-        img.crossOrigin = "Anonymous";
+        img.crossOrigin = 'Anonymous';
         img.src = new URL(`./images/student/${path}.png`, import.meta.url);
         img.onload = resolve;
 
@@ -45,33 +46,43 @@ function loadImages() {
     })));
 }
 
+// If more than one parts of the code call loadImages() directly, some images
+// fail to render properly initially. I think it's because the newer one
+// overwrites images[code] with a new Image that needs to be loaded
+let imagesLoaded;
+function loadImagesSafely() {
+    if (!imagesLoaded) {
+        imagesLoaded = loadImages();
+    }
+    return imagesLoaded;
+}
+
 function drawTinted(image, y, facing, cuts) {
     cuts.push(23);
     for (let i = 0; i < cuts.length; i++) {
-        ctx.drawImage(image, 0, cuts[i - 1] || 0, WIDTH, cuts[i] - (cuts[i - 1] || 0) + 1, 0, (cuts[i - 1] || 0) + y + i, facing * WIDTH, cuts[i] - (cuts[i - 1] || 0) + 1);
+        ctx.drawImage(image, 0, cuts[i - 1] || 0, SPRITE_WIDTH, cuts[i] - (cuts[i - 1] || 0) + 1, 0, (cuts[i - 1] || 0) + y + i, facing * SPRITE_WIDTH, cuts[i] - (cuts[i - 1] || 0) + 1);
     }
 }
 
 function getSprite(sprite, picture=false) {
-    
     if (picture) {
         pctx.drawImage(images.picture, 0, 0);
     }
-    
+
     ctx.save();
-    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+    ctx.clearRect(0, 0, SPRITE_WIDTH, SPRITE_HEIGHT);
     ctx.scale(sprite.facing, 1);
 
     let cuts = [];
     for (let i = 0; i < sprite.height; i++) {
         cuts.push(i === sprite.height - 1 && i !== 0 ? 22 : 15);
     }
-    
+
     drawTinted(images.skin, 3 - sprite.height, sprite.facing, cuts);
     if (!picture) {
         drawTinted(images['pants' + sprite.pants.type], 3 - sprite.height, sprite.facing, cuts);
         drawTinted(images['shoes' + sprite.shoes.type], 3, sprite.facing, []);
-    };
+    }
     drawTinted(images['shirt' + sprite.shirt.type], 3 - sprite.height, sprite.facing, cuts);
     drawTinted(images.shadow, 3 - sprite.height, sprite.facing, cuts);
     drawTinted(images['hair' + sprite.hair.type], 3 - sprite.height, sprite.facing, cuts);
@@ -82,7 +93,7 @@ function getSprite(sprite, picture=false) {
         drawTinted(images.hats, 3 - sprite.height, sprite.facing, []);
     }
 
-    let gid = ctx.getImageData(0, 0, WIDTH, HEIGHT);
+    let gid = ctx.getImageData(0, 0, SPRITE_WIDTH, SPRITE_HEIGHT);
 
     for (let i = 0; i < gid.data.length; i += 4) {
         let id = [];
@@ -122,12 +133,11 @@ function getSprite(sprite, picture=false) {
         gid.data[i] = Math.max(0, rgb[0] - (255 - base));
         gid.data[i + 1] = Math.max(0, rgb[1] - (255 - base));
         gid.data[i + 2] = Math.max(0, rgb[2] - (255 - base));
-
     }
 
     ctx.putImageData(gid, 0, 0);
     ctx.restore();
-    
+
     if (picture) {
         pctx.drawImage(out, 2, 0);
         return pout;
@@ -136,8 +146,14 @@ function getSprite(sprite, picture=false) {
 }
 
 export {
-    WIDTH,
-    HEIGHT,
-    loadImages,
-    getSprite
+    SPRITE_WIDTH,
+    SPRITE_HEIGHT,
+    PICTURE_WIDTH,
+    PICTURE_HEIGHT,
+    loadImagesSafely as loadImages,
+    getSprite,
+
+    // Just in case??
+    SPRITE_WIDTH as WIDTH,
+    SPRITE_HEIGHT as HEIGHT
 };

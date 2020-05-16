@@ -53,7 +53,6 @@ rules:
         - error
         - max: 1
     no-multiple-empty-lines: error
-    no-negated-condition: error
     nonblock-statement-body-position:
         - error
         - beside
