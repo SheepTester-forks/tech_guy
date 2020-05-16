@@ -364,7 +364,8 @@
             import '../focus-visible.js';
             import * as SCHOOL from '../../school/school.js';
             import * as SCHEDULE from '../../school/schedule.js';
-            import * as SPRITES from '../../characters/sprites/sprite.js';
+            import {SpriteCache} from '../../characters/sprites/sprite-cache.js';
+            import {getWorkerSpriteMaker} from '../../centralized.js';
             import {Directory} from './directory.js';
 
             // Toggle panel buttons for small screen
@@ -407,14 +408,23 @@
 
             // Student directory
             let school;
+            let pictureCache;
             let directoryList = new Directory(document.getElementById('list'));
 
             async function dewit() {
-                await SPRITES.loadImages();
                 school = await SCHOOL.generateSchool();
                 SCHEDULE.generateSchedule(school);
 
                 school.Students.sort((x, y) => x.name.last.localeCompare(y.name.last));
+
+                // Generate and cache student pictures
+                pictureCache = new SpriteCache(school.Students.length, 'picture');
+                let pictures = await getWorkerSpriteMaker()
+                    .getSprites(school.Students.map(student => student.picture), true);
+                for (let i = 0; i < school.Students.length; i++) {
+                    school.Students[i].pictureId = pictureCache.add(pictures[i]);
+                }
+                directoryList.pictureCache = pictureCache;
 
                 directoryList.students = [...school.Students];
                 directoryList.updateData();

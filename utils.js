@@ -36,3 +36,20 @@ export function HSVtoRGB(h, s, v) {
 export function inRange(num, {min=-Infinity, max=Infinity}={}) {
     return num >= min && num <= max;
 }
+
+// Has a copy in sprite.worker.js
+export async function* receive(worker=self) {
+    let nextDone;
+    let next = [];
+    function newNext() {
+        next.push(new Promise(resolve => (nextDone = resolve)));
+    }
+    newNext();
+    worker.addEventListener('message', ({data}) => {
+        nextDone(data);
+        newNext();
+    });
+    for (;;) {
+        yield await next.shift();
+    }
+}

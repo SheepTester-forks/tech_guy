@@ -1,4 +1,4 @@
-import {SPRITE_WIDTH, SPRITE_HEIGHT, PICTURE_WIDTH, PICTURE_HEIGHT} from './sprite.js';
+import {SPRITE_WIDTH, SPRITE_HEIGHT, PICTURE_WIDTH, PICTURE_HEIGHT} from './sprite-constants.js';
 
 export class SpriteCache {
     constructor(capacity, type='sprite') {
@@ -35,7 +35,11 @@ export class SpriteCache {
             throw new Error('Cache is full and cannot accept any more students.');
         }
         let spriteId = this.sprites++;
-        this._context.drawImage(sprite, spriteId * this.entryWidth, 0);
+        if (sprite instanceof ImageData) {
+            this._context.putImageData(sprite, spriteId * this.entryWidth, 0);
+        } else {
+            this._context.drawImage(sprite, spriteId * this.entryWidth, 0);
+        }
         return spriteId;
     }
 
