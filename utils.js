@@ -36,3 +36,15 @@ export function HSVtoRGB(h, s, v) {
 export function inRange(num, {min=-Infinity, max=Infinity}={}) {
     return num >= min && num <= max;
 }
+
+export async function* receive(data, worker=self) {
+    let nextDone;
+    let next = [];
+    worker.addEventListener('message', e => {
+        nextDone();
+        next.push(new Promise(resolve => (nextDone = resolve)));
+    });
+    for (;;) {
+        yield await next.shift();
+    }
+}

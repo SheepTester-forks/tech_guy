@@ -7,6 +7,7 @@ const SPRITE_HEIGHT = 27;
 const PICTURE_WIDTH = 16;
 const PICTURE_HEIGHT = 16;
 
+let images;
 let ctx;
 
 function applyPixelFrom(target, source, {destX=0, destY=0, srcX=0, srcY=0}) {
@@ -127,3 +128,33 @@ function getSprite(sprite, picture=false) {
     }
     return ctx;
 }
+
+// From utils.js
+async function* receive(worker=self) {
+    let nextDone;
+    let next = [];
+    worker.addEventListener('message', ({data}) => {
+        nextDone(data);
+        next.push(new Promise(resolve => (nextDone = resolve)));
+    });
+    for (;;) {
+        yield await next.shift();
+    }
+}
+
+async function main() {
+    for (const {type, ...data} of receive()) {
+        switch (type) {
+            case 'images': {
+                images = data.data;
+                break;
+            }
+            case 'getSprite': {
+                self.postMessage(data.sprites.map(sprite => getSprite(sprite, data.picture)));
+                break;
+            }
+        }
+    }
+}
+
+main();

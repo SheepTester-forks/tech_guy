@@ -1,4 +1,4 @@
-import {SPRITE_WIDTH, SPRITE_HEIGHT, PICTURE_WIDTH, PICTURE_HEIGHT} from './sprite.js';
+import {SPRITE_WIDTH, SPRITE_HEIGHT, PICTURE_WIDTH, PICTURE_HEIGHT} from './sprite-constants.js';
 
 export class SpriteCache {
     constructor(capacity, type='sprite') {
