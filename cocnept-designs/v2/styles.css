@@ -94,7 +94,11 @@
     margin-bottom: 5px;
     padding: 5px;
 }
-#controls p,
+#controls p {
+    border: 2px solid #222;
+    margin: 5px;
+    padding: 3px 8px;
+}
 #controls button,
 #menu button,
 #bells button,
