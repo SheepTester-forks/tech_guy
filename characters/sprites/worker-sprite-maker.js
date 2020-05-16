@@ -37,6 +37,7 @@ export class WorkerSpriteMaker {
     }
 
     async getSprites(sprites, picture=false) {
+        await this.ready;
         this.worker.postMessage({type: 'getSprite', sprites, picture});
         let {value} = await this.receiver.next();
         return value;
