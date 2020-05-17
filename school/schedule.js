@@ -1,5 +1,3 @@
-import * as SCHOOL from './school.js';
-
 const CLASSES = [
     {
         'name': 'Advanced World History', 'short': ['history'],
@@ -99,9 +97,9 @@ function generateSchedule(students) {
     let n = 0;
     let currClass = 0;
     for (let j = 0; j < 180 / PERIODS; j++) {
-        if (currClass === CLASSES.length) {
+        /*if (currClass === CLASSES.length) {
             //break;
-        }
+        }*/
         let type = CLASSES[currClass].type;
         let row = [];
         for (let i = 0; i < PERIODS; i++) {
@@ -113,9 +111,9 @@ function generateSchedule(students) {
             if (n >= CLASSES[currClass].rooms * PERIODS) {
                 n = 0;
                 currClass++;
-                if (currClass === CLASSES.length || CLASSES[currClass].type !== type) {
+                /*if (currClass === CLASSES.length || CLASSES[currClass].type !== type) {
                     //break;
-                }
+                }*/
             }
         }
         row.sort(() => Math.random() - 0.5);
@@ -158,23 +156,22 @@ function generateSchedule(students) {
                 x => x.name === _class.name && !takenPeriods.includes(x.period)
             );
 
-            if (existing.length === 0) {
+            /*if (existing.length === 0) {
                 console.log('big owie');
                 continue;
-            }
+            }*/
 
             existing.sort(() => Math.random() - 0.5);
             existing.sort((x, y) => x.students.length - y.students.length);
-            existing[0].students.push(student.index);
+            existing[0].students.push(student.id);
             student.schedule[existing[0].period] = existing[0];
             takenPeriods.push(existing[0].period);
         }
     }
-
-    //console.log(schedule.sort((x, y) => x.room - y.room));
+    
+    return schedule;
 }
 
-//generateStudents(await SCHOOL.generateSchool());
 
 export {
     generateSchedule

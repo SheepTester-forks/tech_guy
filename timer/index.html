@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Untitled Document</title>
+    </head>
+
+    <body>
+        <button onclick="resetGame()">Reset</button>
+        <button onclick="resetDay()">Start Day</button>
+        <button onclick="resume()">Resume</button>
+        <button onclick="pause()">Pause</button>
+        <p id="output"></p>
+        <script type="module"> // THIS IS ALL JUST A TEST / DEBUG
+            // no need to convert this into its own file
+            // time is calculated by millis instead of frames
+            // because frames can slow down
+            import * as TIMER from './timer.js';
+            const PARAMS = TIMER.PARAMS;
+            
+            let loopOn = false;
+            
+            function resetGame() {
+                if (!loopOn) {
+                    TIMER.resetGame();
+                    loopOn = true;
+                    main();
+                }
+            } resetGame();
+            
+            function resetDay() {
+                if (!loopOn) {
+                    TIMER.resetDay();
+                    loopOn = true;
+                    main();
+                }
+            }
+            
+            function resume() {
+                if (!loopOn) {
+                    TIMER.resume();
+                    loopOn = true;
+                    main();
+                }
+            }
+            
+            function pause() {
+                TIMER.pause();
+                loopOn = false;
+            }
+            
+            function main() {
+                let timeData = TIMER.getData();
+                
+                if (!TIMER.loop()) {
+                    pause();
+                }
+                
+                let out = '';
+                out += `Global time (real ms): ${Date.now()}<br><br>`;
+                out += `Factor: ${PARAMS.factor}x<br>`;
+                out +=
+                    `Start date (game mm-dd): ${formatTime(PARAMS.start.month)}-${formatTime(PARAMS.start.day)}<br>`;
+                out += `Month length: ${PARAMS.mlength}<br><br>`;
+                out += `Day start (real ms): ${timeData.start}<br>`;
+                out += `Day time (real ms): ${Date.now() - timeData.start}<br>`;
+                out += `Day time (game min): ${timeData.min}<br>`;
+                
+                function formatTime(time) {
+                    return ('0' + time).slice(-2);
+                }
+                
+                out += `Day number (game day): ${timeData.day}<br>`;
+                out += `Period number: ${timeData.bell}<br>`;
+                out +=
+                    `Display date (game mm-dd): ${formatTime(timeData.game.month)}-${formatTime(timeData.game.day)}<br>`;
+                out +=
+                    `Display day: ${['Mon', 'Tue', 'Wed', 'Thu', 'Fri'][timeData.game.week]}<br>`;
+                out +=
+                    `Display time (game hh:mm): ${formatTime(timeData.game.hour)}:${formatTime(timeData.game.min)}<br>`;
+                out +=
+                    `Display period: ${['A', 'B', 'C', 'D', 'E', 'F', 'Lunch'][timeData.game.period] || 'Passing'}<br>`;
+                
+                document.getElementById('output').innerHTML = out;
+                if (loopOn) {
+                    window.requestAnimationFrame(main);
+                }
+            }
+            
+            window.resetGame = resetGame;
+            window.resetDay = resetDay;
+            window.resume = resume;
+            window.pause = pause;
+        </script>
+    </body>
+</html>
