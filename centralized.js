@@ -10,3 +10,11 @@ export function getWorkerSpriteMaker() {
     }
     return workerSpriteMaker;
 }
+
+let params;
+export function param(key) {
+    if (!params) {
+        params = new URL(window.location).searchParams;
+    }
+    return params.get(key);
+}

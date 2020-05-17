@@ -365,7 +365,7 @@
             import * as SCHOOL from '../../school/school.js';
             import * as SCHEDULE from '../../school/schedule.js';
             import {SpriteCache} from '../../characters/sprites/sprite-cache.js';
-            import {getWorkerSpriteMaker} from '../../centralized.js';
+            import {getWorkerSpriteMaker, param} from '../../centralized.js';
             import {Directory} from './directory.js';
             import {Dialogue} from '../sean/dialogue.js';
 
@@ -511,7 +511,7 @@
             new Image().src = '../sean/munkler.png';
             new Image().src = '../../characters/sprites/images/munkler/sprite.png';
 
-            dewit().then(() => intro(() => {
+            function showUI() {
                 document.body.classList.remove('intro-mode');
                 return Promise.all([
                     directoryList.resize()
@@ -522,8 +522,17 @@
                         main(document.getElementById('camvis'));
                     })
                 ]);
-            })).then(async data => {
-                console.log(data);
+            }
+
+            dewit().then(() => {
+                if (param('skip-intro')) {
+                    showUI();
+                    return 'intro skipped';
+                } else {
+                    return intro(showUI);
+                }
+            }).then(data => {
+                // Do something with whatever the user put for the name
             });
         </script>
     </body>
