@@ -1,13 +1,5 @@
 import {bindMethods, compareDist, clamp} from '../../utils.js';
 
-function friction(speed, amount) {
-    if (speed > 0) {
-        return Math.max(0, speed - amount);
-    } else {
-        return Math.min(0, speed + amount);
-    }
-}
-
 export class Panner {
     constructor({
         width,
@@ -20,8 +12,10 @@ export class Panner {
         speed=10,
         // Minimum movement in pixels required for a pointer to be considered dragging
         minMovement=10,
-        // Acceleration applied by friction (px/ms^2)
-        friction=0.01,
+        // Friction... idk what this means so don't touch lol
+        friction=0.99,
+        // Boosts the flick speed thing
+        boost=10,
         // Delay after a drag until autopan takes over (ms)
         postDragAutoDelay=5000,
         // Run when the user clicks something as opposed to dragging
@@ -41,6 +35,7 @@ export class Panner {
         this.speed = speed;
         this.minMovement = minMovement;
         this.friction = friction;
+        this.boost = boost;
         this.postDragAutoDelay = postDragAutoDelay;
         this.onClick = onClick;
 
@@ -108,12 +103,10 @@ export class Panner {
         }
         if (this._idealOffset) {
             let {minX, minY} = this.getOffsetBounds();
-            if (this._idealOffset.x < 0) {
-                offsetX = Math.max(this._idealOffset.x, minX);
-            }
-            if (this._idealOffset.y < 0) {
-                offsetY = Math.max(this._idealOffset.y, minY);
-            }
+            this._idealOffset.x = clamp(this._idealOffset.x, {min: minX, max: 0});
+            this._idealOffset.y = clamp(this._idealOffset.y, {min: minY, max: 0});
+            offsetX = this._idealOffset.x;
+            offsetY = this._idealOffset.y;
         }
         return {
             scale,
@@ -169,7 +162,7 @@ export class Panner {
                 this._idealOffset.y += mouse.y - last.y;
             }
             this._dragging.history.unshift([mouse, Date.now()]);
-            if (this._dragging.history.length > 10) {
+            if (this._dragging.history.length > 2) {
                 this._dragging.history.pop();
             }
         }
@@ -178,13 +171,13 @@ export class Panner {
     _pointerUp(e) {
         if (this._dragging && this._dragging.pointerId === e.pointerId) {
             if (this._dragging.dragging) {
-                let [current, currentTime] = this._dragging.history[0];
+                let [current] = this._dragging.history[0];
                 let [last, lastTime] = this._dragging.history[this._dragging.history.length - 1];
-                let timeDiff = currentTime - lastTime;
+                let timeDiff = Date.now() - lastTime;
                 if (timeDiff !== 0) {
                     this._dragMomentum = {
-                        x: (current.x - last.x) / timeDiff,
-                        y: (current.y - last.y) / timeDiff
+                        x: (current.x - last.x) / timeDiff * this.boost,
+                        y: (current.y - last.y) / timeDiff * this.boost
                     };
                 }
                 this._untilAuto = this.postDragAutoDelay;
@@ -198,6 +191,8 @@ export class Panner {
     simulate(time) {
         this.time += time;
 
+        // Momentum might be a misnomer, but after the AP Physics exam I forgot
+        // all the physics I learned
         if (this._dragMomentum) {
             if (this._idealOffset) {
                 this._idealOffset.x += this._dragMomentum.x;
@@ -215,10 +210,11 @@ export class Panner {
                 }
 
                 // Apply friction
-                this._dragMomentum.x = friction(this._dragMomentum.x, this.friction * time);
-                this._dragMomentum.y = friction(this._dragMomentum.y, this.friction * time);
+                this._dragMomentum.x *= this.friction ** time;
+                this._dragMomentum.y *= this.friction ** time;
 
-                if (this._dragMomentum.x === 0 && this._dragMomentum.y === 0) {
+                // Stop applying momentum when it's too small
+                if (Math.abs(this._dragMomentum.x) < Number.EPSILON && Math.abs(this._dragMomentum.y) < Number.EPSILON) {
                     this._dragMomentum = null;
                 }
             } else {
