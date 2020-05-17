@@ -1,5 +1,7 @@
 import {bindMethods, compareDist, clamp} from '../../utils.js';
 
+const MIN_SPEED = 0.1;
+
 export class Panner {
     constructor({
         width,
@@ -66,6 +68,11 @@ export class Panner {
                 minY: this.canvas.height - scaledHeight
             };
         }
+    }
+
+    setTimeFromOffset(offset) {
+        this.time = -offset * this.speed;
+        return this;
     }
 
     _getOffset(difference) {
@@ -214,7 +221,7 @@ export class Panner {
                 this._dragMomentum.y *= this.friction ** time;
 
                 // Stop applying momentum when it's too small
-                if (Math.abs(this._dragMomentum.x) < Number.EPSILON && Math.abs(this._dragMomentum.y) < Number.EPSILON) {
+                if (Math.abs(this._dragMomentum.x) < MIN_SPEED && Math.abs(this._dragMomentum.y) < MIN_SPEED) {
                     this._dragMomentum = null;
                 }
             } else {
@@ -223,6 +230,9 @@ export class Panner {
         } else if (this._idealOffset) {
             this._untilAuto -= time;
             if (this._untilAuto <= 0) {
+                let {direction} = this.getOffsetBounds();
+                this.setTimeFromOffset(direction === 'horizontal' ? this._idealOffset.x : this._idealOffset.y);
+
                 this._untilAuto = null;
                 this._idealOffset = null;
             }
@@ -238,7 +248,7 @@ export class Panner {
         // It only can go in one direction, so the direction of the scroll
         // wheel doesn't really matter
         this._idealOffset.x -= e.deltaX || e.deltaY;
-        this._idealOffset.y += e.deltaY || e.deltaX;
+        this._idealOffset.y -= e.deltaY || e.deltaX;
         this._untilAuto = this.postDragAutoDelay;
         if (this._dragMomentum) this._dragMomentum = null;
     }
