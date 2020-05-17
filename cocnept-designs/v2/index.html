@@ -8,7 +8,7 @@
         <link href="styles.css" rel="stylesheet">
     </head>
 
-    <body>
+    <body class="intro-mode">
         <div id="container">
             <div class="screen" id="s-menu" data-change-menu="unmenu"></div>
             <div id="menu" class="outlined modal">
@@ -367,6 +367,38 @@
             import {SpriteCache} from '../../characters/sprites/sprite-cache.js';
             import {getWorkerSpriteMaker} from '../../centralized.js';
             import {Directory} from './directory.js';
+            import {Dialogue} from '../sean/dialogue.js';
+
+            async function intro(showUI) {
+                const introData = fetch('./intro-dialogue.json').then(r => r.json());
+                const demoData = fetch('../sean/principal-demo.json').then(r => r.json());
+
+                const intro = new Dialogue({wrapperClass: 'intro'});
+                const demo = new Dialogue({
+                    measureHeight: false,
+                    wrapperClass: 'principal-demo'
+                });
+
+                await introData; // Wait for intro data to load first
+                const data = await intro.addTo(document.body)
+                    .start(await introData, {
+                        intro: '../sean/munkler.png',
+                        principal: '../../characters/sprites/images/munkler/sprite.png'
+                    });
+                intro.removeFromParent();
+
+                await showUI();
+
+                // The part where the principal introduces parts of the UI
+                await demo.addTo(document.body)
+                    .start(await demoData, {
+                        principal: '../../characters/sprites/images/munkler/sprite.png'
+                    });
+                demo.removeFromParent();
+
+                // TODO: Do something with whatever the player drew?
+                return data;
+            }
 
             // Toggle panel buttons for small screen
             let togglePanelBtns = document.getElementsByClassName('toggle-panel-btn');
@@ -428,8 +460,6 @@
 
                 directoryList.students = [...school.Students];
                 directoryList.updateData();
-                await directoryList.resize();
-                directoryList.updateScroll();
             }
 
             function search(name) {
@@ -469,8 +499,6 @@
 
             switchScreen('game');
             changeMenu('unmenu');
-
-            dewit();
             displaySchedule();
 
             const searchInput = document.getElementById('search');
@@ -478,11 +506,25 @@
                 search(searchInput.value);
             });
 
-            // Show the camera footage and principal intro demo
-            // Using dynamic import so that it runs after switchScreen('game')
-            // without which would have both showing and making the measured
-            // height less than is actually lol
-            import('../sean/injection.js');
+            // Preload sprites
+            // https://stackoverflow.com/questions/3646036/preloading-images-with-javascript
+            new Image().src = '../sean/munkler.png';
+            new Image().src = '../../characters/sprites/images/munkler/sprite.png';
+
+            dewit().then(() => intro(() => {
+                document.body.classList.remove('intro-mode');
+                return Promise.all([
+                    directoryList.resize()
+                        .then(() => directoryList.updateScroll()),
+
+                    // TEMP: Show the camera footage (demo?)
+                    import('../sean/students-roam.js').then(({default: main}) => {
+                        main(document.getElementById('camvis'));
+                    })
+                ]);
+            })).then(async data => {
+                console.log(data);
+            });
         </script>
     </body>
 </html>

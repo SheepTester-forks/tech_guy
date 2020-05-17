@@ -1,4 +1,9 @@
 @import url('../game.css');
+@import url('../basic-flex.css');
+
+@import url('../sean/dialogue.css');
+@import url('../sean/intro.css');
+@import url('../sean/principal-demo.css');
 
 .modal {
     background-color: #000;
@@ -85,6 +90,10 @@
     /* Prevent the overflow when it does the slidey thing on small screens from
     making the device zoom out, si me entiendes. */
     overflow-x: hidden;
+}
+/* Hide the main UI during the intro */
+.intro-mode #container {
+    display: none;
 }
 
 #controls {
