@@ -1,4 +1,4 @@
-import {bindMethods, compareDist} from '../../utils.js';
+import {bindMethods, compareDist, clamp} from '../../utils.js';
 
 function friction(speed, amount) {
     if (speed > 0) {
@@ -21,7 +21,7 @@ export class Panner {
         // Minimum movement in pixels required for a pointer to be considered dragging
         minMovement=10,
         // Acceleration applied by friction (px/ms^2)
-        friction=0.1,
+        friction=0.01,
         // Delay after a drag until autopan takes over (ms)
         postDragAutoDelay=5000,
         // Run when the user clicks something as opposed to dragging
@@ -59,16 +59,16 @@ export class Panner {
             let scaledWidth = this.width * this.canvas.height / this.height;
             return {
                 direction: 'horizontal',
-                maxX: scaledWidth - this.canvas.width,
-                maxY: 0
+                minX: this.canvas.width - scaledWidth,
+                minY: 0
             };
         } else {
             // Image is taller than canvas
             let scaledHeight = this.height * this.canvas.width / this.width;
             return {
                 direction: 'vertical',
-                maxX: 0,
-                maxY: scaledHeight - this.canvas.height
+                minX: 0,
+                minY: this.canvas.height - scaledHeight
             };
         }
     }
@@ -94,25 +94,25 @@ export class Panner {
         if (this.width / this.height > this.canvas.width / this.canvas.height) {
             // Image is wider than canvas
             scale = this.canvas.height / this.height;
-            if (!this.idealOffset) {
+            if (!this._idealOffset) {
                 let scaledWidth = this.width * scale;
                 offsetX = -this._getOffset(scaledWidth - this.canvas.width);
             }
         } else {
             // Image is taller than canvas
             scale = this.canvas.width / this.width;
-            if (!this.idealOffset) {
+            if (!this._idealOffset) {
                 let scaledHeight = this.height * scale;
                 offsetY = -this._getOffset(scaledHeight - this.canvas.height);
             }
         }
-        if (this.idealOffset) {
-            let {maxX, maxY} = this.getOffsetBounds();
-            if (this.idealOffset.x > 0) {
-                offsetX = Math.min(this.idealOffset.x, maxX);
+        if (this._idealOffset) {
+            let {minX, minY} = this.getOffsetBounds();
+            if (this._idealOffset.x < 0) {
+                offsetX = Math.max(this._idealOffset.x, minX);
             }
-            if (this.idealOffset.y > 0) {
-                offsetY = Math.min(this.idealOffset.y, maxY);
+            if (this._idealOffset.y < 0) {
+                offsetY = Math.max(this._idealOffset.y, minY);
             }
         }
         return {
@@ -145,43 +145,48 @@ export class Panner {
             this._dragging = {
                 pointerId: e.pointerId,
                 start: mouse,
-                last: mouse,
-                lastTime: Date.now(),
+                history: [[mouse, Date.now()]],
                 dragging: false
             };
+            this.canvas.canvas.setPointerCapture(e.pointerId);
+            if (this._dragMomentum) this._dragMomentum = null;
         }
     }
 
     _pointerMove(e) {
         if (this._dragging && this._dragging.pointerId === e.pointerId) {
             let mouse = {x: e.clientX, y: e.clientY};
-            let {start, last} = this._dragging;
+            let {start, history: [[last]]} = this._dragging;
             if (!this._dragging.dragging && compareDist(start, mouse, this.minMovement) > 0) {
                 this._dragging.dragging = true;
 
                 let {offsetX, offsetY} = this.getTransform();
-                this.idealOffset = {x: offsetX, y: offsetY};
+                this._idealOffset = {x: offsetX, y: offsetY};
                 this._untilAuto = Infinity;
             }
             if (this._dragging.dragging) {
-                this.idealOffset.x += mouse.x - last.x;
-                this.idealOffset.y += mouse.y - last.y;
+                this._idealOffset.x += mouse.x - last.x;
+                this._idealOffset.y += mouse.y - last.y;
             }
-            this._dragging.last = mouse;
-            this._dragging.lastTime = Date.now();
+            this._dragging.history.unshift([mouse, Date.now()]);
+            if (this._dragging.history.length > 10) {
+                this._dragging.history.pop();
+            }
         }
     }
 
     _pointerUp(e) {
         if (this._dragging && this._dragging.pointerId === e.pointerId) {
             if (this._dragging.dragging) {
-                let mouse = {x: e.clientX, y: e.clientY};
-                let {last, lastTime} = this._dragging;
-                let timeDiff = Date.now() - lastTime;
-                this._dragMomentum = {
-                    x: (mouse.x - last.x) / timeDiff,
-                    y: (mouse.y - last.y) / timeDiff
-                };
+                let [current, currentTime] = this._dragging.history[0];
+                let [last, lastTime] = this._dragging.history[this._dragging.history.length - 1];
+                let timeDiff = currentTime - lastTime;
+                if (timeDiff !== 0) {
+                    this._dragMomentum = {
+                        x: (current.x - last.x) / timeDiff,
+                        y: (current.y - last.y) / timeDiff
+                    };
+                }
                 this._untilAuto = this.postDragAutoDelay;
             } else if (this.onClick) {
                 this.onClick(e);
@@ -197,8 +202,22 @@ export class Panner {
             if (this._idealOffset) {
                 this._idealOffset.x += this._dragMomentum.x;
                 this._idealOffset.y += this._dragMomentum.y;
+
+                // Bounce the camera off the sides lol
+                let {minX, minY} = this.getOffsetBounds();
+                if (this._idealOffset.x > 0 || this._idealOffset.x < minX) {
+                    this._idealOffset.x = clamp(this._idealOffset.x, {min: minX, max: 0});
+                    this._dragMomentum.x *= -1;
+                }
+                if (this._idealOffset.y > 0 || this._idealOffset.y < minX) {
+                    this._idealOffset.y = clamp(this._idealOffset.y, {min: minY, max: 0});
+                    this._dragMomentum.y *= -1;
+                }
+
+                // Apply friction
                 this._dragMomentum.x = friction(this._dragMomentum.x, this.friction * time);
                 this._dragMomentum.y = friction(this._dragMomentum.y, this.friction * time);
+
                 if (this._dragMomentum.x === 0 && this._dragMomentum.y === 0) {
                     this._dragMomentum = null;
                 }
@@ -212,14 +231,19 @@ export class Panner {
                 this._idealOffset = null;
             }
         }
+
+        return this;
     }
 
     _wheel(e) {
         if (!this._idealOffset) {
             this._idealOffset = {x: 0, y: 0};
         }
-        this._idealOffset.x += e.shiftKey ? e.deltaY : e.deltaX;
-        this._idealOffset.y += e.deltaY;
+        // It only can go in one direction, so the direction of the scroll
+        // wheel doesn't really matter
+        this._idealOffset.x -= e.deltaX || e.deltaY;
+        this._idealOffset.y += e.deltaY || e.deltaX;
         this._untilAuto = this.postDragAutoDelay;
+        if (this._dragMomentum) this._dragMomentum = null;
     }
 }
