@@ -13,7 +13,7 @@
                 background-color: #000;
                 height: 100%;
             }
-
+            
             #container {
                 display: none;
                 position: fixed;
@@ -182,7 +182,7 @@
                 </div>
             </div>
         </div>
-
+        
         <script type="module">
             function rescale() {
                 let container = document.getElementById('container');
@@ -194,11 +194,11 @@
             } rescale();
             window.onresize = function () {rescale();}
         </script>
-
+        
         <script type="module">
             import * as SCHOOL from '../../school/school.js';
             import * as SPRITES from '../../characters/sprites/sprite.js';
-
+            
             async function doStuff() {
                 await SCHOOL.getNames(); //note: this loads names which are currently not needed
                 await SPRITES.loadImages(); //note: this loads hats, pants, and shoes which are not needed
@@ -218,14 +218,14 @@
                     ctx.drawImage(SPRITES.getSprite(SCHOOL.randomStudent().picture, true), 0, 0, 100, 100);
                 }
             }
-
+            
             doStuff();
         </script>
         <script>
             let time = -50;
             let left = [];
             let total = 0;
-
+            
             function getOut() {
                 document.getElementById('title').children[0].style.color = '#333';
                 let papers = document.getElementsByClassName('paper'); //papers please!
@@ -237,9 +237,9 @@
                     }
                     total = left.length;
                 }
-
+                
                 time++;
-
+                
                 if (time % 3 === 0 && time > 0) {
                     document.getElementById('title').style.opacity = 1 - Math.pow(time / 3 / total, 2);
                     let choose = Math.floor(Math.random() * left.length);
@@ -247,7 +247,7 @@
 
                     left.splice(choose, 1);
                 }
-
+                
                 if (time / 3 < total) {
                     window.requestAnimationFrame(getOut);
                 } else {
