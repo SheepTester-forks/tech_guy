@@ -213,4 +213,13 @@ export class Panner {
             }
         }
     }
+
+    _wheel(e) {
+        if (!this._idealOffset) {
+            this._idealOffset = {x: 0, y: 0};
+        }
+        this._idealOffset.x += e.shiftKey ? e.deltaY : e.deltaX;
+        this._idealOffset.y += e.deltaY;
+        this._untilAuto = this.postDragAutoDelay;
+    }
 }
