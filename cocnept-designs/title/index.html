@@ -203,10 +203,10 @@
                 await SCHOOL.getNames(); //note: this loads names which are currently not needed
                 await SPRITES.loadImages(); //note: this loads hats, pants, and shoes which are not needed
                 //this contributes to it taking like 2 secs to load (for me), but i'm too lazy to fix so
-
+                
                 document.getElementById('container').style.display = 'initial';
                 let canvases = document.getElementsByTagName('canvas');
-
+                
                 for (let i = 0; i < canvases.length; i++) {
                     canvases[i].style.width = '100px';
                     canvases[i].style.height = '100px';
@@ -229,7 +229,7 @@
             function getOut() {
                 document.getElementById('title').children[0].style.color = '#333';
                 let papers = document.getElementsByClassName('paper'); //papers please!
-
+                
                 if (time === -50) {
                     for (let i = 0; i < papers.length; i++) {
                         papers[i].style.filter = 'invert(1)';
