@@ -13,7 +13,7 @@
                 background-color: #000;
                 height: 100%;
             }
-            
+
             #container {
                 display: none;
                 position: fixed;
@@ -182,7 +182,7 @@
                 </div>
             </div>
         </div>
-        
+
         <script type="module">
             function rescale() {
                 let container = document.getElementById('container');
@@ -194,19 +194,19 @@
             } rescale();
             window.onresize = function () {rescale();}
         </script>
-        
+
         <script type="module">
             import * as SCHOOL from '../../school/school.js';
             import * as SPRITES from '../../characters/sprites/sprite.js';
-            
+
             async function doStuff() {
                 await SCHOOL.getNames(); //note: this loads names which are currently not needed
                 await SPRITES.loadImages(); //note: this loads hats, pants, and shoes which are not needed
                 //this contributes to it taking like 2 secs to load (for me), but i'm too lazy to fix so
-                
+
                 document.getElementById('container').style.display = 'initial';
                 let canvases = document.getElementsByTagName('canvas');
-                
+
                 for (let i = 0; i < canvases.length; i++) {
                     canvases[i].style.width = '100px';
                     canvases[i].style.height = '100px';
@@ -218,18 +218,18 @@
                     ctx.drawImage(SPRITES.getSprite(SCHOOL.randomStudent().picture, true), 0, 0, 100, 100);
                 }
             }
-            
+
             doStuff();
         </script>
         <script>
             let time = -50;
             let left = [];
             let total = 0;
-            
+
             function getOut() {
                 document.getElementById('title').children[0].style.color = '#333';
                 let papers = document.getElementsByClassName('paper'); //papers please!
-                
+
                 if (time === -50) {
                     for (let i = 0; i < papers.length; i++) {
                         papers[i].style.filter = 'invert(1)';
@@ -237,9 +237,9 @@
                     }
                     total = left.length;
                 }
-                
+
                 time++;
-                
+
                 if (time % 3 === 0 && time > 0) {
                     document.getElementById('title').style.opacity = 1 - Math.pow(time / 3 / total, 2);
                     let choose = Math.floor(Math.random() * left.length);
@@ -247,11 +247,13 @@
 
                     left.splice(choose, 1);
                 }
-                
+
                 if (time / 3 < total) {
                     window.requestAnimationFrame(getOut);
                 } else {
                     // go to next page
+                    // TEMP?
+                    window.location = '../v2/';
                 }
             }
         </script>
