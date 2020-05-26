@@ -1,5 +1,5 @@
 const PARAMS = {
-    factor: 1000, // a high FACTOR will mean some game minutes will be skipped
+    factor: 10, // a high FACTOR will mean some game minutes will be skipped
     start: {
         month: 5,
         day: 5
