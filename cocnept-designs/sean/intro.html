@@ -11,15 +11,12 @@
 
       @import url('./dialogue.css');
       @import url('./intro.css');
-
-      body {
-        justify-content: center;
-        align-items: center;
-      }
     </style>
   </head>
-  <body>
+  <body class="intro-mode">
     <script type="module">
+        import '../focus-visible.js';
+
         import {Dialogue} from './dialogue.js';
 
         const params = new URL(window.location).searchParams;

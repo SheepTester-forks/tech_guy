@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Inconsolata');
 @import url('./basic.css');
+@import url('./sean/canvas-stuff.css');
 
 body {
     color: #fff;
@@ -19,4 +20,8 @@ li {
 h3 {
     font-size: 20px;
     line-height: 25px;
+}
+
+.outlined {
+    box-shadow: inset 0 0 0 2px #333;
 }

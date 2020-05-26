@@ -1,10 +1,12 @@
 @import url('../game.css');
+@import url('../basic-flex.css');
 
-#menu,
-#bells,
-#layout {
+@import url('../sean/dialogue.css');
+@import url('../sean/intro.css');
+@import url('../sean/principal-demo.css');
+
+.modal {
     background-color: #000;
-    box-shadow: inset 0 0 0 2px #333;
     display: flex;
     flex-direction: column;
     padding: 20px;
@@ -12,6 +14,10 @@
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     z-index: 3;
+    max-width: 100%;
+    max-height: 100%;
+    overflow: auto;
+    box-sizing: border-box;
 }
 .menurow {
     display: flex;
@@ -38,10 +44,13 @@
     margin: 10px;
 }
 .bellrow p {
+    flex: auto;
     width: 50px;
 }
-.bellrow p:first-child {
+.bellrow .bell-time {
+    flex: none;
     width: 100px;
+    margin-left: 0;
 }
 
 .layrow {
@@ -72,18 +81,33 @@
 }
 
 #container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
     padding: 5px;
-    position: fixed;
-    top: 50%; left: 50%;
+    box-sizing: border-box;
+    /* Prevent the overflow when it does the slidey thing on small screens from
+    making the device zoom out, si me entiendes. */
+    overflow-x: hidden;
+}
+/* Hide the main UI during the intro */
+.intro-mode #container {
+    display: none;
 }
 
 #controls {
     align-items: center;
-    box-shadow: inset 0 0 0 2px #333;
     display: flex;
-    height: 50px;
+    flex-wrap: wrap;
+    margin-bottom: 5px;
+    padding: 5px;
 }
-#controls p,
+#controls p {
+    border: 2px solid #222;
+    margin: 5px;
+    padding: 3px 8px;
+}
 #controls button,
 #menu button,
 #bells button,
@@ -93,31 +117,47 @@
     margin: 5px;
     padding: 5px 10px;
 }
-#controls *:first-child {
-    margin-left: 10px;
-}
-#controls *:last-child {
-    margin-right: 10px;
-}
-
-#game,
-#office {
+.control-btns {
     display: flex;
-    position: absolute;
-    top: 60px; bottom: 0; left: 5px; right: 5px;
 }
 
-#campanel {
-    flex-basis: calc(100% - 305px);
-    margin-right: 5px;
+.game-screen {
+    display: flex;
+    flex: auto;
+}
+.left-panel {
+    flex: auto;
     position: relative;
 }
+.right-panel {
+    display: flex;
+    flex: none;
+    width: 300px;
+    flex-direction: column;
+    margin-left: 5px;
+}
+.list-wrap {
+    flex: auto;
+    min-height: 50px;
+    position: relative;
+}
+.list {
+    height: 100%;
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+}
+
 #camchoose {
-    flex-basis: 25%;
     height: 200px;
     position: absolute;
-    top: 5px; right: 5px;
-    width: 300px;
+    top: 0;
+    right: 0;
+    width: 310px;
+    max-width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+    z-index: 1;
 }
 #map {
     display: flex;
@@ -157,26 +197,36 @@
     overflow-x: auto;
     position: absolute;
     bottom: 10px; left: 10px; right: 10px;
+    z-index: 1;
 }
-#camdetect .student {
+.camstudent {
     border: none;
     margin: 0 20px 0 0;
     padding: 0;
 }
 .student {
+    position: absolute;
+    left: 0;
+    right: 0;
     align-items: center;
     border-top: 2px solid #222;
     cursor: pointer;
     display: flex;
     margin: 0 10px;
     padding: 10px 0;
-    transition: 0.1s;
+    transition: background-color 0.1s;
 }
 .spic {
     background-color: aliceblue; /* this should not show */
     height: 50px;
     margin-right: 10px;
     width: 50px;
+}
+.spic-canvas {
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    width: 100%;
+    height: 100%;
 }
 .sinfo {
     display: flex;
@@ -196,19 +246,12 @@
 }
 #camvis {
     background-color: #999;
-    box-shadow: inset 0 0 0 2px #333;
     height: 100%;
 }
 
-#infopanel {
-    display: flex;
-    flex-basis: 300px;
-    flex-direction: column;
-}
 #directory {
-    box-shadow: inset 0 0 0 2px #333;
     display: flex;
-    flex-basis: calc(100% - 205px);
+    flex: auto;
     flex-direction: column;
     margin-bottom: 5px;
 }
@@ -217,17 +260,7 @@
     background-color: #111;
     margin: 10px;
     padding: 5px;
-    width: calc(100% - 30px);
-}
-#listwrap {
-    flex-basis: calc(100% - 60px);
-    position: relative;
-}
-#list {
-    height: 100%;
-    overflow-y: auto;
-    position: absolute;
-    width: 100%;
+    box-sizing: border-box;
 }
 #list .student:hover {
     background-color: #222;
@@ -236,7 +269,6 @@
     background-color: #333 !important;
 }
 #schedule {
-    box-shadow: inset 0 0 0 2px #333;
     flex-basis: 200px;
 }
 #table {
@@ -268,47 +300,23 @@
     white-space: nowrap;
 }
 
-#envpanel {
-    flex-basis: calc(100% - 305px);
-    margin-right: 5px;
-    position: relative;
-}
 #envvis {
     background-color: #999;
-    box-shadow: inset 0 0 0 2px #333;
     height: 100%;
 }
 
-#studentpanel {
-    display: flex;
-    flex-basis: 300px;
-    flex-direction: column;
-}
 #studentview {
     background-color: #ccc;
-    box-shadow: inset 0 0 0 2px #333;
     flex-basis: 200px;
 }
 #dialogue {
-    box-shadow: inset 0 0 0 2px #333;
     display: flex;
-    flex-basis: calc(100% - 205px);
+    flex: auto;
     flex-direction: column;
     margin-top: 5px;
 }
 #dialogue .sname {
-    flex-basis: 20px;
     margin: 10px;
-}
-#transwrap {
-    flex-basis: calc(100% - 60px);
-    position: relative;
-}
-#transcript {
-    height: 100%;
-    overflow-y: auto;
-    position: absolute;
-    width: 100%;
 }
 #transcript p {
     margin: 1px 20px;
@@ -324,7 +332,7 @@
 }
 #studentoptions {
     display: flex;
-    flex-basis: 125px;
+    height: 125px;
     flex-direction: column;
     margin: 10px;
 }
@@ -352,7 +360,7 @@
 #sustitle {
     align-items: center;
     display: flex;
-    flex-grow: 1;
+    flex: auto;
     justify-content: center;
     margin-top: 10px;
 }
@@ -361,22 +369,10 @@
 }
 
 .screen {
-    align-content: center;
     background-color: #000;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 10px;
     position: fixed;
-    text-align: center;
     top: 0; bottom: 0; left: 0; right: 0;
     z-index: 2;
-}
-#s-smallscreen {
-    transition: 0.1s;
-    opacity: 0;
-    visibility: hidden;
-    z-index: 100;
 }
 #s-menu {
     opacity: 0.5;
@@ -384,4 +380,29 @@
 
 .stretch {
     flex-grow: 1;
+}
+
+.toggle-panel-btn {
+    display: none;
+}
+@media (max-width: 700px) {
+    .game-screen {
+        transition: transform .2s;
+    }
+    .game-screen .panel {
+        flex: none;
+        width: calc(90vw - 10px);
+    }
+    .toggle-panel-btn {
+        display: block;
+        flex: none;
+        width: calc(10vw - 5px);
+        margin-left: 5px;
+        -webkit-appearance: none;
+        border: none;
+        background-color: #222;
+    }
+    .show-right-panel .game-screen {
+        transform: translateX(calc(5px - 90vw))
+    }
 }

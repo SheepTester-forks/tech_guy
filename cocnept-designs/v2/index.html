@@ -5,18 +5,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Suspension</title>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <!--<script src="../sean/injection.js" charset="utf-8" type="module"></script>-->
         <link href="styles.css" rel="stylesheet">
     </head>
 
-    <body>
-        <div class="screen" id="s-smallscreen">
-            <p>Bruh. Your screen is too small.<br>Responsive Design coming sometime</p>
-        </div>
-        
+    <body class="intro-mode">
         <div id="container">
-            <div class="screen" id="s-menu" onclick="cambiar('unmenu')"></div>
-            <div id="menu">
+            <div class="screen" id="s-menu" data-change-menu="unmenu"></div>
+            <div id="menu" class="outlined modal">
                 <div class="menurow">
                     <button>Save</button>
                     <button>Leaderboard</button>
@@ -33,18 +28,18 @@
                     </div>
                 </div>
                 <div class="menurow">
-                    <button onclick="cambiar('unmenu')">Exit Options</button>
+                    <button data-change-menu="unmenu">Exit Options</button>
                     <button>Exit Game</button>
                 </div>
                 <div class="menurow">
                     <button>Report a Bug</button>
                 </div>
             </div>
-            
-            <div id="bells">
+
+            <div id="bells" class="outlined modal">
                 <div id="belltable">
                     <div class="bellrow">
-                        <p>Time</p>
+                        <p class="bell-time">Time</p>
                         <p>Mon</p>
                         <p>Tue</p>
                         <p>Wed</p>
@@ -52,7 +47,7 @@
                         <p>Fri</p>
                     </div>
                     <div class="bellrow">
-                        <p>08:30-09:20</p>
+                        <p class="bell-time">08:30-09:20</p>
                         <p>A</p>
                         <p>D</p>
                         <p>B</p>
@@ -60,7 +55,7 @@
                         <p>C</p>
                     </div>
                     <div class="bellrow">
-                        <p>09:30-10:50</p>
+                        <p class="bell-time">09:30-10:50</p>
                         <p>B</p>
                         <p>E</p>
                         <p>C</p>
@@ -68,7 +63,7 @@
                         <p>D</p>
                     </div>
                     <div class="bellrow">
-                        <p>11:00-12:20</p>
+                        <p class="bell-time">11:00-12:20</p>
                         <p>C</p>
                         <p>B</p>
                         <p>D</p>
@@ -76,10 +71,10 @@
                         <p>E</p>
                     </div>
                     <div class="bellrow">
-                        <p>12:20-01:00</p>
+                        <p class="bell-time">12:20-01:00</p>
                     </div>
                     <div class="bellrow">
-                        <p>01:00-02:20</p>
+                        <p class="bell-time">01:00-02:20</p>
                         <p>F</p>
                         <p>A</p>
                         <p>E</p>
@@ -87,18 +82,18 @@
                         <p>A</p>
                     </div>
                     <div class="bellrow">
-                        <p>02:30-03:50</p>
+                        <p class="bell-time">02:30-03:50</p>
                         <p></p>
                         <p>F</p>
                         <p>F</p>
                         <p>A</p>
                         <p>F</p>
                     </div>
-                    <button onclick="cambiar('unmenu')">Close Schedule</button>
+                    <button data-change-menu="unmenu">Close Schedule</button>
                 </div>
             </div>
-            
-            <div id="layout">
+
+            <div id="layout" class="outlined modal">
                 <div id="laytable">
                     <div class="layrow">
                         <p>2</p>
@@ -165,23 +160,25 @@
                         <p>18</p>
                         <p>17</p>
                     </div>
-                    <button onclick="cambiar('unmenu')">Close Map</button>
+                    <button data-change-menu="unmenu">Close Map</button>
                 </div>
             </div>
-            
-            <div id="controls">
+
+            <div id="controls" class="outlined">
                 <p>Mon 05/12</p>
                 <p>10:00 AM</p>
-                <button onclick="cambiar('bells')">Schedule</button> <!--if you are wondering why they have weird id's-->
-                <button onclick="cambiar('layout')">Map</button> <!--it's cuz i already used both "schedule" and "map"-->
+                <button data-change-menu="bells">Schedule</button> <!--if you are wondering why they have weird id's-->
+                <button data-change-menu="layout">Map</button> <!--it's cuz i already used both "schedule" and "map"-->
                 <div class="stretch"></div> <!--and i'm too lazy to change everything.-->
-                <button onclick="cambiar('game')">Computer</button>
-                <button onclick="cambiar('office')">Office</button>
-                <button onclick="cambiar('menu')">Menu</button>
+                <div class="control-btns">
+                    <button data-switch-screen="game">Computer</button>
+                    <button data-switch-screen="office">Office</button>
+                    <button data-change-menu="menu">Menu</button>
+                </div>
             </div>
-            <div id="game">
-                
-                <div id="campanel">
+            <div id="game" class="game-screen">
+
+                <div id="campanel" class="campanel panel left-panel">
                     <div id="camchoose">
                         <div id="map">
                             <div class="maprow">
@@ -241,42 +238,44 @@
                         </div>
                     </div>
                     <div id="camdetect">
-                        <div class="student">
+                        <div class="camstudent">
                             <div class="spic"></div>
                             <p class="sname">Munkler,<br>Leuf</p>
                         </div>
-                        <div class="student">
+                        <div class="camstudent">
                             <div class="spic"></div>
                             <p class="sname">Munkler,<br>Leuf</p>
                         </div>
-                        <div class="student">
+                        <div class="camstudent">
                             <div class="spic"></div>
                             <p class="sname">Munkler,<br>Leuf</p>
                         </div>
-                        <div class="student">
+                        <div class="camstudent">
                             <div class="spic"></div>
                             <p class="sname">Munkler,<br>Leuf</p>
                         </div>
-                        <div class="student">
+                        <div class="camstudent">
                             <div class="spic"></div>
                             <p class="sname">Munkler,<br>Leuf</p>
                         </div>
-                        <div class="student">
+                        <div class="camstudent">
                             <div class="spic"></div>
                             <p class="sname">Munkler,<br>Leuf</p>
                         </div>
                     </div>
-                    <div id="camvis">just imagine this nice gray is security footage :)</div>
+                    <div id="camvis" class="outlined"></div>
                 </div>
-                
-                <div id="infopanel">
-                    <div id="directory">
-                        <input id="search" type="text" placeholder="Search" oninput="search(this.value)" autocomplete="off" spellcheck="false">
-                        <div id="listwrap">
-                            <div id="list"></div>
+
+                <button class="toggle-panel-btn">&gt;</button>
+
+                <div id="infopanel" class="panel right-panel">
+                    <div id="directory" class="outlined">
+                        <input id="search" type="text" placeholder="Search" autocomplete="off" spellcheck="false">
+                        <div id="listwrap" class="list-wrap">
+                            <div id="list" class="list"></div>
                         </div>
                     </div>
-                    <div id="schedule">
+                    <div id="schedule" class="outlined">
                         <div id="table">
                             <div class="tablerow">
                                 <p>&mdash;</p>
@@ -293,21 +292,23 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div>
-            
-            <div id="office">
-                
-                <div id="envpanel">
-                    <div id="envvis">insert drag and drop backpack desk here</div>
+
+            <div id="office" class="game-screen">
+
+                <div id="envpanel" class="panel left-panel">
+                    <div id="envvis" class="outlined">insert drag and drop backpack desk here</div>
                 </div>
-                
-                <div id="studentpanel">
-                    <div id="studentview">insert face here</div>
-                    <div id="dialogue">
+
+                <button class="toggle-panel-btn">&gt;</button>
+
+                <div id="studentpanel" class="panel right-panel">
+                    <div id="studentview" class="outlined">insert face here</div>
+                    <div id="dialogue" class="outlined">
                         <p class="sname">Ovinus Real</p>
-                        <div id="transwrap">
-                            <div id="transcript">
+                        <div id="transwrap" class="list-wrap">
+                            <div id="transcript" class="list">
                                 <p><span class="tjoin">Ovinus entered the office</span></p>
                                 <p><span class="tname">Ovinus: </span>When I was young. When I was young. When I was young. When I was young.</p>
                                 <p><span class="tname">Tech Guy: </span>I love gamepro5.</p>
@@ -356,29 +357,64 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div>
         </div>
         <script type="module">
-            function rescale() {
-                if (window.innerWidth < 550 || window.innerHeight < 300) {
-                    document.getElementById('s-smallscreen').style.opacity = 1;
-                    document.getElementById('s-smallscreen').style.visibility = "visible";
-                } else {
-                    document.getElementById('s-smallscreen').style.opacity = 0;
-                    document.getElementById('s-smallscreen').style.visibility = "hidden";
-                }
-                let container = document.getElementById('container');
-                let maxWidth = Math.min(window.innerWidth - 10, 1270);
-                let maxHeight = Math.min(window.innerHeight - 10, 710);
-                container.style.width = ((1270 + maxWidth * 710 / maxHeight) / 2) + 'px';
-                container.style.height = ((710 + maxHeight * 1270 / maxWidth) / 2) + 'px';
-                container.style.transform = 'translate(-50%, -50%) scale(' + (2 / (710 / maxHeight + 1270 / maxWidth)) + ')';
-            } rescale();
-            window.onresize = function () {rescale();}
-        </script>
-        <script>
-            function cambiar(id) {
+            import '../focus-visible.js';
+            import * as SCHOOL from '../../school/school.js';
+            import * as SCHEDULE from '../../school/schedule.js';
+            import {SpriteCache} from '../../characters/sprites/sprite-cache.js';
+            import {getWorkerSpriteMaker, param} from '../../centralized.js';
+            import {Directory} from './directory.js';
+            import {Dialogue} from '../sean/dialogue.js';
+
+            async function intro(showUI) {
+                const introData = fetch('./intro-dialogue.json').then(r => r.json());
+                const demoData = fetch('../sean/principal-demo.json').then(r => r.json());
+
+                const intro = new Dialogue({wrapperClass: 'intro'});
+                const demo = new Dialogue({
+                    measureHeight: false,
+                    wrapperClass: 'principal-demo'
+                });
+
+                await introData; // Wait for intro data to load first
+                const data = await intro.addTo(document.body)
+                    .start(await introData, {
+                        intro: '../sean/munkler.png',
+                        principal: '../../characters/sprites/images/munkler/sprite.png'
+                    });
+                intro.removeFromParent();
+
+                await showUI();
+
+                // The part where the principal introduces parts of the UI
+                await demo.addTo(document.body)
+                    .start(await demoData, {
+                        principal: '../../characters/sprites/images/munkler/sprite.png'
+                    });
+                demo.removeFromParent();
+
+                // TODO: Do something with whatever the player drew?
+                return data;
+            }
+
+            // Toggle panel buttons for small screen
+            let togglePanelBtns = document.getElementsByClassName('toggle-panel-btn');
+            for (let btn of togglePanelBtns) {
+                btn.addEventListener('click', () => {
+                    document.body.classList.toggle('show-right-panel');
+                    if (document.body.classList.contains('show-right-panel')) {
+                        for (let btn of togglePanelBtns) btn.textContent = '<';
+                    } else {
+                        for (let btn of togglePanelBtns) btn.textContent = '>';
+                    }
+                });
+            }
+
+            // Change screens
+            function changeMenu(id) {
                 if (id === 'unmenu') {
                     document.getElementById('menu').style.display = 'none';
                     document.getElementById('bells').style.display = 'none';
@@ -387,110 +423,117 @@
                     return;
                 }
                 document.getElementById(id).style.display = 'flex';
-                if (['menu', 'bells', 'layout'].includes(id)) {
-                    document.getElementById('s-menu').style.display = 'flex';
-                } else {
-                    document.getElementById(id === 'game' ? 'office' : 'game').style.display = 'none';
-                }
+                document.getElementById('s-menu').style.display = 'flex';
             }
-            
-            cambiar('game');
-            cambiar('unmenu');
-        </script>
-        <script type="module">
-            import * as SCHOOL from '../../school/school.js';
-            import * as SCHEDULE from '../../school/schedule.js';
-            import * as SPRITES from '../../characters/sprites/sprite.js';
-            
+            function switchScreen(id) {
+                document.getElementById(id).style.display = 'flex';
+                document.getElementById(id === 'game' ? 'office' : 'game').style.display = 'none';
+            }
+
+            document.addEventListener('click', e => {
+                if (e.target.dataset.changeMenu) {
+                    changeMenu(e.target.dataset.changeMenu);
+                } else if (e.target.dataset.switchScreen) {
+                    switchScreen(e.target.dataset.switchScreen);
+                }
+            });
+
+            // Student directory
             let school;
-            let selected = 0;
-            let selElement;
-            
+            let pictureCache;
+            let directoryList = new Directory(document.getElementById('list'));
+
             async function dewit() {
-                await SPRITES.loadImages();
                 school = await SCHOOL.generateSchool();
                 SCHEDULE.generateSchedule(school);
-    
+
                 school.Students.sort((x, y) => x.name.last.localeCompare(y.name.last));
 
+                // Generate and cache student pictures
+                pictureCache = new SpriteCache(school.Students.length, 'picture');
+                let pictures = await getWorkerSpriteMaker()
+                    .getSprites(school.Students.map(student => student.picture), true);
                 for (let i = 0; i < school.Students.length; i++) {
-                    addStudent(school.Students[i]);
+                    school.Students[i].pictureId = pictureCache.add(pictures[i]);
                 }
-            } dewit();
-            
-            function search(name) {
-                for (let i = 0; i < school.Students.length; i++) {
-                    let student = school.Students[i];
-                    
-                    let match = `${student.name.last}, ${student.name.first}`.toLowerCase().includes(name.toLowerCase());
-                    document.getElementById(student.id).style.display = match ? 'flex' : 'none';
-                }
+                directoryList.pictureCache = pictureCache;
+
+                directoryList.students = [...school.Students];
+                directoryList.updateData();
             }
-            
-            function getSchedule(student) {
-                if (student.id === selected) {
-                    return getSchedule({schedule: [{}, {}, {}, {}, {}, {}]});
-                }
-                
-                let schedule = student.schedule;
-                
+
+            function search(name) {
+                directoryList.students = school.Students
+                    .filter(student => {
+                        return `${student.name.last}, ${student.name.first}`
+                            .toLowerCase()
+                            .includes(name.toLowerCase());
+                    });
+                directoryList.updateData();
+                directoryList.updateScroll();
+            }
+
+            let emptySchedule = [{}, {}, {}, {}, {}, {}];
+            function displaySchedule(schedule=emptySchedule) {
                 for (let i = 0; i < 6; i++) {
                     let row = document.getElementById('tlist' + i);
-                    let clase = student.name ? schedule[i].name || 'IDENTITY' : '';
+                    // Intrapersonal Discipline and Educational Nurturing for Teaching Information to Teenaged Youth
+                    let clase = schedule !== emptySchedule ? schedule[i].name || 'IDENTITY' : '';
                     row.innerHTML = `<p>${'ABCDEF'[i]}</p><p>${clase}</p><p>${(schedule[i].room + 1) || ''}</p>`;
-                }//Intrapersonal Discipline and Educational Nurturing for Teaching Information to Teenaged Youth
-                
-                selected = student.id || 0;
-                return selected !== 0;
-            } getSchedule({schedule: [{}, {}, {}, {}, {}, {}]});
-            
-            function addStudent(student) {
-                let wrapper = document.createElement('div');
-                wrapper.classList.add('student');
-                wrapper.id = student.id;
-                wrapper.addEventListener('click', function() {
-                    if (selElement) {
-                        selElement.classList.remove('selected');
-                    }
-                    
-                    if (getSchedule(student)) {
-                        selElement = wrapper;
-                        selElement.classList.add('selected');
-                    }
-                });
-                document.getElementById('list').appendChild(wrapper);
-                
-                let picwrap = document.createElement('div');
-                picwrap.classList.add('spic');
-                wrapper.appendChild(picwrap);
-                
-                let pic = document.createElement('canvas');
-                pic.style.width = '50px';
-                pic.style.height = '50px';
-                pic.width = 50 * window.devicePixelRatio;
-                pic.height = 50 * window.devicePixelRatio;
-                let ctx = pic.getContext('2d');
-                ctx.imageSmoothingEnabled = false;
-                ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-                ctx.drawImage(SPRITES.getSprite(student.picture, true), 0, 0, 50, 50);
-                picwrap.appendChild(pic);
-                
-                let infowrap = document.createElement('div');
-                infowrap.classList.add('sinfo');
-                wrapper.appendChild(infowrap);
-                
-                let name = document.createElement('p');
-                name.classList.add('sname');
-                name.innerHTML = `${student.name.last}, ${student.name.first}`;
-                infowrap.appendChild(name);
-                
-                let info = document.createElement('p');
-                let disgrade = student.grade === 9 ? '09' : student.grade;
-                info.innerHTML = `Grade ${disgrade} | ${student.gender} | <span class="sstatus">Enrolled</span>`;
-                infowrap.appendChild(info);
+                }
             }
-            
-            window.search = search; //better way to do this?
+
+            directoryList.onSelect = student => {
+                if (student) {
+                    displaySchedule(student.schedule);
+                } else {
+                    displaySchedule();
+                }
+            };
+
+            // TODO: Breaks if the user resizes while on the office screens
+            window.addEventListener('resize', async () => {
+                await directoryList.resize();
+                directoryList.updateScroll();
+            });
+
+            switchScreen('game');
+            changeMenu('unmenu');
+            displaySchedule();
+
+            const searchInput = document.getElementById('search');
+            searchInput.addEventListener('input', () => {
+                search(searchInput.value);
+            });
+
+            // Preload sprites
+            // https://stackoverflow.com/questions/3646036/preloading-images-with-javascript
+            new Image().src = '../sean/munkler.png';
+            new Image().src = '../../characters/sprites/images/munkler/sprite.png';
+
+            function showUI() {
+                document.body.classList.remove('intro-mode');
+                return Promise.all([
+                    directoryList.resize()
+                        .then(() => directoryList.updateScroll()),
+
+                    // TEMP: Show the camera footage (demo?)
+                    import('../sean/students-roam.js').then(({default: main}) => {
+                        main(document.getElementById('camvis'));
+                    })
+                ]);
+            }
+
+            dewit().then(() => {
+                if (param('skip-intro')) {
+                    showUI();
+                    return 'intro skipped';
+                } else {
+                    return intro(showUI);
+                }
+            }).then(data => {
+                // Do something with whatever the user put for the name
+            });
         </script>
     </body>
 </html>

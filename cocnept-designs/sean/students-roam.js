@@ -1,7 +1,8 @@
 import {WrappedCanvas, loadImage} from './canvas-stuff.js';
 import {Panner} from './panner.js';
 
-import {WIDTH, HEIGHT, loadImages, getSprite} from '../../characters/sprites/sprite.js';
+import {SPRITE_WIDTH, SPRITE_HEIGHT} from '../../characters/sprites/sprite-constants.js';
+import {getWorkerSpriteMaker} from '../../centralized.js';
 import {randomSprite} from '../../characters/sprites/random-sprite.js';
 import {SpriteCache} from '../../characters/sprites/sprite-cache.js';
 
@@ -135,7 +136,7 @@ class Student {
             x += (next.x - x) * progress;
             y += (next.y - y) * progress;
         }
-        y += 0.5 - HEIGHT / WIDTH;
+        y += 0.5 - SPRITE_HEIGHT / SPRITE_WIDTH;
         this.visual = {x, y};
     }
 }
@@ -168,7 +169,7 @@ export default async function main(wrapper, debug=false) {
         const selectX = (clientX - wrappedCanvas.x - transform.offsetX) / transform.scale - leftPadding;
         const selectY = (clientY - wrappedCanvas.y - transform.offsetY) / transform.scale - topPadding;
         const width = 1;
-        const height = HEIGHT / WIDTH;
+        const height = SPRITE_HEIGHT / SPRITE_WIDTH;
         return students
             .filter(({visual: {x, y}}) => {
                 return inRange(selectX, {min: x, max: x + width}) &&
@@ -222,10 +223,10 @@ export default async function main(wrapper, debug=false) {
         students.sort((a, b) => a.visual.y - b.visual.y);
         c.lineWidth = 0.05;
         for (let {spriteId, visual: {x, y}, lastTouched} of students) {
-            spriteCache.draw(c, spriteId, x, y, 1, HEIGHT / WIDTH);
+            spriteCache.draw(c, spriteId, x, y, 1, SPRITE_HEIGHT / SPRITE_WIDTH);
             if (now - lastTouched < 200) {
                 c.strokeStyle = `rgba(255, 0, 0, ${1 - (now - lastTouched) / 200})`;
-                c.strokeRect(x, y, 1, HEIGHT / WIDTH);
+                c.strokeRect(x, y, 1, SPRITE_HEIGHT / SPRITE_WIDTH);
             }
         }
 
@@ -237,14 +238,14 @@ export default async function main(wrapper, debug=false) {
         if (ready) paint();
     });
 
-    let [background] = await Promise.all([
-        loadImage('./campus.png'),
-        wrappedCanvas.resize(),
-        loadImages()
+    let [background, spriteData] = await Promise.all([
+        loadImage(new URL('./campus.png', import.meta.url)),
+        getWorkerSpriteMaker().getSprites(students.map(() => randomSprite())),
+        wrappedCanvas.resize()
     ]);
 
-    for (let student of students) {
-        student.spriteId = spriteCache.add(getSprite(randomSprite()));
+    for (let i = 0; i < students.length; i++) {
+        students[i].spriteId = spriteCache.add(spriteData[i]);
     }
 
     if (debug) {

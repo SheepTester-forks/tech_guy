@@ -21,7 +21,6 @@ rules:
     semi:
         - error
         - always
-    require-atomic-updates: error
     default-case-last: error
     default-param-last: error
     curly:
@@ -53,7 +52,6 @@ rules:
         - error
         - max: 1
     no-multiple-empty-lines: error
-    no-negated-condition: error
     nonblock-statement-body-position:
         - error
         - beside
@@ -74,6 +72,8 @@ rules:
 
     no-console: warn
     no-warning-comments: warn
+    # Often gives false positives
+    require-atomic-updates: warn
 settings:
     html/indent: "+4"
     html/report-bad-indent: error
