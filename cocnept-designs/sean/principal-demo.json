@@ -1,4 +1,11 @@
 [
+    {
+        "special": {
+            "type": "set-thumbnail",
+            "image-id": "principal",
+            "color": "#d1efea"
+        }
+    },
     "You’ll be working here.",
     {
       "say": "This is the camera. You can click on students and our advanced facial recognition software will identify potential matches.",
