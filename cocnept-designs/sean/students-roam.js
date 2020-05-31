@@ -150,6 +150,8 @@ export default async function main(wrapper, debug=false) {
         canvas: wrappedCanvas,
         width: width + leftPadding * 2, // 12
         height: height + topPadding, // 8
+        postDragAutoDelay: Infinity,
+        beginAuto: false,
         onClick: e => {
             if (debug) {
                 for (let student of getStudents(e)) {

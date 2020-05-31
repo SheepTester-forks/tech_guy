@@ -20,6 +20,8 @@ export class Panner {
         boost=10,
         // Delay after a drag until autopan takes over (ms)
         postDragAutoDelay=5000,
+        // Whether to immediately start autopanning
+        beginAuto=true,
         // Run when the user clicks something as opposed to dragging
         onClick=null
     }) {
@@ -45,9 +47,9 @@ export class Panner {
         this._listening = false;
 
         // {x, y} of user-set offset. If null, it'll automatically pan.
-        this._idealOffset = null;
+        this._idealOffset = beginAuto ? null : { x: 0, y : 0 };
         this._dragMomentum = null;
-        this._untilAuto = null;
+        this._untilAuto = beginAuto ? null : postDragAutoDelay;
     }
 
     getOffsetBounds() {
@@ -131,7 +133,7 @@ export class Panner {
             canvas.addEventListener('pointermove', this._pointerMove);
             canvas.addEventListener('pointerup', this._pointerUp);
             canvas.addEventListener('pointercancel', this._pointerUp);
-            canvas.addEventListener('wheel', this._wheel);
+            canvas.addEventListener('wheel', this._wheel, { passive: false });
             this._dragging = null;
 
             this._listening = true;
@@ -247,9 +249,10 @@ export class Panner {
         }
         // It only can go in one direction, so the direction of the scroll
         // wheel doesn't really matter
-        this._idealOffset.x -= e.deltaX || e.deltaY;
-        this._idealOffset.y -= e.deltaY || e.deltaX;
+        this._idealOffset.x -= e.deltaX + e.deltaY;
+        this._idealOffset.y -= e.deltaX + e.deltaY;
         this._untilAuto = this.postDragAutoDelay;
         if (this._dragMomentum) this._dragMomentum = null;
+        e.preventDefault();
     }
 }
