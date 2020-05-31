@@ -149,12 +149,23 @@ export default async function main(wrapper, debug=false) {
     let panner = new Panner({
         canvas: wrappedCanvas,
         width: width + leftPadding * 2, // 12
-        height: height + topPadding // 8
-    });
+        height: height + topPadding, // 8
+        postDragAutoDelay: Infinity,
+        beginAuto: false,
+        onClick: e => {
+            if (debug) {
+                for (let student of getStudents(e)) {
+                    student.lastTouched = Date.now();
+                }
+            }
+        }
+    })
+        .listen();
     let c = wrappedCanvas.context;
     let lastTime;
     let ready = false;
     let transform;
+    console.log(panner);
 
     let students = [];
     let spriteCache;
@@ -183,7 +194,7 @@ export default async function main(wrapper, debug=false) {
         lastTime = now;
         let simulate = elapsedTime < 500;
         if (simulate) {
-            panner.time += elapsedTime;
+            panner.simulate(elapsedTime);
         }
 
         transform = panner.getTransform();
@@ -246,14 +257,6 @@ export default async function main(wrapper, debug=false) {
 
     for (let i = 0; i < students.length; i++) {
         students[i].spriteId = spriteCache.add(spriteData[i]);
-    }
-
-    if (debug) {
-        wrappedCanvas.canvas.addEventListener('pointermove', e => {
-            for (let student of getStudents(e)) {
-                student.lastTouched = Date.now();
-            }
-        });
     }
 
     lastTime = Date.now();

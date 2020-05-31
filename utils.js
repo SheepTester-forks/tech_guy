@@ -67,6 +67,18 @@ export function inRange(num, {min=-Infinity, max=Infinity}={}) {
     return num >= min && num <= max;
 }
 
+export function clamp(num, {min=-Infinity, max=Infinity}={}) {
+    if (num < min) num = min;
+    if (num > max) num = max;
+    return num;
+}
+
+export function compareDist(a, b, dist) {
+    const lengthSquared = (a.x - b.x) ** 2 + (a.y - b.y) ** 2;
+    const distSquared = dist * dist;
+    return lengthSquared - distSquared;
+}
+
 // Has a copy in sprite.worker.js
 export async function* receive(worker=self) {
     let nextDone;
