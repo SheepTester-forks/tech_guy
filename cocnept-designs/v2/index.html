@@ -379,9 +379,9 @@
                     wrapperClass: 'principal-demo'
                 });
 
-                await introData; // Wait for intro data to load first
+                const introDataJson = await introData;
                 const data = await intro.addTo(document.body)
-                    .start(await introData, {
+                    .start(introDataJson, {
                         intro: '../sean/munkler.png',
                         principal: '../../characters/sprites/images/munkler/sprite.png'
                     });
@@ -533,6 +533,7 @@
                 }
             }).then(data => {
                 // Do something with whatever the user put for the name
+                console.log(data);
             });
         </script>
     </body>
